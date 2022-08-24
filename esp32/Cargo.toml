@@ -1,0 +1,29 @@
+[package]
+name = "macrolev"
+version = "0.1.0"
+authors = ["heiso <alexandre.moatty@gmail.com>"]
+edition = "2021"
+resolver = "2"
+
+[profile.release]
+opt-level = "s"
+
+[profile.dev]
+debug = true # Symbols are nice and they don't increase the size on Flash
+opt-level = "z"
+
+[features]
+pio = ["esp-idf-sys/pio"]
+
+[dependencies]
+esp-idf-sys = { version = "0.31.6", features = ["binstart"] }
+esp-idf-hal = "0.38.0"
+esp-idf-svc = "0.42.3"
+embedded-hal = "0.2.7"
+embedded-svc = "0.22.1"
+drv2605l = "0.1.0"
+
+
+[build-dependencies]
+embuild = "0.29"
+anyhow = "1"
