@@ -1,4 +1,4 @@
-use <utils.scad>
+use <../utils.scad>
 // 2-4mm of travel is traditional for mechanical key switches
 TOTAL_TRAVEL = 4; // [1:0.1:20]
 

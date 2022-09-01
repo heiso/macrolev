@@ -1,7 +1,7 @@
 // Sheath-related modules
 
+use <../../utils.scad>
 use <stem.scad>
-use <utils.scad>
 
 // Future support for other stem types:
 // module sheath(stem_type="cherry_cross", extra_tolerance=0) {

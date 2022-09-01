@@ -22,8 +22,8 @@
 
 /* [Switch Parameters] */
 
+use <../../utils.scad>
 use <stem.scad>
-use <utils.scad>
 
 // These need to match what's in Void Switch.scad
 // Total travel of your switches (NOTE: All "Switch" parameters MUST match whatever values you used to generate your

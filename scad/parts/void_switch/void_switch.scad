@@ -6,12 +6,11 @@
 // LICENSING NOTE: If you want to sell keyboards/switches using this design just let me know and we'll work something
 // out! I'll help you make awesome stuff!
 
+use <../../utils.scad>
 use <body.scad>
-use <cherry_void.scad>
 use <sheath.scad>
 use <stabilizer.scad>
 use <stem.scad>
-use <utils.scad>
 
 /* [Main Parameters] */
 
@@ -490,19 +489,6 @@ for (item = RENDER)
                               cross_height = STEM_TOP_HEIGHT, magnet_void = MAGNET_VOID,
                               top_magnet_cover_thickness = BODY_MAGNET_COVER_THICKNESS, flat_cross = STABILIZER_STEM,
                               cross_x_extra = STEM_CROSS_X_EXTRA, cross_y_extra = STEM_CROSS_Y_EXTRA);
-    }
-    else if (item == "switch_plate")
-    { // Make a pretend switch plate
-        color([ 0.7, 0.7, 0.7, 0.1 ]) translate([ 0, 0, SWITCH_PLATE_THICKNESS / 2 + COVER_THICKNESS ]) difference()
-        {
-            squarish_rpoly(xy = [ BODY_LENGTH * 2, BODY_WIDTH * 2 ], h = SWITCH_PLATE_THICKNESS, r = 1, center = true);
-            translate([ 0, 0, SWITCH_PLATE_THICKNESS / 2 + COVER_THICKNESS - 1.101 ]) rotate([ 0, 0, 90 ])
-                cherry_switch_void(height = 2, plate_thickness = SWITCH_PLATE_THICKNESS);
-        }
-        translate([ -11, 10, SWITCH_PLATE_THICKNESS * 2 - 1.25 ]) linear_extrude(height = 1, center = true)
-            text("Switch Plate", size = 3);
-        rotate([ 0, 180, 0 ]) translate([ -11, 10, -1 ]) linear_extrude(height = 1, center = true)
-            text("Switch Plate", size = 3);
     }
     else if (item == "visualize_reed_switch")
     { // Make a pretend switch plate

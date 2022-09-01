@@ -1,5 +1,3 @@
-use <knurledFinishLib.scad>;
-
 $fn = 64;
 
 KNOB_RADIUS = 13;

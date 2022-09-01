@@ -1,6 +1,6 @@
 // Modules related to the main body of the switch
 
-use <utils.scad>
+use <../../utils.scad>
 
 // Constants
 CHERRY_CROSS_LENGTH = 4; // Length of the - and the | in the +

@@ -16,7 +16,7 @@
 
 $fn = 64;
 
-use <utils.scad>
+use <../../utils.scad>
 
 // Configurables
 LEVITATOR_THICKNESS =
