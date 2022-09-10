@@ -11,9 +11,9 @@ SHAFT_RADIUS = 3;
 SHAFT_DISTANCE_TO_TOP = 2;
 SHAFT_TOLERANCE = 0.075;
 
-module main(knob_radius = KNOB_RADIUS, skirt_height = SKIRT_HEIGHT, chamfer = CHAMFER, facettes = FACETTES,
-            shaft_height = SHAFT_HEIGHT, shaft_radius = SHAFT_RADIUS, shaft_distance_to_top = SHAFT_DISTANCE_TO_TOP,
-            shaft_tolerance = SHAFT_TOLERANCE)
+module knob_main(knob_radius = KNOB_RADIUS, skirt_height = SKIRT_HEIGHT, chamfer = CHAMFER, facettes = FACETTES,
+                 shaft_height = SHAFT_HEIGHT, shaft_radius = SHAFT_RADIUS,
+                 shaft_distance_to_top = SHAFT_DISTANCE_TO_TOP, shaft_tolerance = SHAFT_TOLERANCE)
 {
     /*
      * hole for the shaft
@@ -72,4 +72,4 @@ module main(knob_radius = KNOB_RADIUS, skirt_height = SKIRT_HEIGHT, chamfer = CH
     }
 }
 
-main();
+knob_main();
