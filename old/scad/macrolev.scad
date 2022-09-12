@@ -9,7 +9,7 @@ switch_tolerance = 0.1;
 
 wall_thickness = 1.5;
 
-x_size = keycap_placeholder_space * 4;
+x_size = keycap_placeholder_space * 5;
 y_size = keycap_placeholder_space + 5;
 h_size = 15;
 body_base_x = x_size + wall_thickness * 2;
@@ -105,7 +105,7 @@ module knob_assembly()
         translate([ 0, 0, knob_radius / sqrt(2) ]) rotate(knob_rotation)
         {
             // translate([ 0, 0, knob_elevation - wall_thickness ]) color([ 0, 0, 1, 0.8 ]) rotary_encoder();
-            knob();
+            // knob();
             knob_base();
         }
 

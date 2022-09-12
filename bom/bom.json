@@ -1,0 +1,22 @@
+[
+    {
+        "name": "main_assembly",
+        "big": null,
+        "ngb": false,
+        "zoomed": 0,
+        "count": 1,
+        "assemblies": {},
+        "vitamins": {
+            "potentiometer(KY_040_encoder): KY_040_encoder": {
+                "count": 2
+            }
+        },
+        "printed": {
+            "body.stl": {
+                "count": 1,
+                "colour": "grey"
+            }
+        },
+        "routed": {}
+    }
+]

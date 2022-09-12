@@ -1,0 +1,12 @@
+Vitamins:
+ M
+ a
+ i
+ n
+ 2|  2 KY_040_encoder
+
+Printed:
+ 1|  1 body.stl
+
+Assemblies:
+  1 main_assembly

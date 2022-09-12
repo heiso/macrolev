@@ -1,1 +1,4 @@
 .DS_Store
+openscad.echo
+openscad.log
+tmp
