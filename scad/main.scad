@@ -26,7 +26,7 @@ kb2040_bottom_clearance = 1;
 drv2605l_width = 18;
 drv2605l_length = 26;
 drv2605l_thickness = 1.6;
-drv2605l_bottom_clearance = 5;
+drv2605l_bottom_clearance = 1;
 
 ERM_motor_radius = 10 / 2;
 ERM_motor_thickness = 3.5;
@@ -34,7 +34,8 @@ ERM_motor_thickness = 3.5;
 internal_height = 15;
 external_height = internal_height + top_thickness + bottom_plate_thickness;
 
-internal_width = drv2605l_length + 0; // dep to internal vitamins
+internal_width =
+    switch_distance_between_holes + (switch_distance_between_holes + switch_hole_size) * 2; // dep to internal vitamins
 external_width = internal_width + wall_thickness * 2;
 
 knob_chamfer = 1;
@@ -49,9 +50,8 @@ knob_base_length = (external_height / cos(knob_angle)) + tan(knob_angle) * knob_
 knob_base_cutout_length = internal_height / cos(knob_angle);
 knob_base_length_on_body = sin(knob_angle) * knob_base_length + cos(knob_angle) * knob_radius;
 
-internal_length = (switch_distance_between_holes + switch_hole_size) * switch_count + kb2040_width +
-                  knob_base_length_on_body +
-                  (external_width - switch_hole_size) / 2; // dep to switches, internal vitamins and rotary
+internal_length = (switch_distance_between_holes + switch_hole_size + switch_distance_between_holes) + kb2040_width +
+                  knob_base_length_on_body; // dep to switches, internal vitamins and rotary
 external_length = internal_length + wall_thickness * 2;
 
 rotary_shaft_height = 10.20;
@@ -87,7 +87,10 @@ module kb2040_vitamin(cutout = false)
 
 module drv2605l_transformation()
 {
-    translate([ 0, 0, kb2040_thickness + drv2605l_bottom_clearance ]) kb2040_transformation() children();
+    translate([
+        knob_base_length_on_body - drv2605l_width - 2, internal_width / 2, bottom_plate_thickness +
+        drv2605l_bottom_clearance
+    ]) children();
 }
 
 module drv2605l_vitamin()
@@ -100,7 +103,11 @@ module drv2605l_vitamin()
 
 module ERM_motor_transformation()
 {
-    translate([ 10, 0, bottom_plate_thickness + internal_height - ERM_motor_thickness - top_thickness ]) children();
+    translate([
+        knob_base_length_on_body - ERM_motor_radius * 2 - 5, 0,
+        bottom_plate_thickness + internal_height - ERM_motor_thickness -
+        top_thickness
+    ]) children();
 }
 
 module ERM_motor_vitamin()
@@ -212,43 +219,13 @@ module body_base_stl()
             }
 
             // walls
-            translate(
-                [ (knob_base_length_on_body + kb2040_width) / 2, 0, internal_height / 2 + bottom_plate_thickness ])
-            {
-                translate([ 0, wall_thickness / 2 + internal_width / 2, 0 ])
-                    cube([ knob_base_length_on_body + kb2040_width, wall_thickness, internal_height ], center = true);
-                translate([ 0, -wall_thickness / 2 - internal_width / 2, 0 ])
-                    cube([ knob_base_length_on_body + kb2040_width, wall_thickness, internal_height ], center = true);
-            }
-
-            // pcb supports
             difference()
             {
-                union()
-                {
-                    kb2040_transformation()
-                    {
-                        translate([ 0, 0, -kb2040_bottom_clearance ]) linear_extrude(internal_height)
-                        {
-                            translate([ -1, -2, 0 ]) square([ 3, 2 ]);
-                            translate([ kb2040_width - 2, -2, 0 ]) square([ 3, 2 ]);
-                        }
+                translate([ external_length / 2, 0, bottom_plate_thickness ])
+                    rounded_cube([ external_length, external_width, internal_height ]);
 
-                        translate([ 0, -drv2605l_length + 2, -kb2040_bottom_clearance ]) linear_extrude(
-                            kb2040_bottom_clearance + kb2040_thickness + drv2605l_bottom_clearance + drv2605l_thickness)
-                        {
-                            translate([ -1, -2, 0 ]) square([ 3, 2 ]);
-                            translate([ kb2040_width - 2, -2, 0 ]) square([ 3, 2 ]);
-                        }
-
-                        translate([ 0, -kb2040_length + 2, -kb2040_bottom_clearance ])
-                            linear_extrude(kb2040_bottom_clearance + kb2040_thickness)
-                        {
-                            translate([ -1, -3, 0 ]) square([ 3, 3 ]);
-                            translate([ kb2040_width - 2, -3, 0 ]) square([ 3, 3 ]);
-                        }
-                    }
-                }
+                translate([ external_length / 2, 0, bottom_plate_thickness ])
+                    rounded_cube([ internal_length, internal_width, internal_height ]);
             }
         }
 
@@ -259,20 +236,103 @@ module body_base_stl()
         difference()
         {
             height = internal_height - (ERM_motor_thickness + top_thickness * 2);
-            translate([ 100 / 2, 0, height / 2 + bottom_plate_thickness ])
-                cube([ 100, rotary_base_width + rotary_base_tolerance, height ], center = true);
+            length = knob_base_length_on_body;
+            translate([ length / 2, 0, height / 2 + bottom_plate_thickness ])
+                cube([ length, internal_width, height ], center = true);
             knob_transformation() translate([ 0, 0, 50 + knob_base_length - knob_top_thickness ])
                 cube(100, center = true);
         }
 
-        // kb2040 cutout
-        kb2040_transformation() kb2040_vitamin(true);
-
-        // drv2605l cutout
-        drv2605l_transformation() drv2605l_vitamin();
-
         // erm motor cutout
         ERM_motor_transformation() ERM_motor_cutout();
+
+        // usb-c hole
+        kb2040_transformation() kb2040_vitamin(true);
+    }
+
+    // kb2040 supports
+    kb2040_transformation() difference()
+    {
+        {
+            union()
+            {
+                translate([ 0, 0, -kb2040_bottom_clearance ])
+                    linear_extrude(kb2040_bottom_clearance + kb2040_thickness * 2)
+                {
+                    // front left
+                    translate([ -1, -2, 0 ]) square([ 3, 2 ]);
+                    // front right
+                    translate([ kb2040_width - 2, -2, 0 ]) square([ 3, 2 ]);
+                }
+
+                translate([ 0, -kb2040_length + 2, -kb2040_bottom_clearance ])
+                    linear_extrude(kb2040_bottom_clearance + kb2040_thickness)
+                {
+                    // rear left
+                    translate([ -1, -3, 0 ]) square([ 3, 3 ]);
+                    // rear right
+                    translate([ kb2040_width - 2, -3, 0 ]) square([ 3, 3 ]);
+                }
+            }
+            // cutout
+            kb2040_vitamin(true);
+        }
+    }
+
+    // drv2605l supports
+    drv2605l_transformation() difference()
+    {
+        union()
+        {
+            translate([ 0, 0, -drv2605l_bottom_clearance ])
+                linear_extrude(drv2605l_bottom_clearance + drv2605l_thickness * 2)
+            {
+                // front left
+                translate([ -1, -2, 0 ]) square([ 3, 2 ]);
+                // front right
+                translate([ drv2605l_width - 2, -2, 0 ]) square([ 3, 2 ]);
+            }
+
+            translate([ 0, -drv2605l_length + 2, -kb2040_bottom_clearance ])
+                linear_extrude(drv2605l_bottom_clearance + drv2605l_thickness)
+            {
+                // rear left
+                translate([ -1, -3, 0 ]) square([ 3, 3 ]);
+                // rear right
+                translate([ drv2605l_width - 2, -3, 0 ]) square([ 3, 3 ]);
+            }
+        }
+
+        // drv2605l cutout
+        drv2605l_vitamin();
+    }
+}
+
+module body_top_plate_stl()
+{
+    stl("body_top_plate");
+
+    difference()
+    {
+        translate([ external_length / 2, 0, external_height - top_thickness ])
+            rounded_cube([ external_length, external_width, top_thickness ]);
+
+        // knob base cutout
+        knob_transformation() cylinder(h = knob_elevation + knob_base_length, r = knob_radius);
+
+        // switches holes
+        translate([
+            external_length - switch_hole_size / 2 - wall_thickness - switch_distance_between_holes, 0,
+            external_height
+        ])
+        {
+            translate([ 0, +switch_hole_size / 2 + switch_distance_between_holes / 2, 0 ]) cube(switch_hole_size, true);
+            translate([ 0, -switch_hole_size / 2 - switch_distance_between_holes / 2, 0 ]) cube(switch_hole_size, true);
+            translate([
+                -switch_hole_size - switch_distance_between_holes,
+                -switch_hole_size / 2 - switch_distance_between_holes / 2, 0
+            ]) cube(switch_hole_size, true);
+        }
     }
 }
 
@@ -284,15 +344,15 @@ module main_assembly() assembly("main")
     ERM_motor_transformation() ERM_motor_vitamin();
     knob_transformation() translate([ 0, 0, knob_base_length ]) rotary_encoder_vitamin();
 
-    render() clip(ymin = 0)
+    render() // clip(ymin = 0)
     {
-        // knob_transformation() translate([ 0, 0, 0.5 + knob_base_length ]) knob_stl();
-        // bottom_plate_stl();
+        knob_transformation() translate([ 0, 0, 0.5 + knob_base_length ]) knob_stl();
         body_base_stl();
     }
 
     color("red", 0.5)
     {
+        body_top_plate_stl();
     }
 }
 
