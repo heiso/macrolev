@@ -1,12 +1,10 @@
-Vitamins:
  M
  a
  i
  n
- 2|  2 KY_040_encoder
-
 Printed:
  1|  1 body.stl
+ 1|  1 knob.stl
 
 Assemblies:
   1 main_assembly

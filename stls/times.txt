@@ -1,3 +1,4 @@
 {
-    "body.stl": 19.0
+    "knob.stl": 2.344,
+    "body.stl": 4.425
 }

@@ -6,12 +6,12 @@
         "zoomed": 0,
         "count": 1,
         "assemblies": {},
-        "vitamins": {
-            "potentiometer(KY_040_encoder): KY_040_encoder": {
-                "count": 2
-            }
-        },
+        "vitamins": {},
         "printed": {
+            "knob.stl": {
+                "count": 1,
+                "colour": "grey"
+            },
             "body.stl": {
                 "count": 1,
                 "colour": "grey"

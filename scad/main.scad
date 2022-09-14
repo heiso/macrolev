@@ -5,210 +5,294 @@ use <NopSCADlib/vitamins/potentiometer.scad>
 
 thin = 0.00001;
 border_radius = 2;
-// See https://matt3o.com/anatomy-of-a-keyboard/
-switch_hole_size = 14;
-switch_distance_between_holes = 5.05;
-keycap_placeholder_space = switch_hole_size + switch_distance_between_holes;
-switch_tolerance = 0.1;
-
 top_thickness = 1.5;
 wall_thickness = 1.5;
+bottom_plate_thickness = 1;
 
-size_offset = 7;
-x_size = keycap_placeholder_space * 5 + size_offset;
-y_size = keycap_placeholder_space + size_offset;
-h_size = 15;
-body_base_x = x_size + wall_thickness * 2;
-body_base_y = y_size + wall_thickness * 2;
+// See https://matt3o.com/anatomy-of-a-keyboard/
+switch_tolerance = 0.1;
+switch_hole_size = 14 + switch_tolerance;
+switch_distance_between_holes = 5.05;
+switch_count = 3;
+
+magnet_height = 1.7;
+magnet_radius = 2;
+
+kb2040_width = 18;
+kb2040_length = 21;
+kb2040_thickness = 1.6;
+kb2040_bottom_clearance = 1;
+
+drv2605l_width = 18;
+drv2605l_length = 26;
+drv2605l_thickness = 1.6;
+drv2605l_bottom_clearance = 5;
+
+ERM_motor_radius = 10 / 2;
+ERM_motor_thickness = 3.5;
+
+internal_height = 15;
+external_height = internal_height + top_thickness + bottom_plate_thickness;
+
+internal_width = drv2605l_length + 0; // dep to internal vitamins
+external_width = internal_width + wall_thickness * 2;
 
 knob_chamfer = 1;
-knob_oversized_by = (1 / 5) * body_base_y;
-knob_radius = (body_base_y / 2) + knob_oversized_by / 2;
+knob_oversized_by = (1 / 5) * external_width;
+knob_radius = (external_width / 2) + knob_oversized_by / 2;
 knob_height = 17;
-knob_elevation = 5;
-knob_rotation = [ 0, -15, 0 ];
+knob_elevation = 0;
+knob_angle = 15;
+knob_top_thickness = top_thickness + 2;
+knob_rotation = [ 0, -knob_angle, 0 ];
+knob_base_length = (external_height / cos(knob_angle)) + tan(knob_angle) * knob_radius;
+knob_base_cutout_length = internal_height / cos(knob_angle);
+knob_base_length_on_body = sin(knob_angle) * knob_base_length + cos(knob_angle) * knob_radius;
 
-shaft_height = 10.20;
-shaft_radius = 3;
-shaft_base_radius = 7 / 2;
-shaft_tolerance = 0.075;
+internal_length = (switch_distance_between_holes + switch_hole_size) * switch_count + kb2040_width +
+                  knob_base_length_on_body +
+                  (external_width - switch_hole_size) / 2; // dep to switches, internal vitamins and rotary
+external_length = internal_length + wall_thickness * 2;
 
-module kb2040_pcb(cutout = false)
+rotary_shaft_height = 10.20;
+rotary_shaft_radius = 3;
+rotary_shaft_base_radius = 7 / 2;
+rotary_shaft_base_height = 7 / 2;
+rotary_shaft_tolerance = 0.075;
+rotary_base_tolerance = 0.3;
+rotary_base_width = 12;
+
+module rounded_cube(v)
 {
-    x = 18;
-    y = 21;
-    thickness = 1.6;
-    translate([ 22, body_base_y / 2 - wall_thickness, 2 ]) translate([ x / 2, -y / 2, 0 ])
+    x_corrected = v[0] - border_radius * 2;
+    y_corrected = v[1] - border_radius * 2;
+    linear_extrude(height = v[2]) offset(r = border_radius) square([ x_corrected, y_corrected ], center = true);
+}
+
+module kb2040_transformation()
+{
+    translate([ knob_base_length_on_body, internal_width / 2, bottom_plate_thickness + kb2040_bottom_clearance ])
+        children();
+}
+
+module kb2040_vitamin(cutout = false)
+{
+    translate([ kb2040_width / 2, -kb2040_length / 2, 0 ])
     {
-        color("black") translate([ 0, 0, thickness / 2 ]) cube([ x, y, thickness ], center = true);
-        translate([ 0, (y / 2) - (7.35 / 2) + 1, thickness ]) rotate([ 0, 0, 90 ]) usb_C(cutout);
+        color("black") translate([ 0, 0, kb2040_thickness / 2 ])
+            cube([ kb2040_width, kb2040_length, kb2040_thickness ], center = true);
+        translate([ 0, (kb2040_length / 2) - (7.35 / 2) + 1, kb2040_thickness ]) rotate([ 0, 0, 90 ]) usb_C(cutout);
     }
 }
 
-module drv2605l_pcb()
+module drv2605l_transformation()
 {
-    x = 18;
-    y = 26;
-    thickness = 1.6;
-    translate([ 22, body_base_y / 2 - wall_thickness, 8 ]) translate([ x / 2, -y / 2, thickness / 2 ])
+    translate([ 0, 0, kb2040_thickness + drv2605l_bottom_clearance ]) kb2040_transformation() children();
+}
+
+module drv2605l_vitamin()
+{
+    translate([ drv2605l_width / 2, -drv2605l_length / 2, drv2605l_thickness / 2 ])
     {
-        color("black") cube([ x, y, thickness ], center = true);
+        color("black") cube([ drv2605l_width, drv2605l_length, drv2605l_thickness ], center = true);
     }
 }
 
-module vibrator()
+module ERM_motor_transformation()
 {
-    r = 10 / 2;
-    thickness = 3.5;
-    translate([ 27, 0, h_size - top_thickness - thickness ]) translate([ r, r, 0 ])
+    translate([ 10, 0, bottom_plate_thickness + internal_height - ERM_motor_thickness - top_thickness ]) children();
+}
+
+module ERM_motor_vitamin()
+{
+    translate([ ERM_motor_radius, 0, 0 ])
     {
-        color("silver") cylinder(h = thickness, r = r);
+        color("silver") cylinder(h = ERM_motor_thickness, r = ERM_motor_radius);
     }
 }
 
-module knob_transformation()
+module ERM_motor_cutout()
 {
-    translate([ knob_radius / sqrt(2), 0, knob_radius / sqrt(2) ]) rotate(knob_rotation) children();
+    height = ERM_motor_thickness + switch_tolerance;
+    radius = ERM_motor_radius + switch_tolerance / 2;
+    hole = radius + 5;
+    translate([ radius - switch_tolerance, 0, 0 ]) cylinder(h = height, r = radius);
+    translate([ hole / 2 + radius, 0, height / 2 ]) cube([ hole, radius * 2, height ], center = true);
 }
 
-module rotary_encoder()
+module rotary_encoder_vitamin()
 {
-    thickness = top_thickness + 2;
-    translate([ 0, 0, knob_elevation - thickness ]) rotate([ 0, 180, 0 ])
+    translate([ 0, 0, -knob_top_thickness ]) rotate([ 0, 180, 0 ])
     {
-        translate([ 0, 0, -thickness ]) pot_nut(KY_040_encoder, false);
+        translate([ 0, 0, -knob_top_thickness ]) pot_nut(KY_040_encoder, false);
         potentiometer(KY_040_encoder);
+    }
+}
+
+module rotary_encoder_cutout()
+{
+    translate([ 0, 0, -knob_top_thickness ])
+    {
+        cylinder(h = rotary_shaft_base_height + 1, r = rotary_shaft_base_radius);
+        translate([ 0, 0, 1 / 2 ])
+            cube([ rotary_base_width + rotary_base_tolerance, 2 + rotary_base_tolerance, 1 ], true);
+        translate([ 0, 0, -100 / 2 ])
+            cube([ rotary_base_width + rotary_base_tolerance, rotary_base_width + rotary_base_tolerance, 100 ], true);
+    }
+}
+
+module magnet_vitamin()
+{
+    translate([ magnet_radius, magnet_radius, 0 ])
+    {
+        color("silver") cylinder(h = magnet_height, r = magnet_radius);
     }
 }
 
 module knob_stl()
 {
     stl("knob");
-    translate([ 0, 0, 0.5 + knob_elevation ])
+    difference()
     {
-        difference()
+        union()
         {
-            union()
+            translate([ 0, 0, knob_height - knob_chamfer ]) hull()
             {
-                translate([ 0, 0, knob_height - knob_chamfer ]) hull()
-                {
-                    linear_extrude(height = thin) circle(r = knob_radius);
-                    translate([ 0, 0, knob_chamfer ]) linear_extrude(height = thin) offset(delta = -knob_chamfer)
-                        circle(r = knob_radius);
-                }
-
-                cylinder(h = knob_height - knob_chamfer, r = knob_radius);
+                linear_extrude(height = thin) circle(r = knob_radius);
+                translate([ 0, 0, knob_chamfer ]) linear_extrude(height = thin) offset(delta = -knob_chamfer)
+                    circle(r = knob_radius);
             }
 
-            translate([ 0, 0, (knob_height - knob_chamfer) - shaft_height ])
-            {
-                difference()
-                {
-                    cylinder(h = shaft_height, r = shaft_radius + shaft_tolerance);
-                    translate([ -shaft_radius, shaft_radius / 1.7, 0 ]) cube([ shaft_radius * 2, 10, shaft_height ]);
-                }
-            }
-
-            cylinder(h = knob_height - knob_chamfer - shaft_height, r = knob_radius - 2);
+            cylinder(h = knob_height - knob_chamfer, r = knob_radius);
         }
+
+        translate([ 0, 0, (knob_height - knob_chamfer) - rotary_shaft_height ])
+        {
+            difference()
+            {
+                cylinder(h = rotary_shaft_height, r = rotary_shaft_radius + rotary_shaft_tolerance);
+                translate([ -rotary_shaft_radius, rotary_shaft_radius / 1.7, 0 ])
+                    cube([ rotary_shaft_radius * 2, 10, rotary_shaft_height ]);
+            }
+        }
+
+        cylinder(h = knob_height - knob_chamfer - rotary_shaft_height, r = knob_radius - 2);
     }
 }
 
-module body_stl()
+module knob_transformation()
 {
-    stl("body");
+    z_translation = sin(knob_angle) * knob_radius;
+    x_translation = sin(knob_angle) * knob_base_length;
+    translate([ x_translation, 0, 0 ]) translate([ 0, 0, -z_translation ]) rotate(knob_rotation) children();
+}
+
+module body_base_stl()
+{
+    stl("body_base");
 
     difference()
     {
         union()
         {
+            // knob base
+            clip(zmin = 0) knob_transformation() cylinder(h = knob_elevation + knob_base_length, r = knob_radius);
+
+            // base plate
             difference()
             {
-                body_base_x_corrected = body_base_x - (border_radius * 2);
-                body_base_y_corrected = body_base_y - (border_radius * 2);
-                linear_extrude(height = h_size) offset(r = border_radius) translate([ body_base_x / 2, 0, 0 ])
-                    square([ body_base_x_corrected, body_base_y_corrected ], center = true);
+                translate([ external_length / 2, 0, 0 ])
+                    rounded_cube([ external_length, external_width, bottom_plate_thickness ]);
 
-                knob_transformation()
+                knob_transformation() linear_extrude(knob_elevation + knob_base_length) hull()
                 {
-                    h = 50 + knob_elevation;
-                    translate([ -knob_radius / 2, 0, h / 2 - 25 ]) cube([ knob_radius, knob_radius * 2, h ], true);
-                    translate([ 0, 0, -25 ]) cylinder(h = h, r = knob_radius);
+                    translate([ -knob_radius, 0, 0 ]) square([ knob_radius, knob_radius * 2 ], true);
+                    circle(knob_radius);
                 }
             }
 
-            clip(zmin = 0) knob_transformation() translate([ 0, 0, -40 ])
-                cylinder(h = 40 + knob_elevation, r = knob_radius);
-        }
+            // walls
+            translate(
+                [ (knob_base_length_on_body + kb2040_width) / 2, 0, internal_height / 2 + bottom_plate_thickness ])
+            {
+                translate([ 0, wall_thickness / 2 + internal_width / 2, 0 ])
+                    cube([ knob_base_length_on_body + kb2040_width, wall_thickness, internal_height ], center = true);
+                translate([ 0, -wall_thickness / 2 - internal_width / 2, 0 ])
+                    cube([ knob_base_length_on_body + kb2040_width, wall_thickness, internal_height ], center = true);
+            }
 
-        union()
-        {
+            // pcb supports
             difference()
             {
-                body_base_x_corrected = body_base_x - wall_thickness - (border_radius * 2);
-                body_base_y_corrected = body_base_y - wall_thickness - (border_radius * 2);
-                linear_extrude(height = h_size - top_thickness) offset(r = border_radius)
-                    translate([ (body_base_x) / 2, 0, 0 ])
-                        square([ body_base_x_corrected, body_base_y_corrected ], center = true);
-
-                knob_transformation()
+                union()
                 {
-                    h = 50 + knob_elevation;
-                    translate([ -knob_radius / 2, 0, h / 2 - 25 ]) cube([ knob_radius, knob_radius * 2, h ], true);
-                    translate([ 0, 0, -25 ]) cylinder(h = h, r = knob_radius - wall_thickness);
+                    kb2040_transformation()
+                    {
+                        translate([ 0, 0, -kb2040_bottom_clearance ]) linear_extrude(internal_height)
+                        {
+                            translate([ -1, -2, 0 ]) square([ 3, 2 ]);
+                            translate([ kb2040_width - 2, -2, 0 ]) square([ 3, 2 ]);
+                        }
+
+                        translate([ 0, -drv2605l_length + 2, -kb2040_bottom_clearance ]) linear_extrude(
+                            kb2040_bottom_clearance + kb2040_thickness + drv2605l_bottom_clearance + drv2605l_thickness)
+                        {
+                            translate([ -1, -2, 0 ]) square([ 3, 2 ]);
+                            translate([ kb2040_width - 2, -2, 0 ]) square([ 3, 2 ]);
+                        }
+
+                        translate([ 0, -kb2040_length + 2, -kb2040_bottom_clearance ])
+                            linear_extrude(kb2040_bottom_clearance + kb2040_thickness)
+                        {
+                            translate([ -1, -3, 0 ]) square([ 3, 3 ]);
+                            translate([ kb2040_width - 2, -3, 0 ]) square([ 3, 3 ]);
+                        }
+                    }
                 }
             }
-
-            // knob base hollow
-            knob_transformation()
-            {
-                h = 40 + knob_elevation;
-                translate([ 0, 0, -40 - 6.5 ]) cylinder(h = h - top_thickness, r = knob_radius - wall_thickness / 2);
-                scale([1.1,1.1,1.1]) rotary_encoder();
-            }
-
-            // switch holes
-            for (column = [0:3 - 1])
-            {
-
-                translate([
-                    x_size - size_offset / 2 - column * keycap_placeholder_space - keycap_placeholder_space / 2, 0,
-                    h_size
-                ]) cube(switch_hole_size + switch_tolerance, center = true);
-            }
-
-            // usbc hole
-            kb2040_pcb(true);
         }
-    }
 
-    // internal supports
-    for (column = [0:4 - 1])
-    {
-        translate([ x_size - size_offset / 2 - column * keycap_placeholder_space, 0, (h_size - top_thickness) / 2 ])
+        // rotary cutout
+        knob_transformation() translate([ 0, 0, knob_base_length ]) rotary_encoder_cutout();
+
+        // rotary access hole
+        difference()
         {
-            difference()
-            {
-                cube([ wall_thickness, body_base_y, h_size - top_thickness ], center = true);
-                translate([ 0, 0, -body_base_y / 4 - 2 ]) rotate([ 0, 90, 0 ])
-                    cylinder(h = wall_thickness, r = (body_base_y - wall_thickness) / 2, center = true);
-            }
+            height = internal_height - (ERM_motor_thickness + top_thickness * 2);
+            translate([ 100 / 2, 0, height / 2 + bottom_plate_thickness ])
+                cube([ 100, rotary_base_width + rotary_base_tolerance, height ], center = true);
+            knob_transformation() translate([ 0, 0, 50 + knob_base_length - knob_top_thickness ])
+                cube(100, center = true);
         }
+
+        // kb2040 cutout
+        kb2040_transformation() kb2040_vitamin(true);
+
+        // drv2605l cutout
+        drv2605l_transformation() drv2605l_vitamin();
+
+        // erm motor cutout
+        ERM_motor_transformation() ERM_motor_cutout();
     }
 }
 
 //! Assembly instructions in Markdown format in front of each module that makes an assembly.
 module main_assembly() assembly("main")
 {
-    kb2040_pcb();
-    drv2605l_pcb();
-    vibrator();
-    knob_transformation() rotary_encoder();
+    kb2040_transformation() kb2040_vitamin();
+    drv2605l_transformation() drv2605l_vitamin();
+    ERM_motor_transformation() ERM_motor_vitamin();
+    knob_transformation() translate([ 0, 0, knob_base_length ]) rotary_encoder_vitamin();
 
-    stl_colour(pp1_colour) render() clip(ymin = 0)
+    render() clip(ymin = 0)
     {
-        // knob_transformation() knob_stl();
-        body_stl();
+        // knob_transformation() translate([ 0, 0, 0.5 + knob_base_length ]) knob_stl();
+        // bottom_plate_stl();
+        body_base_stl();
+    }
+
+    color("red", 0.5)
+    {
     }
 }
 
