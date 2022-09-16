@@ -1,4 +1,4 @@
-stls/body.stl: \
+stls/test.stl: \
 	/Users/heiso/Documents/OpenSCAD/libraries/NopSCADlib/printed/fan_guard.scad \
 	/Users/heiso/Documents/OpenSCAD/libraries/NopSCADlib/vitamins/e3d.scad \
 	/Users/heiso/Documents/OpenSCAD/libraries/NopSCADlib/vitamins/jhead.scad \

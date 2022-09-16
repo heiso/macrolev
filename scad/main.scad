@@ -7,7 +7,7 @@ thin = 0.00001;
 border_radius = 2;
 top_thickness = 1.5;
 wall_thickness = 1.5;
-bottom_plate_thickness = 1;
+bottom_plate_thickness = 1.5;
 
 // See https://matt3o.com/anatomy-of-a-keyboard/
 switch_tolerance = 0.1;
@@ -16,12 +16,14 @@ switch_distance_between_holes = 5.05;
 switch_count = 3;
 
 magnet_height = 1.7;
-magnet_radius = 2;
+magnet_radius = 4 / 2;
+magnet_tolerance = 0.2;
 
 kb2040_width = 18;
 kb2040_length = 21;
 kb2040_thickness = 1.6;
 kb2040_bottom_clearance = 1;
+kb2040_offset = 2;
 
 drv2605l_width = 18;
 drv2605l_length = 26;
@@ -51,7 +53,7 @@ knob_base_cutout_length = internal_height / cos(knob_angle);
 knob_base_length_on_body = sin(knob_angle) * knob_base_length + cos(knob_angle) * knob_radius;
 
 internal_length = (switch_distance_between_holes + switch_hole_size + switch_distance_between_holes) + kb2040_width +
-                  knob_base_length_on_body; // dep to switches, internal vitamins and rotary
+                  kb2040_offset + knob_base_length_on_body; // dep to switches, internal vitamins and rotary
 external_length = internal_length + wall_thickness * 2;
 
 rotary_shaft_height = 10.20;
@@ -71,8 +73,10 @@ module rounded_cube(v)
 
 module kb2040_transformation()
 {
-    translate([ knob_base_length_on_body, internal_width / 2, bottom_plate_thickness + kb2040_bottom_clearance ])
-        children();
+    translate([
+        knob_base_length_on_body - kb2040_width + kb2040_offset, internal_width / 2, bottom_plate_thickness +
+        kb2040_bottom_clearance
+    ]) children();
 }
 
 module kb2040_vitamin(cutout = false)
@@ -88,8 +92,8 @@ module kb2040_vitamin(cutout = false)
 module drv2605l_transformation()
 {
     translate([
-        knob_base_length_on_body - drv2605l_width - 2, internal_width / 2, bottom_plate_thickness +
-        drv2605l_bottom_clearance
+        knob_base_length_on_body - drv2605l_width - 2, internal_width / 2,
+        bottom_plate_thickness + drv2605l_bottom_clearance + 5.5
     ]) children();
 }
 
@@ -150,10 +154,17 @@ module rotary_encoder_cutout()
 
 module magnet_vitamin()
 {
-    translate([ magnet_radius, magnet_radius, 0 ])
-    {
-        color("silver") cylinder(h = magnet_height, r = magnet_radius);
-    }
+    color("silver") cylinder(h = magnet_height, r = magnet_radius);
+}
+
+module magnet_cutout()
+{
+    cylinder(h = magnet_height + magnet_tolerance * 2, r = magnet_radius + magnet_tolerance / 2);
+}
+
+module hall_effect_sensor()
+{
+    cube([ 4, 4, 1.5 ]);
 }
 
 module knob_stl()
@@ -173,13 +184,13 @@ module knob_stl()
             cylinder(h = knob_height - knob_chamfer, r = knob_radius);
         }
 
-        translate([ 0, 0, (knob_height - knob_chamfer) - rotary_shaft_height ])
+        translate([ 0, 0, (knob_height - knob_chamfer) - rotary_shaft_height - .1 ])
         {
             difference()
             {
-                cylinder(h = rotary_shaft_height, r = rotary_shaft_radius + rotary_shaft_tolerance);
+                cylinder(h = rotary_shaft_height + .1, r = rotary_shaft_radius + rotary_shaft_tolerance);
                 translate([ -rotary_shaft_radius, rotary_shaft_radius / 1.7, 0 ])
-                    cube([ rotary_shaft_radius * 2, 10, rotary_shaft_height ]);
+                    cube([ rotary_shaft_radius * 2, 10, rotary_shaft_height + .1 ]);
             }
         }
 
@@ -192,6 +203,73 @@ module knob_transformation()
     z_translation = sin(knob_angle) * knob_radius;
     x_translation = sin(knob_angle) * knob_base_length;
     translate([ x_translation, 0, 0 ]) translate([ 0, 0, -z_translation ]) rotate(knob_rotation) children();
+}
+
+module magnets_transformations()
+{
+    translate([
+        external_length - magnet_radius - wall_thickness - wall_thickness / 2,
+        internal_width / 2 - magnet_radius - wall_thickness / 2, 0
+    ]) children();
+
+    translate([
+        external_length - magnet_radius - wall_thickness - wall_thickness / 2 - switch_hole_size -
+            switch_distance_between_holes,
+        internal_width / 2 - magnet_radius - wall_thickness / 2, 0
+    ]) children();
+
+    translate([ knob_base_length_on_body, internal_width / 2 - magnet_radius - wall_thickness / 2, 0 ]) children();
+}
+
+module kb2040_supports()
+{
+    radius = 0.5;
+    width = 5;
+    translate([ -1, -kb2040_length, 0 ])
+    {
+        translate([ 0, 0, -kb2040_bottom_clearance ]) linear_extrude(kb2040_bottom_clearance) difference()
+        {
+            square([ kb2040_width + 2, kb2040_length ]);
+            translate([ 2, 0, 0 ]) square([ kb2040_width - 2, kb2040_length ]);
+            translate([ 0, kb2040_length / 4, 0 ]) square([ kb2040_width + 2, kb2040_length / 2 ]);
+        }
+
+        linear_extrude(kb2040_thickness) difference()
+        {
+            square([ kb2040_width + 2, kb2040_length ]);
+            translate([ 1, 0, 0 ]) square([ kb2040_width, kb2040_length ]);
+            translate([ 0, kb2040_length / 4, 0 ]) square([ kb2040_width + 2, kb2040_length / 2 ]);
+        }
+
+        translate([ 0, -2, -kb2040_bottom_clearance ])
+            linear_extrude(kb2040_bottom_clearance + kb2040_thickness + radius + .3)
+        {
+            square([ width, 2 ]);
+            translate([ kb2040_width - width + 2, 0, 0 ]) square([ width, 2 ]);
+        }
+
+        translate([ 0, -0.3, kb2040_bottom_clearance + kb2040_thickness - radius + 0.2 ]) rotate([ 0, 90, 0 ])
+            cylinder(r = radius, h = width);
+        translate([ kb2040_width - width + 2, -0.3, kb2040_bottom_clearance + kb2040_thickness - radius + 0.2 ])
+            rotate([ 0, 90, 0 ]) cylinder(r = radius, h = width);
+    }
+
+    clip(ymax = 0) translate([ -1, 0, kb2040_thickness + radius ]) rotate([ 0, 90, 0 ]) cylinder(r = radius, h = 3);
+    clip(ymax = 0) translate([ kb2040_width - 2, 0, kb2040_thickness + radius ]) rotate([ 0, 90, 0 ])
+        cylinder(r = radius, h = 3);
+}
+
+module body_magnet_holder()
+{
+    width = (magnet_radius + wall_thickness / 2) * 2;
+    height = width + magnet_height;
+    difference()
+    {
+        translate([ -width / 2, width / 2, -height ]) mirror([ 1, 0, 0 ]) rotate([ 90, 0, -90 ]) linear_extrude(width)
+            polygon([ [ 0, 0 ], [ width, width ], [ width, height ], [ 0, height ] ]);
+
+        mirror([ 0, 0, 1 ]) magnet_cutout();
+    }
 }
 
 module body_base_stl()
@@ -251,71 +329,53 @@ module body_base_stl()
     }
 
     // kb2040 supports
-    kb2040_transformation() difference()
+    kb2040_transformation() kb2040_supports();
+
+    // magnet holders
+    translate(
+        [ 0, 0, bottom_plate_thickness + internal_height - (magnet_height + magnet_tolerance * 2) - magnet_tolerance ])
     {
-        {
-            union()
-            {
-                translate([ 0, 0, -kb2040_bottom_clearance ])
-                    linear_extrude(kb2040_bottom_clearance + kb2040_thickness * 2)
-                {
-                    // front left
-                    translate([ -1, -2, 0 ]) square([ 3, 2 ]);
-                    // front right
-                    translate([ kb2040_width - 2, -2, 0 ]) square([ 3, 2 ]);
-                }
-
-                translate([ 0, -kb2040_length + 2, -kb2040_bottom_clearance ])
-                    linear_extrude(kb2040_bottom_clearance + kb2040_thickness)
-                {
-                    // rear left
-                    translate([ -1, -3, 0 ]) square([ 3, 3 ]);
-                    // rear right
-                    translate([ kb2040_width - 2, -3, 0 ]) square([ 3, 3 ]);
-                }
-            }
-            // cutout
-            kb2040_vitamin(true);
-        }
-    }
-
-    // drv2605l supports
-    drv2605l_transformation() difference()
-    {
-        union()
-        {
-            translate([ 0, 0, -drv2605l_bottom_clearance ])
-                linear_extrude(drv2605l_bottom_clearance + drv2605l_thickness * 2)
-            {
-                // front left
-                translate([ -1, -2, 0 ]) square([ 3, 2 ]);
-                // front right
-                translate([ drv2605l_width - 2, -2, 0 ]) square([ 3, 2 ]);
-            }
-
-            translate([ 0, -drv2605l_length + 2, -kb2040_bottom_clearance ])
-                linear_extrude(drv2605l_bottom_clearance + drv2605l_thickness)
-            {
-                // rear left
-                translate([ -1, -3, 0 ]) square([ 3, 3 ]);
-                // rear right
-                translate([ drv2605l_width - 2, -3, 0 ]) square([ 3, 3 ]);
-            }
-        }
-
-        // drv2605l cutout
-        drv2605l_vitamin();
+        magnets_transformations() body_magnet_holder();
+        mirror([ 0, 1, 0 ]) magnets_transformations() body_magnet_holder();
     }
 }
 
-module body_top_plate_stl()
+module top_plate_magnet_holder()
 {
-    stl("body_top_plate");
+    difference()
+    {
+        cylinder(r = magnet_radius + wall_thickness / 2, h = magnet_height + magnet_tolerance * 2);
+        magnet_cutout();
+    }
+}
+
+module top_plate_stl()
+{
+    stl("top_plate");
 
     difference()
     {
-        translate([ external_length / 2, 0, external_height - top_thickness ])
-            rounded_cube([ external_length, external_width, top_thickness ]);
+        union()
+        {
+            // plate
+            translate([ external_length / 2, 0, bottom_plate_thickness + internal_height ])
+                rounded_cube([ external_length, external_width, top_thickness ]);
+
+            // magnet holders
+            translate([ 0, 0, bottom_plate_thickness + internal_height ]) mirror([ 0, 0, 1 ])
+            {
+                magnets_transformations() top_plate_magnet_holder();
+                mirror([ 0, 1, 0 ]) magnets_transformations() top_plate_magnet_holder();
+            }
+
+            // pilar
+            translate([
+                external_length - switch_hole_size - wall_thickness - switch_distance_between_holes -
+                    switch_distance_between_holes / 2,
+                0,
+                bottom_plate_thickness
+            ]) cylinder(r = magnet_radius, h = internal_height);
+        }
 
         // knob base cutout
         knob_transformation() cylinder(h = knob_elevation + knob_base_length, r = knob_radius);
@@ -323,17 +383,40 @@ module body_top_plate_stl()
         // switches holes
         translate([
             external_length - switch_hole_size / 2 - wall_thickness - switch_distance_between_holes, 0,
-            external_height
+            internal_height
         ])
         {
             translate([ 0, +switch_hole_size / 2 + switch_distance_between_holes / 2, 0 ]) cube(switch_hole_size, true);
             translate([ 0, -switch_hole_size / 2 - switch_distance_between_holes / 2, 0 ]) cube(switch_hole_size, true);
             translate([
                 -switch_hole_size - switch_distance_between_holes,
+                +switch_hole_size / 2 + switch_distance_between_holes / 2, 0
+            ]) cube(switch_hole_size, true);
+            translate([
+                -switch_hole_size - switch_distance_between_holes,
                 -switch_hole_size / 2 - switch_distance_between_holes / 2, 0
             ]) cube(switch_hole_size, true);
         }
     }
+}
+
+module test_stl()
+{
+    stl("test");
+
+    intersection()
+    {
+        union()
+        {
+
+            top_plate_stl();
+            // body_base_stl();
+        }
+
+        translate([ 54.65, -external_width / 2, 0 ]) cube([ 5.52, external_width, external_height * 2 ]);
+    }
+    // translate([ 54.65+5.52, 0, 0 ]) translate([0,-external_width/2,0])
+    // cube([wall_thickness,external_width,internal_height+bottom_plate_thickness]);
 }
 
 //! Assembly instructions in Markdown format in front of each module that makes an assembly.
@@ -350,9 +433,17 @@ module main_assembly() assembly("main")
         body_base_stl();
     }
 
+    color("grey", 0.8) render() // clip(ymin = 0)
+    {
+        top_plate_stl();
+    }
+
     color("red", 0.5)
     {
-        body_top_plate_stl();
+
+        // top_plate_stl();
+        // magnets_transformations() magnet_vitamin();
+        // test_stl();
     }
 }
 

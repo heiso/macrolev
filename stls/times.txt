@@ -1,4 +1,5 @@
 {
-    "knob.stl": 2.344,
-    "body.stl": 4.425
+    "body_base.stl": 10.054,
+    "top_plate.stl": 16.306,
+    "test.stl": 16.14
 }

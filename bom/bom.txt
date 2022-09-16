@@ -3,8 +3,9 @@
  i
  n
 Printed:
- 1|  1 body.stl
- 1|  1 knob.stl
+ 1|  1 body_base.stl
+ 1|  1 test.stl
+ 1|  1 top_plate.stl
 
 Assemblies:
   1 main_assembly

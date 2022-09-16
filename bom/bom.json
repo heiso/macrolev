@@ -8,11 +8,15 @@
         "assemblies": {},
         "vitamins": {},
         "printed": {
-            "knob.stl": {
+            "body_base.stl": {
                 "count": 1,
                 "colour": "grey"
             },
-            "body.stl": {
+            "test.stl": {
+                "count": 1,
+                "colour": "grey"
+            },
+            "top_plate.stl": {
                 "count": 1,
                 "colour": "grey"
             }
