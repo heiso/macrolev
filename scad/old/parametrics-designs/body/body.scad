@@ -1,7 +1,7 @@
-ROWS = 2;
-COLUMNS = 4;
+ROWS = 1;
+COLUMNS = 1;
 SWITCH_HEIGHT = 11;
-SKIRT_HEIGHT = 5;
+SKIRT_HEIGHT = 1.5;
 TOLERANCE = 0.1;
 PLATE_THICKNESS = 1.5;      // Official spec for Cherry MX is 1.5 ± 0.1 mm
 BOTTOM_PLATE_THICKNESS = 1; // Official spec for Cherry MX is 1.5 ± 0.1 mm

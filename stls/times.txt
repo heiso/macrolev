@@ -1,5 +1,0 @@
-{
-    "body_base.stl": 10.054,
-    "top_plate.stl": 16.306,
-    "test.stl": 16.14
-}

@@ -1,5 +1,0 @@
-main_assembly:
-Printed:
-  1 body_base.stl
-  1 test.stl
-  1 top_plate.stl
