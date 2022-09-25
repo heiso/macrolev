@@ -1,0 +1,6 @@
+[submodule "void_switch"]
+	path = void_switch
+	url = git@github.com:riskable/void_switch.git
+[submodule "keycap_playground"]
+	path = keycap_playground
+	url = git@github.com:riskable/keycap_playground.git

@@ -1,305 +1,388 @@
+include <./void_switch/void_switch.scad>
 include <openscad-bits/lib.scad>
 use <openscad-bits/lib.scad>
 
+IS_PRESSED = false;
+// SWITCH_COLUMNS_COUNT = 1;
+// SWITCH_ROWS_COUNT = 2;
+SWITCH_COLUMNS_COUNT = 3;
+SWITCH_ROWS_COUNT = 2;
+SWITCH_PLATE_TILT = 6;
+KEYCAP_SKIRT_HEIGHT = 5;
+
+/* [Hidden] */
+
+$fn = 32;
 border_radius = 2;
-top_thickness = 1.5;
-wall_thickness = 1.5;
-bottom_plate_thickness = 1.5;
 
 // See https://matt3o.com/anatomy-of-a-keyboard/
-switch_tolerance = 0.1;
-switch_hole_size = 14 + switch_tolerance;
+switch_hole_tolerance = 0.1;
+switch_lip_tolerance = 0.2;
+switch_hole_size = 14;
 switch_distance_between_holes = 5.05;
-switch_columns_count = 2;
-switch_rows_count = 2;
+switch_columns_count = SWITCH_COLUMNS_COUNT;
+switch_rows_count = SWITCH_ROWS_COUNT;
+switch_travel = 4;
+switch_lip_height = .5;
+switch_lip_width = .6;
+switch_magnet_under_plate_height = 9.7; // 9.7 // 9.4
+switch_under_plate_height = 10;
+switch_placeholder_width = switch_distance_between_holes + switch_hole_size;
 
-kb2040_offset = 2;
+keycap_min_height = 7;
+keycap_width = 19.5;
+keycap_skirt_height = KEYCAP_SKIRT_HEIGHT;
 
-magnet_height = 1.7;
-magnet_radius = 4 / 2;
-magnet_tolerance = 0.2;
+switch_plate_thickness = 1.5;
+switch_plate_tolerance = 0.05;
+switch_plate_border_radius = .5;
+switch_plate_x = switch_plate_border_radius * 2 + switch_columns_count * switch_placeholder_width;
+switch_plate_y = switch_plate_border_radius * 2 + switch_rows_count * switch_placeholder_width;
 
-internal_height = 15;
-external_height = internal_height + top_thickness + bottom_plate_thickness;
+hall_effect_sensor_x = 4;
+hall_effect_sensor_y = 3;
+hall_effect_sensor_z = 1.5;
+hall_effect_sensor_tolerance = 0.1;
 
-internal_width = switch_distance_between_holes * switch_rows_count % 1 +
-                 (switch_distance_between_holes + switch_hole_size) * switch_rows_count; // dep to internal vitamins
-external_width = internal_width + wall_thickness * 2;
+wedge_height = hall_effect_sensor_z + 1;
+wedge_support_width = 2.5;
+wedge_min_height = .5;
 
-knob_chamfer = 1;
-knob_oversized_by = (1 / 5) * external_width;
-knob_radius = (external_width / 2) + knob_oversized_by / 2;
-knob_height = 17;
-knob_elevation = 0;
-knob_angle = 15;
-knob_top_thickness = top_thickness + 2;
-knob_rotation = [ 0, -knob_angle, 0 ];
-knob_base_length = (external_height / cos(knob_angle)) + tan(knob_angle) * knob_radius;
-knob_base_cutout_length = internal_height / cos(knob_angle);
-knob_base_length_on_body = sin(knob_angle) * knob_base_length + cos(knob_angle) * knob_radius;
+kb2040_support_width = 1;
 
-internal_length = switch_distance_between_holes * switch_columns_count % 1 +
-                  (switch_hole_size + switch_distance_between_holes) * switch_columns_count + kb2040_width +
-                  kb2040_offset + knob_base_length_on_body; // dep to switches, internal vitamins and rotary
-external_length = internal_length + wall_thickness * 2;
+body_modules_wires_gap = 2;
+body_wall_thickness = 1.5;
+body_modules_space_width = kb2040_width + kb2040_support_width * 2;
+body_x = body_wall_thickness + body_modules_space_width + body_wall_thickness + switch_plate_tolerance +
+         switch_plate_x + switch_plate_tolerance + body_wall_thickness;
+body_y = switch_plate_y + (body_wall_thickness + switch_plate_tolerance) * 2;
+body_bottom_plate_min_thickness = .5;
+body_bottom_plate_thickness = body_y * sin(SWITCH_PLATE_TILT) + body_bottom_plate_min_thickness;
+body_bottom_plate_x = body_x - body_wall_thickness - body_modules_space_width - body_wall_thickness;
+body_top_plate_thickness = 2;
+body_z =
+    body_bottom_plate_thickness + wedge_height + switch_under_plate_height + switch_lip_height + keycap_skirt_height;
 
-module kb2040_transformation()
+module kb2040_origin()
 {
     translate([
-        knob_base_length_on_body - kb2040_width + kb2040_offset, internal_width / 2, bottom_plate_thickness +
-        kb2040_bottom_clearance
-    ]) children();
+        -body_x / 2 + body_wall_thickness + body_modules_space_width / 2, body_y / 2 - body_wall_thickness - 2,
+        +kb2040_thickness + kb2040_bottom_clearance + 7
+    ]) rotate([ 0, 180, 180 ]) children();
 }
 
-module drv2605l_transformation()
+module hall_effect_sensor(cutout = false)
 {
-    translate([
-        knob_base_length_on_body - drv2605l_width - 2, internal_width / 2,
-        bottom_plate_thickness + drv2605l_bottom_clearance + 5.5
-    ]) children();
-}
-
-module ERM_motor_transformation()
-{
-    translate([
-        knob_base_length_on_body - ERM_motor_radius * 2 - 5, 0, external_height - top_thickness + .5 -
-        ERM_motor_thickness
-    ]) children();
-}
-
-module hall_effect_sensor()
-{
-    cube([ 4, 4, 1.5 ]);
-}
-
-module knob_stl()
-{
-    difference()
+    if (cutout)
     {
-        union()
-        {
-            translate([ 0, 0, knob_height - knob_chamfer ]) hull()
-            {
-                linear_extrude(height = thin) circle(r = knob_radius);
-                translate([ 0, 0, knob_chamfer ]) linear_extrude(height = thin) offset(delta = -knob_chamfer)
-                    circle(r = knob_radius);
-            }
-
-            cylinder(h = knob_height - knob_chamfer, r = knob_radius);
-        }
-
-        translate([ 0, 0, (knob_height - knob_chamfer) - rotary_shaft_height - .1 ])
-        {
-            difference()
-            {
-                cylinder(h = rotary_shaft_height + .1, r = rotary_shaft_radius + rotary_shaft_tolerance);
-                translate([ -rotary_shaft_radius, rotary_shaft_radius / 1.7, 0 ])
-                    cube([ rotary_shaft_radius * 2, 10, rotary_shaft_height + .1 ]);
-            }
-        }
-
-        cylinder(h = knob_height - knob_chamfer - rotary_shaft_height, r = knob_radius - 2);
+        translate([ 0, 10 / 2, hall_effect_sensor_z / 2 ]) cube(
+            [
+                hall_effect_sensor_x + hall_effect_sensor_tolerance,
+                hall_effect_sensor_y + hall_effect_sensor_tolerance + 10,
+                hall_effect_sensor_z
+            ],
+            true);
+    }
+    else
+    {
+        color("black") translate([ 0, 0, hall_effect_sensor_z / 2 ])
+            cube([ hall_effect_sensor_x, hall_effect_sensor_y, hall_effect_sensor_z ], true);
     }
 }
 
-module knob_transformation()
+module hall_effect_sensor_support()
 {
-    z_translation = sin(knob_angle) * knob_radius;
-    x_translation = sin(knob_angle) * knob_base_length;
-    translate([ x_translation, 0, 0 ]) translate([ 0, 0, -z_translation ]) rotate(knob_rotation) children();
+    difference()
+    {
+        translate([ 0, 0, hall_effect_sensor_z / 2 ])
+            cube([ hall_effect_sensor_x + 2, hall_effect_sensor_y + 2, hall_effect_sensor_z ], true);
+
+        hall_effect_sensor(true);
+    }
 }
 
-module magnets_transformations()
+module hall_effect_sensor_origin()
+{
+    translate([ 4, -4, body_bottom_plate_thickness ]) rotate([ 0, 0, 45 ]) children();
+}
+
+module void_switch_support()
+{
+    difference()
+    {
+        translate([ 0, 0, -switch_under_plate_height ])
+            linear_extrude(switch_under_plate_height + switch_plate_thickness + switch_lip_height) square(
+                [ switch_distance_between_holes + switch_hole_size, switch_distance_between_holes + switch_hole_size ],
+                true);
+
+        void_switch(cutout = true);
+    }
+}
+
+module switch_origin()
+{
+    translate([ 0, 0, switch_under_plate_height ]) children();
+}
+
+module switch_xy_origins()
 {
     translate([
-        external_length - magnet_radius - wall_thickness - wall_thickness / 2,
-        internal_width / 2 - magnet_radius - wall_thickness / 2, 0
-    ]) children();
+        switch_placeholder_width / 2 - (switch_columns_count * switch_placeholder_width) / 2,
+        switch_placeholder_width / 2 - (switch_rows_count * switch_placeholder_width) / 2, 0
+    ])
+    {
+        for (column = [0:switch_columns_count - 1], row = [0:switch_rows_count - 1])
+        {
+            translate([ column * switch_placeholder_width, row * switch_placeholder_width, 0 ]) children();
+        }
+    }
+}
 
-    translate([
-        external_length - magnet_radius - wall_thickness - wall_thickness / 2 - switch_hole_size -
-            switch_distance_between_holes,
-        internal_width / 2 - magnet_radius - wall_thickness / 2, 0
-    ]) children();
+module switch_plate_tilt()
+{
+    translate([ 0, 0, -body_y / 2 * sin(SWITCH_PLATE_TILT) ]) rotate([ SWITCH_PLATE_TILT, 0, 0 ]) children();
+}
 
-    translate([ knob_base_length_on_body, internal_width / 2 - magnet_radius - wall_thickness / 2, 0 ]) children();
+module switch_plate()
+{
+    switch_xy_origins() switch_origin() void_switch_support();
+
+    difference()
+    {
+        chamfer = 1;
+        translate([ 0, 0, switch_under_plate_height - switch_plate_thickness ])
+        {
+
+            linear_extrude(switch_plate_thickness + switch_lip_height) offset(switch_plate_border_radius)
+                offset(-switch_plate_border_radius) square([ switch_plate_x, switch_plate_y ], true);
+
+            hull()
+            {
+                linear_extrude(thin) offset(switch_plate_border_radius) offset(-switch_plate_border_radius)
+                    square([ switch_plate_x, switch_plate_y ], true);
+
+                translate([ 0, 0, -chamfer ]) linear_extrude(thin) offset(-switch_plate_border_radius)
+                    square([ switch_plate_x, switch_plate_y ], true);
+            }
+        }
+
+        translate([ 0, 0, switch_under_plate_height - switch_plate_thickness - chamfer ])
+            linear_extrude(switch_plate_thickness + switch_lip_height + chamfer) offset(-switch_plate_border_radius)
+                square([ switch_plate_x, switch_plate_y ], true);
+    }
+}
+
+module switch_plate_z_origin()
+{
+    translate([ 0, 0, body_bottom_plate_thickness + wedge_height ]) children();
+}
+
+module switch_plate_xy_origin()
+{
+    translate([ body_modules_space_width / 2 + body_wall_thickness / 2, 0, 0 ]) children();
+}
+
+module switch_plate_origin()
+{
+    switch_plate_tilt() switch_plate_z_origin() switch_plate_xy_origin() children();
 }
 
 module body()
 {
+    module wires_gap_support()
+    {
+        hull()
+        {
+            linear_extrude(thin) square([ body_wall_thickness, 2 ], true);
+
+            translate([ 0, 0, body_modules_wires_gap ]) linear_extrude(thin)
+                square([ body_wall_thickness, body_modules_wires_gap * 2 ], true);
+        }
+    }
+
     difference()
     {
         union()
         {
-            // knob base
-            clip(zmin = 0) knob_transformation() cylinder(h = knob_elevation + knob_base_length, r = knob_radius);
 
-            // base plate
-            difference()
+            clip(zmin = 0) switch_plate_tilt() difference()
             {
-                translate([ external_length / 2, 0, 0 ])
-                    rounded_cube([ external_length, external_width, bottom_plate_thickness ]);
-
-                knob_transformation() linear_extrude(knob_elevation + knob_base_length) hull()
+                union()
                 {
-                    translate([ -knob_radius, 0, 0 ]) square([ knob_radius, knob_radius * 2 ], true);
-                    circle(knob_radius);
+                    // Bottom plate
+                    translate([ body_modules_space_width / 2, 0, 0 ]) linear_extrude(body_bottom_plate_thickness)
+                        square([ body_bottom_plate_x, body_y - body_wall_thickness * 2 ], true);
+
+                    // External walls
+                    linear_extrude(body_z) difference()
+                    {
+                        offset(body_wall_thickness) offset(-body_wall_thickness) square([ body_x, body_y ], true);
+                        offset(-body_wall_thickness) square([ body_x, body_y ], true);
+                    }
+
+                    // Inner wall
+                    translate([
+                        -body_x / 2 + +body_wall_thickness + body_modules_space_width + body_wall_thickness / 2, 0,
+                        body_bottom_plate_thickness
+                    ])
+                    {
+
+                        translate([ 0, 0, body_modules_wires_gap ])
+                            linear_extrude(body_z - body_bottom_plate_thickness - body_modules_wires_gap)
+                                square([ body_wall_thickness, body_y - body_wall_thickness * 2 ], true);
+
+                        translate([ 0, -body_y / 2, 0 ])
+                        {
+                            translate([ 0, body_wall_thickness + 1, 0 ]) wires_gap_support();
+                            translate([ 0, body_y - body_wall_thickness - 1, 0 ]) wires_gap_support();
+
+                            for (row = [1:switch_rows_count * 2 - 1])
+                            {
+                                translate([ 0, body_wall_thickness + (switch_placeholder_width / 2) * row, 0 ])
+                                {
+                                    wires_gap_support();
+                                }
+                            }
+                        }
+                    }
+
+                    // Hall effect sensor supports
+                    switch_plate_xy_origin() switch_xy_origins() hall_effect_sensor_origin() translate([ 0, 0, -thin ])
+                        hall_effect_sensor_support();
+
+                    // Top
+                    translate([
+                        -body_x / 2 + body_wall_thickness + body_modules_space_width / 2, 0,
+                        -body_top_plate_thickness / 2 +
+                        body_z
+                    ])
+                        cube(
+                            [
+                                body_modules_space_width + body_wall_thickness, body_y - body_wall_thickness * 2,
+                                body_top_plate_thickness
+                            ],
+                            true);
+                }
+
+                // Holes to remove plate
+                switch_plate_xy_origin() translate([
+                    switch_placeholder_width / 2 - (switch_columns_count * switch_placeholder_width) / 2,
+                    switch_placeholder_width / 2 - (switch_rows_count * switch_placeholder_width) / 2, 0
+                ])
+                {
+                    if (switch_rows_count > 1 && switch_columns_count > 1)
+                    {
+                        for (column = [0:switch_columns_count - 2], row = [0:switch_rows_count - 2])
+                        {
+                            translate([
+                                (switch_placeholder_width / 2) + switch_placeholder_width * column,
+                                (switch_placeholder_width / 2) + switch_placeholder_width * row, 0
+                            ]) cylinder(h = body_z, r = 2);
+                        }
+                    }
+                    else
+                    {
+                        translate([ 0, (switch_placeholder_width / 2), 0 ]) cylinder(h = body_z, r = 2);
+                    }
                 }
             }
 
-            // walls
-            difference()
-            {
-                translate([ external_length / 2, 0, bottom_plate_thickness ])
-                    rounded_cube([ external_length, external_width, internal_height ]);
-
-                translate([ external_length / 2, 0, bottom_plate_thickness ]) linear_extrude(internal_height)
-                    offset(delta = -wall_thickness) projection()
-                        rounded_cube([ external_length, external_width, thin ]);
-            }
-
-            // top plate
-            translate([ external_length / 2, 0, bottom_plate_thickness + internal_height ])
-                rounded_cube([ external_length, external_width, top_thickness ]);
+            // kb2040 support
+            kb2040_origin() kb2040_supports();
+            kb2040_origin() translate([ 0, kb2040_length + 0.1, 0 ]) linear_extrude(2) translate([ 0, 2 / 2, 0 ])
+                square([ body_modules_space_width, 2 ], true);
         }
 
-        // switches holes
-        // translate([
-        //     external_length - switch_hole_size / 2 - wall_thickness - switch_distance_between_holes, 0,
-        //     internal_height
-        // ])
-        // {
-        //     translate([ 0, +switch_hole_size / 2 + switch_distance_between_holes / 2, 0 ]) cube(switch_hole_size,
-        //     true); translate([ 0, -switch_hole_size / 2 - switch_distance_between_holes / 2, 0 ])
-        //     cube(switch_hole_size, true); translate([
-        //         -switch_hole_size - switch_distance_between_holes,
-        //         +switch_hole_size / 2 + switch_distance_between_holes / 2, 0
-        //     ]) cube(switch_hole_size, true);
-        //     translate([
-        //         -switch_hole_size - switch_distance_between_holes,
-        //         -switch_hole_size / 2 - switch_distance_between_holes / 2, 0
-        //     ]) cube(switch_hole_size, true);
-        // }
+        // Bottom plate recess
+        linear_extrude(.5) translate([ body_x / 2 - body_bottom_plate_x / 2, 0, 0 ]) offset(body_wall_thickness)
+            offset(-body_wall_thickness * 2) square([ body_bottom_plate_x, body_y ], true);
 
-        // rotary cutout
-        clip(zmin = bottom_plate_thickness) knob_transformation() translate([ 0, 0, knob_base_length ])
-            rotary_encoder_cutout();
-
-        // rotary access hole
-        difference()
-        {
-            translate([ -knob_radius, -internal_width / 2, bottom_plate_thickness ]) cube([
-                knob_base_length_on_body + knob_radius, internal_width, bottom_plate_thickness + internal_height -
-                top_thickness
-            ]);
-
-            knob_transformation()
-            {
-                translate([ -knob_radius, -knob_radius, knob_base_length - knob_top_thickness ]) cube(knob_radius * 2);
-                translate([ -knob_radius * 3 + wall_thickness, -knob_radius, 0 ]) cube(knob_radius * 2);
-                translate([ -wall_thickness / 2, 0, 0 ]) difference()
-                {
-                    translate([ -knob_radius - 10, -knob_radius - 10, 0 ]) cube(knob_radius * 2 + 20);
-
-                    cylinder(r = knob_radius - wall_thickness * 3, h = knob_base_length);
-                    translate([ 0, -(knob_radius - wall_thickness * 3), 0 ])
-                        cube((knob_radius - wall_thickness * 3) * 2);
-                }
-            }
-        }
-
-        // erm motor cutout
-        ERM_motor_transformation() ERM_motor_cutout();
-
-        // usb-c hole
-        kb2040_transformation() kb2040_vitamin(true);
+        // kb2040 cutout
+        kb2040_origin() kb2040(cutout = true);
     }
-
-    // kb2040 supports
-    kb2040_transformation() kb2040_supports();
 }
 
-module bottom_plate_cutout()
+module wedge()
 {
-    intersection()
+    difference()
     {
-        body();
-
         union()
         {
-            linear_extrude(bottom_plate_thickness) offset(delta = -wall_thickness) projection() clip(zmax = thin)
-                body();
-            length = knob_base_length_on_body + kb2040_offset + 1 + 5;
-            height = internal_height - (ERM_motor_thickness + top_thickness * 2) + bottom_plate_thickness;
-            difference()
-            {
-                translate([ 0, -internal_width / 2 + wall_thickness, 0 ]) cube([ length, internal_width, height ]);
-                translate([ length, -internal_width / 2 + wall_thickness, 0 ]) rotate(knob_rotation)
-                    cube(internal_width);
-            }
+            switch_xy_origins() linear_extrude(wedge_height)
+                square(switch_distance_between_holes + switch_hole_size, true);
+
+            translate([
+                -(switch_plate_x / 2 - switch_placeholder_width / 8.5),
+                switch_plate_y / 2 - switch_placeholder_width / 8.5, 0
+            ]) linear_extrude(height = wedge_height) circle(r = switch_placeholder_width / 8.5);
+            translate([
+                switch_plate_x / 2 - switch_placeholder_width / 8.5,
+                switch_plate_y / 2 - switch_placeholder_width / 8.5, 0
+            ]) linear_extrude(height = wedge_height) circle(r = switch_placeholder_width / 8.5);
+            translate([
+                switch_plate_x / 2 - switch_placeholder_width / 8.5,
+                -(switch_plate_y / 2 - switch_placeholder_width / 8.5), 0
+            ]) linear_extrude(height = wedge_height) circle(r = switch_placeholder_width / 8.5);
+            translate([
+                -(switch_plate_x / 2 - switch_placeholder_width / 8.5),
+                -(switch_plate_y / 2 - switch_placeholder_width / 8.5), 0
+            ]) linear_extrude(height = wedge_height) circle(r = switch_placeholder_width / 8.5);
         }
-    }
-}
 
-module bottom_plate_stl()
-{
+        translate([ 0, 0, wedge_height / 2 ]) switch_xy_origins() cube(
+            [
+                switch_placeholder_width - wedge_support_width, switch_placeholder_width - wedge_support_width,
+                wedge_height
+            ],
+            true);
 
-    difference()
-    {
-        intersection()
+        translate([ 0, 0, -wedge_min_height ]) switch_xy_origins() linear_extrude(height = wedge_height)
         {
-            body();
-            bottom_plate_cutout();
+            square([ switch_placeholder_width + .1, switch_placeholder_width / 1.5 ], true);
+            square([ switch_placeholder_width / 1.5, switch_placeholder_width + .1 ], true);
         }
-
-        // corner cutouts
-        translate([ external_length, external_width / 2, 0 ]) rotate([ 0, 0, 45 ]) cube(10, true);
-        mirror([ 0, 1, 0 ]) translate([ external_length, external_width / 2, 0 ]) rotate([ 0, 0, 45 ]) cube(10, true);
-
-        // disassembly hole
-        cylinder(r = 7, h = bottom_plate_thickness);
-    }
-
-    // pilar
-    translate([
-        external_length - switch_hole_size - wall_thickness - switch_distance_between_holes -
-            switch_distance_between_holes / 2,
-        0,
-        bottom_plate_thickness
-    ])
-    {
-        cylinder(r = magnet_radius, h = internal_height);
-        width = switch_hole_size + switch_distance_between_holes;
-        translate([ 0, 0, internal_height / 2 ]) cube([ wall_thickness, width, internal_height ], true);
-        translate([ 0, 0, internal_height / 2 ]) cube([ width, wall_thickness, internal_height ], true);
     }
 }
 
-module cover_stl()
+module wedge_origin()
 {
-    difference()
-    {
-        body();
-        bottom_plate_cutout();
-    }
+    switch_plate_tilt() switch_plate_xy_origin() translate([ 0, 0, body_bottom_plate_thickness ]) children();
 }
 
 if ($preview)
 {
-    // kb2040_transformation() kb2040_vitamin();
-    // drv2605l_transformation() drv2605l_vitamin();
-    // ERM_motor_transformation() ERM_motor_vitamin();
-    // knob_transformation() translate([ 0, 0, knob_base_length + knob_elevation ]) rotary_encoder_vitamin();
-
-    render() // clip(ymin = 0)
+    render() // clip(ymin = 0) // clip(zmax = 10)
+             // clip(xmin = -30)
     {
-        knob_transformation() translate([ 0, 0, 0.5 + knob_base_length + knob_elevation ]) knob_stl();
-        bottom_plate_stl();
-        cover_stl();
+        body();
     }
 
-    color("red", 0.5)
+    color("blue") render() // clip(ymin = -switch_placeholder_width / 2)
     {
-        // body();
+        wedge_origin() wedge();
     }
+
+    color("grey") render() // clip(ymin = -switch_placeholder_width / 2)
+    {
+        switch_plate_origin() switch_plate();
+    }
+
+    color("red")
+    {
+        switch_plate_origin() switch_xy_origins() switch_origin() void_switch(down = IS_PRESSED, keycap = true);
+    }
+
+    switch_plate_tilt() switch_plate_xy_origin() switch_xy_origins() hall_effect_sensor_origin() hall_effect_sensor();
+
+    kb2040_origin() kb2040();
+
+    // Add erm motor in switch plate
+    // translate([ 0, 30, 0 ]) adafruit_drv2605L();
+    // rotate([ 90, 0, 0 ]) ERM_motor();
+}
+else
+{
+    switch_plate();
+    rotate([ -SWITCH_PLATE_TILT, 0, 0 ]) translate([ 0, -body_y - 10, 0 ]) body();
+    translate([ 0, (-body_y - 10) * 2, wedge_height ]) rotate([ 180, 0, 0 ]) wedge();
 }
