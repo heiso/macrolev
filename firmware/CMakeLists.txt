@@ -30,7 +30,7 @@ target_sources(main PUBLIC
 target_include_directories(main PUBLIC src)
 
 # pull in common dependencies
-target_link_libraries(main PUBLIC pico_stdlib hardware_pio hardware_i2c hardware_adc tinyusb_device tinyusb_board)
+target_link_libraries(main PUBLIC pico_stdlib hardware_pio hardware_i2c hardware_adc hardware_dma tinyusb_device tinyusb_board)
 
 # create map/bin/hex/uf2 file etc.
 pico_add_extra_outputs(main)
@@ -88,7 +88,7 @@ add_executable(test_hall_effect_sensor)
 target_sources(test_hall_effect_sensor PUBLIC tests/hall_effect_sensor.c src/hall_effect_sensor.c)
 
 # pull in common dependencies
-target_link_libraries(test_hall_effect_sensor PUBLIC pico_stdlib hardware_adc)
+target_link_libraries(test_hall_effect_sensor PUBLIC pico_stdlib hardware_adc hardware_dma)
 
 # enable usb output, disable uart output
 pico_enable_stdio_usb(test_hall_effect_sensor 1)

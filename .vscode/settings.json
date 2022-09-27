@@ -2,5 +2,9 @@
   "editor.formatOnSave":true,
   "cmake.configureOnOpen": true,
   "cmake.sourceDirectory": "${workspaceFolder}/firmware",
-  "cmake.buildDirectory": "${workspaceFolder}/firmware/build"
+  "cmake.buildDirectory": "${workspaceFolder}/firmware/build",
+  "files.associations": {
+    "usb_descriptors.h": "c",
+    "board.h": "c"
+  }
 }

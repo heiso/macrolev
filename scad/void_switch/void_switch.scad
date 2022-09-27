@@ -4,7 +4,8 @@ module void_switch(down = false, cutout = false, keycap = true)
     {
         if (keycap)
         {
-            rotate([ 0, 180, 0 ]) import("./keycap.3mf");
+            translate([ 0, 0, -.6 ]) rotate([ 0, 180, 0 ]) import("./keycap.3mf");
+            translate([ 0, 0, -1.2 ]) rotate([ 0, 180, 90 ]) import("./levitator.3mf");
         }
     }
 

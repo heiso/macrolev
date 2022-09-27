@@ -71,6 +71,19 @@ module kb2040_origin()
     ]) rotate([ 0, 180, 180 ]) children();
 }
 
+module adafruit_drv2605L_origin()
+{
+    switch_plate_tilt() translate(
+        [ -body_x / 2 + adafruit_drv2605L_width / 2 + body_wall_thickness, 15, body_z - body_top_plate_thickness ])
+        rotate([ 180, 0, 0 ]) children();
+}
+
+module ERM_motor_origin()
+{
+    translate([ 0, 0, 0 ]) switch_plate_origin() translate([ 0, ERM_motor_height / 2, ERM_motor_radius ])
+        rotate([ 90, 0, 0 ]) children();
+}
+
 module hall_effect_sensor(cutout = false)
 {
     if (cutout)
@@ -145,30 +158,38 @@ module switch_plate_tilt()
 
 module switch_plate()
 {
-    switch_xy_origins() switch_origin() void_switch_support();
-
     difference()
     {
-        chamfer = 1;
-        translate([ 0, 0, switch_under_plate_height - switch_plate_thickness ])
+        union()
         {
+            switch_xy_origins() switch_origin() void_switch_support();
 
-            linear_extrude(switch_plate_thickness + switch_lip_height) offset(switch_plate_border_radius)
-                offset(-switch_plate_border_radius) square([ switch_plate_x, switch_plate_y ], true);
-
-            hull()
+            difference()
             {
-                linear_extrude(thin) offset(switch_plate_border_radius) offset(-switch_plate_border_radius)
-                    square([ switch_plate_x, switch_plate_y ], true);
+                chamfer = 1;
+                translate([ 0, 0, switch_under_plate_height - switch_plate_thickness ])
+                {
 
-                translate([ 0, 0, -chamfer ]) linear_extrude(thin) offset(-switch_plate_border_radius)
-                    square([ switch_plate_x, switch_plate_y ], true);
+                    linear_extrude(switch_plate_thickness + switch_lip_height) offset(switch_plate_border_radius)
+                        offset(-switch_plate_border_radius) square([ switch_plate_x, switch_plate_y ], true);
+
+                    hull()
+                    {
+                        linear_extrude(thin) offset(switch_plate_border_radius) offset(-switch_plate_border_radius)
+                            square([ switch_plate_x, switch_plate_y ], true);
+
+                        translate([ 0, 0, -chamfer ]) linear_extrude(thin) offset(-switch_plate_border_radius)
+                            square([ switch_plate_x, switch_plate_y ], true);
+                    }
+                }
+
+                translate([ 0, 0, switch_under_plate_height - switch_plate_thickness - chamfer ])
+                    linear_extrude(switch_plate_thickness + switch_lip_height + chamfer)
+                        offset(-switch_plate_border_radius) square([ switch_plate_x, switch_plate_y ], true);
             }
         }
 
-        translate([ 0, 0, switch_under_plate_height - switch_plate_thickness - chamfer ])
-            linear_extrude(switch_plate_thickness + switch_lip_height + chamfer) offset(-switch_plate_border_radius)
-                square([ switch_plate_x, switch_plate_y ], true);
+        // translate([ 0, ERM_motor_height / 2, ERM_motor_radius ]) rotate([ 90, 180, 0 ]) ERM_motor(cutout = true);
     }
 }
 
@@ -351,18 +372,17 @@ module wedge_origin()
 
 if ($preview)
 {
-    render() // clip(ymin = 0) // clip(zmax = 10)
-             // clip(xmin = -30)
+    render()
     {
         body();
     }
 
-    color("blue") render() // clip(ymin = -switch_placeholder_width / 2)
+    color("blue") render()
     {
         wedge_origin() wedge();
     }
 
-    color("grey") render() // clip(ymin = -switch_placeholder_width / 2)
+    color("grey") render()
     {
         switch_plate_origin() switch_plate();
     }
@@ -376,9 +396,7 @@ if ($preview)
 
     kb2040_origin() kb2040();
 
-    // Add erm motor in switch plate
-    // translate([ 0, 30, 0 ]) adafruit_drv2605L();
-    // rotate([ 90, 0, 0 ]) ERM_motor();
+    adafruit_drv2605L_origin() adafruit_drv2605L();
 }
 else
 {
