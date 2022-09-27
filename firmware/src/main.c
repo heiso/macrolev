@@ -1,7 +1,6 @@
-#include "bsp/board.h"
-
 #include "DRV2605L.h"
-#include "hall_effect_sensor.h"
+#include "bsp/board.h"
+#include "config.h"
 #include "hardware/adc.h"
 #include "hardware/gpio.h"
 #include "hardware/pio.h"
@@ -9,6 +8,7 @@
 #include "rotary_encoder.h"
 #include "stdlib.h"
 #include "usb_descriptors.h"
+#include "void_switches.h"
 
 typedef struct report {
   REPORT_ID report_id;
@@ -66,9 +66,6 @@ void play_pause() {
 
 void press_key(uint8_t keycode) {
   queue_report(REPORT_ID_KEYBOARD, keycode);
-  drv2605l_setWaveform(0, 1);
-  drv2605l_setWaveform(1, 0);
-  drv2605l_go();
 }
 
 void send_hid_report() {
@@ -163,38 +160,17 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_t
 void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
 }
 
-#define ADC_COUNT 2
-#define BUFF_SIZE 100 * ADC_COUNT - 1
+void void_switches_on_keydown(uint8_t column, uint8_t row, uint index) {
+  drv2605l_setWaveform(0, 1);
+  drv2605l_setWaveform(1, 0);
+  drv2605l_go();
+  press_key(KEYMAP[index]);
+}
 
-uint16_t buffer[BUFF_SIZE];
-uint16_t head = 0;
-uint8_t state = 0b0000;
-uint8_t reset_state = 0b1111;
-
-void __not_in_flash_func(adc_irq_handler)() {
-  while (!adc_fifo_is_empty()) {
-    uint16_t result = adc_fifo_get() * ADC_CONVERT;
-    buffer[head] = result;
-    if (head == BUFF_SIZE) {
-      head = 0;
-    } else {
-      head++;
-    }
-
-    uint8_t input = head % ADC_COUNT;
-    uint8_t bitmask = 1 << input;
-
-    if (buffer[head] > 60) {
-      state = state | bitmask;
-      if (state & bitmask && reset_state & bitmask) {
-        reset_state = reset_state & ~bitmask;
-        press_key(0x04 + input);
-      }
-    } else {
-      state = state & ~bitmask;
-      reset_state = reset_state | bitmask;
-    }
-  }
+void void_switches_on_keyup(uint8_t column, uint8_t row, uint index) {
+  drv2605l_setWaveform(0, 1);
+  drv2605l_setWaveform(1, 0);
+  drv2605l_go();
 }
 
 int main(void) {
@@ -204,30 +180,7 @@ int main(void) {
   drv2605l_init();
   drv2605l_selectLibrary(1);
   drv2605l_setMode(DRV2605_MODE_INTTRIG);
-
-  adc_gpio_init(26);
-  adc_gpio_init(27);
-
-  adc_init();
-  adc_fifo_setup(
-      true,  // Write each completed conversion to the sample FIFO
-      true,  // Enable DMA data request (DREQ)
-      1,     // DREQ (and IRQ) asserted when at least 1 sample present
-      false, // We won't see the ERR bit because of 8 bit reads; disable.
-      false  // Shift each sample to 8 bits when pushing to FIFO
-  );
-
-  adc_set_clkdiv(96000);
-
-  irq_set_exclusive_handler(ADC_IRQ_FIFO, adc_irq_handler);
-  adc_irq_set_enabled(true);
-  irq_set_enabled(ADC_IRQ_FIFO, true);
-  // // irq_set_priority(ADC_IRQ_FIFO, PICO_HIGHEST_IRQ_PRIORITY);
-  adc_set_round_robin(0b00011);
-  adc_select_input(0);
-  adc_run(false);
-  adc_fifo_drain();
-  adc_run(true);
+  void_switches_init();
 
   while (1) {
     tud_task();

@@ -23,7 +23,7 @@ target_sources(main PUBLIC
   src/main.c
   src/usb_descriptors.c
   src/rotary_encoder.c
-  src/hall_effect_sensor.c
+  src/void_switches.c
   src/DRV2605L.c
 )
 
@@ -80,24 +80,24 @@ pico_add_extra_outputs(test_usb)
 add_custom_command(TARGET test_usb POST_BUILD COMMAND cp test_usb.uf2 /Volumes/RPI-RP2/NEW.uf2)
 
 ##############################
-# Hall effect test
+# Void switches test
 ##############################
 
-add_executable(test_hall_effect_sensor)
+add_executable(test_void_switches)
 
-target_sources(test_hall_effect_sensor PUBLIC tests/hall_effect_sensor.c src/hall_effect_sensor.c)
+target_sources(test_void_switches PUBLIC tests/void_switches.c src/void_switches.c)
 
 # pull in common dependencies
-target_link_libraries(test_hall_effect_sensor PUBLIC pico_stdlib hardware_adc hardware_dma)
+target_link_libraries(test_void_switches PUBLIC pico_stdlib hardware_adc)
 
 # enable usb output, disable uart output
-pico_enable_stdio_usb(test_hall_effect_sensor 1)
-pico_enable_stdio_uart(test_hall_effect_sensor 0)
+pico_enable_stdio_usb(test_void_switches 1)
+pico_enable_stdio_uart(test_void_switches 0)
 
 # create map/bin/hex/uf2 file etc.
-pico_add_extra_outputs(test_hall_effect_sensor)
+pico_add_extra_outputs(test_void_switches)
 
-add_custom_command(TARGET test_hall_effect_sensor POST_BUILD COMMAND cp test_hall_effect_sensor.uf2 /Volumes/RPI-RP2/NEW.uf2)
+add_custom_command(TARGET test_void_switches POST_BUILD COMMAND cp test_void_switches.uf2 /Volumes/RPI-RP2/NEW.uf2)
 
 ##############################
 # drv2605L test

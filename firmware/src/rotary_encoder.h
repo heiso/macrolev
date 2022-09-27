@@ -1,8 +1,8 @@
 #ifndef ROTARY_ENCODER_H_
 #define ROTARY_ENCODER_H_
 
+#include "config.h"
 #include "hardware/gpio.h"
-#include "pin_config.h"
 
 // 00 10 [11] 01
 enum ENCODER_STATE {

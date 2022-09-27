@@ -1,7 +1,7 @@
 #include "DRV2605L.h"
+#include "config.h"
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
-#include "pin_config.h"
 #include <stdio.h>
 
 /**************************************************************************/
