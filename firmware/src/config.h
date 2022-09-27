@@ -2,6 +2,7 @@
 #define CONFIG_H_
 
 #include "pico/stdlib.h"
+#include "tusb.h"
 
 // KB2040
 #define I2C_INSTANCE i2c0
@@ -37,7 +38,7 @@
 #define KEY_ROW_COUNT 2
 
 static uint16_t KEYMAP[KEY_COLUMN_COUNT * KEY_ROW_COUNT] = {
-    0x04, 0x05, 0x06,
-    0x07, 0x08, 0x09};
+    HID_KEY_0, HID_KEY_1, HID_KEY_3,
+    HID_KEY_VOLUME_DOWN, HID_KEY_VOLUME_UP, HID_KEY_6};
 
 #endif

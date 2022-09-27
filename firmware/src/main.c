@@ -76,36 +76,38 @@ void send_hid_report() {
       uint8_t index = read;
       consume_report();
 
-      switch (reports[index].report_id) {
+      if (reports[index].value)
 
-      case REPORT_ID_CONSUMER_CONTROL: {
-        tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &reports[index].value, sizeof(reports[index].value));
-        if (reports[index].value != 0) {
-          queue_report(REPORT_ID_CONSUMER_CONTROL, 0);
-        }
-      }
+        switch (reports[index].report_id) {
 
-      case REPORT_ID_KEYBOARD: {
-        uint8_t keycodes[6] = {0};
-        keycodes[0] = reports[index].value;
-
-        uint8_t i = 0;
-        while (keycodes[i] != 0 && reports[read].consumed == false &&
-               reports[read].report_id == REPORT_ID_KEYBOARD &&
-               reports[read].value != 0 &&
-               i < 6) {
-          i++;
-          keycodes[i] = reports[read].value;
-          consume_report();
+        case REPORT_ID_CONSUMER_CONTROL: {
+          tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &reports[index].value, sizeof(reports[index].value));
+          if (reports[index].value != 0) {
+            queue_report(REPORT_ID_CONSUMER_CONTROL, 0);
+          }
         }
 
-        tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycodes);
+        case REPORT_ID_KEYBOARD: {
+          uint8_t keycodes[6] = {0};
+          keycodes[0] = reports[index].value;
 
-        if (keycodes[i] != 0) {
-          queue_report(REPORT_ID_KEYBOARD, 0);
+          uint8_t i = 0;
+          while (keycodes[i] != 0 && reports[read].consumed == false &&
+                 reports[read].report_id == REPORT_ID_KEYBOARD &&
+                 reports[read].value != 0 &&
+                 i < 6) {
+            i++;
+            keycodes[i] = reports[read].value;
+            consume_report();
+          }
+
+          tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycodes);
+
+          if (keycodes[i] != 0) {
+            queue_report(REPORT_ID_KEYBOARD, 0);
+          }
         }
-      }
-      }
+        }
     }
   }
 }
@@ -164,13 +166,16 @@ void void_switches_on_keydown(uint8_t column, uint8_t row, uint index) {
   drv2605l_setWaveform(0, 1);
   drv2605l_setWaveform(1, 0);
   drv2605l_go();
-  press_key(KEYMAP[index]);
+  uint8_t keycodes[6] = {0};
+  keycodes[0] = KEYMAP[index];
+  tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycodes);
 }
 
 void void_switches_on_keyup(uint8_t column, uint8_t row, uint index) {
   drv2605l_setWaveform(0, 1);
   drv2605l_setWaveform(1, 0);
   drv2605l_go();
+  tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, 0);
 }
 
 int main(void) {

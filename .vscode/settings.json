@@ -5,6 +5,7 @@
   "cmake.buildDirectory": "${workspaceFolder}/firmware/build",
   "files.associations": {
     "usb_descriptors.h": "c",
-    "board.h": "c"
+    "board.h": "c",
+    "tusb.h": "c"
   }
 }
