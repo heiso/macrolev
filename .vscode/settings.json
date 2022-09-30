@@ -6,6 +6,11 @@
   "files.associations": {
     "usb_descriptors.h": "c",
     "board.h": "c",
-    "tusb.h": "c"
+    "tusb.h": "c",
+    "stdlib.h": "c",
+    "clocks.h": "c",
+    "cstdlib": "c",
+    "void_switches.h": "c",
+    "config.h": "c"
   }
 }

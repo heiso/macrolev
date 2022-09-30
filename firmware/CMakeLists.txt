@@ -85,10 +85,10 @@ add_custom_command(TARGET test_usb POST_BUILD COMMAND cp test_usb.uf2 /Volumes/R
 
 add_executable(test_void_switches)
 
-target_sources(test_void_switches PUBLIC tests/void_switches.c src/void_switches.c)
+target_sources(test_void_switches PUBLIC tests/void_switches.c src/void_switches.c src/utils.c)
 
 # pull in common dependencies
-target_link_libraries(test_void_switches PUBLIC pico_stdlib hardware_adc)
+target_link_libraries(test_void_switches PUBLIC pico_stdlib hardware_adc hardware_clocks)
 
 # enable usb output, disable uart output
 pico_enable_stdio_usb(test_void_switches 1)

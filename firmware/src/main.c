@@ -103,9 +103,9 @@ void send_hid_report() {
 
           tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycodes);
 
-          if (keycodes[i] != 0) {
-            queue_report(REPORT_ID_KEYBOARD, 0);
-          }
+          // if (keycodes[i] != 0) {
+          //   queue_report(REPORT_ID_KEYBOARD, 0);
+          // }
         }
         }
     }
@@ -190,6 +190,7 @@ int main(void) {
   while (1) {
     tud_task();
     hid_task();
+    void_switches_loop();
   }
   return 0;
 }

@@ -2,134 +2,157 @@
 #include "config.h"
 #include "hardware/adc.h"
 #include "hardware/gpio.h"
+#include "pico/stdlib.h"
 #include <stdio.h>
+#include <stdlib.h>
 
-uint8_t selected_adc;
-/**
- * keydown_matrix length is rows * columns
- *
- * [a|b|c]
- * [d|e|f]
- *
- * 0b<fedcba>
- * x: 0 << columns * row + column
- * 0b000000
- *
- */
-uint keydown_matrix;
+#define SAMPLING_SIZE 20
+#define SAMPLING_MEDIAN 9 // SAMPLING_SIZE-1/2
+#define KEY_UP_VALUE_APPROX 1600
+#define KEY_DOWN_VALUE_APPROX 2200
+#define VALUES_COUNT 5
+#define CALIBRATION_TIME 500
+#define ALPHA 0.9
 
-void void_switches_on_keydown(uint8_t column, uint8_t row, uint index);
-void void_switches_on_keyup(uint8_t column, uint8_t row, uint index);
+struct void_switch {
+  uint8_t is_enabled;
+  uint16_t min_value;
+  uint16_t max_value;
+  uint16_t values[VALUES_COUNT];
+  uint16_t raw_values[VALUES_COUNT];
+  uint8_t head;
+};
 
-uint get_index_from_pos(uint8_t column, uint8_t row) {
-  return KEY_COLUMN_COUNT * row + column;
-}
+static struct void_switch vswitches[ROWS][COLUMNS];
 
-void init_state() {
-  for (uint8_t column = 0; column < KEY_COLUMN_COUNT; column++) {
-    for (uint8_t row = 0; row < KEY_ROW_COUNT; row++) {
-      // all keys are up so set 0 everywhere
-      keydown_matrix &= ~1 << get_index_from_pos(column, row);
-    }
-  }
-}
-
-void update_matrix(uint8_t column, uint8_t row, uint8_t value, uint8_t triggered_at) {
-  uint index = get_index_from_pos(column, row);
-  uint bitmask = 1 << index;
-
-  // If key has passed the trigger point and is not already triggered
-  // 110 & 100 -> 100 was triggered
-  // 010 & 100 -> 000 was not
-  if (value >= triggered_at && !(keydown_matrix & bitmask)) {
-    // printf("[%d,%d] Pressed with %d ", column, row, value);
-    // print_bytes(bitmask);
-    // printf(" : ");
-    // print_bytes(keydown_matrix);
-
-    // Set keydown to 1
-    keydown_matrix |= bitmask;
-    void_switches_on_keydown(column, row, index);
-
-    // printf(" -> ");
-    // print_bytes(keydown_matrix);
-    // printf("\n");
-  }
-  // If key is above trigger point
-  else if (value < triggered_at && keydown_matrix & bitmask) {
-    // printf("[%d,%d] Released with %d ", column, row, value);
-    // print_bytes(bitmask);
-    // printf(" : ");
-    // print_bytes(keydown_matrix);
-
-    // Set keydown to 0
-    keydown_matrix &= ~bitmask;
-    void_switches_on_keyup(column, row, index);
-
-    // printf(" -> ");
-    // print_bytes(keydown_matrix);
-    // printf("\n");
-  }
-}
-
-void __not_in_flash_func(adc_irq_handler)() {
-  while (!adc_fifo_is_empty()) {
-    uint16_t result = adc_fifo_get() * ADC_CONVERT;
-    update_matrix(selected_adc, 1, result, 62);
-
-    selected_adc = (selected_adc + 1) % KEY_COLUMN_COUNT;
-  }
-}
+uint8_t is_calibrating = 0;
+unsigned long calibration_start_time;
 
 void void_switches_init() {
-  init_state();
-
-  for (uint8_t pin = PIN_FIRST_ADC; pin < KEY_COLUMN_COUNT; pin++) {
-    adc_gpio_init(pin);
-  }
-
-  adc_init();
-  adc_fifo_setup(
-      true,  // Write each completed conversion to the sample FIFO
-      true,  // Enable DMA data request (DREQ)
-      1,     // DREQ (and IRQ) asserted when at least 1 sample present
-      false, // We won't see the ERR bit because of 8 bit reads; disable.
-      false  // Shift each sample to 8 bits when pushing to FIFO
-  );
-
-  // Divisor of 0 -> full speed. Free-running capture with the divider is
-  // equivalent to pressing the ADC_CS_START_ONCE button once per `div + 1`
-  // cycles (div not necessarily an integer). Each conversion takes 96
-  // cycles, so in general you want a divider of 0 (hold down the button
-  // continuously) or > 95 (take samples less frequently than 96 cycle
-  // intervals). This is all timed by the 48 MHz ADC clock.
-  adc_set_clkdiv(9600);
-
-  irq_set_exclusive_handler(ADC_IRQ_FIFO, adc_irq_handler);
-  adc_irq_set_enabled(true);
-  irq_set_enabled(ADC_IRQ_FIFO, true);
-  // irq_set_priority(ADC_IRQ_FIFO, PICO_HIGHEST_IRQ_PRIORITY);
-
-  // 0b00000 5 adc (0, 1, 2, 3 and internal temp)
-  uint8_t adc_mask = 0b00000;
-  for (uint8_t i = 0; i < KEY_COLUMN_COUNT; i++) {
-    adc_mask |= 1 << i;
-  }
-
-  adc_set_round_robin(adc_mask);
-  adc_select_input(0);
-  selected_adc = 0;
-  adc_run(false);
-  adc_fifo_drain();
-  adc_run(true);
-}
-
-void print_bytes(int bytes) {
-  for (int i = 12; i >= 0; i--) {
-    if (1 << i & bytes) {
-      printf("1");
-    } else {
-      printf("0");
+  for (uint8_t row = 0; row < ROWS; row++) {
+    for (uint8_t column = 0; column < COLUMNS; column++) {
+      vswitches[row][column].is_enabled = 0;
+      vswitches[row][column].min_value = 0;
+      vswitches[row][column].max_value = KEY_DOWN_VALUE_APPROX;
+      vswitches[row][column].head = 0;
     }
   }
+
+  // Init pins for columns and rows
+  for (uint8_t i = 0; i < COLUMNS; i++) {
+    adc_gpio_init(PIN_FIRST_COLUMN + i);
+  }
+  for (uint8_t i = 0; i < ROWS; i++) {
+    gpio_init(PIN_FIRST_ROW + i);
+    gpio_set_dir(PIN_FIRST_ROW + i, GPIO_OUT);
+    gpio_disable_pulls(PIN_FIRST_ROW + i);
+  }
+
+  // Init adc
+  adc_init();
 }
+
+void void_switches_calibration() {
+  sleep_ms(500);
+  is_calibrating = 1;
+  calibration_start_time = to_ms_since_boot(get_absolute_time());
+}
+
+int comparator(const void *first, const void *second) {
+  return first - second;
+}
+
+uint16_t adc_read_filtered() {
+  uint16_t samples[SAMPLING_SIZE];
+
+  for (uint8_t i = 0; i < SAMPLING_SIZE; i++) {
+    samples[i] = adc_read();
+  }
+
+  qsort(samples, SAMPLING_SIZE, sizeof(uint16_t), comparator);
+
+  return samples[SAMPLING_MEDIAN];
+}
+
+void process_switch_calculations(struct void_switch *vswitch) {
+  // Incr head
+  vswitch->head = (vswitch->head + 1) % VALUES_COUNT;
+
+  // Store new values
+  vswitch->raw_values[vswitch->head] = adc_read();
+  vswitch->values[vswitch->head] = adc_read_filtered();
+
+  // Do analysis based on last 5 samples
+  uint8_t samples[5];
+  for (uint8_t i = 0; i++; i++) {
+    samples[i] = vswitch->values[(vswitch->head + VALUES_COUNT - 1 + i) % VALUES_COUNT];
+  }
+
+  // Remove jerk
+  // TODO: detect and remove jerk
+}
+
+void calibrate_switch(struct void_switch *vswitch) {
+  vswitch->min_value = (1 - ALPHA) * vswitch->values[vswitch->head] + ALPHA * vswitch->min_value;
+
+  if (vswitch->min_value > KEY_UP_VALUE_APPROX * 0.85) {
+    vswitch->is_enabled = 1;
+  }
+}
+
+void void_switches_loop() {
+  if (is_calibrating == 1 && to_ms_since_boot(get_absolute_time()) - calibration_start_time > CALIBRATION_TIME) {
+    is_calibrating = 0;
+  }
+
+  for (uint8_t row = 0; row < ROWS; row++) {
+    gpio_put(PIN_FIRST_ROW + row, 1);
+
+    for (uint8_t column = 0; column < COLUMNS; column++) {
+      gpio_put(PIN_FIRST_ROW + row, 1);
+      adc_select_input(column);
+      // Wait a bit before reading adc, being to fast could result in "some" spikes.
+      sleep_us(1);
+
+      struct void_switch *vswitch = &vswitches[row][column];
+
+      if (is_calibrating) {
+        process_switch_calculations(vswitch);
+        calibrate_switch(vswitch);
+      } else if (vswitch->is_enabled) {
+        process_switch_calculations(vswitch);
+      }
+    }
+    gpio_put(PIN_FIRST_ROW + row, 0);
+  }
+}
+
+// https://github.com/riskable/kiibohd-core/blob/main/kiibohd-hall-effect/src/lib.rs#L211
+uint16_t get_acceleration(uint8_t row, uint8_t column) {
+  // TODO: return accel
+  return 0;
+}
+
+uint16_t get_velocity(uint8_t row, uint8_t column) {
+  // TODO: return velocity
+  return 0;
+}
+
+uint16_t get_distance(uint8_t row, uint8_t column) {
+  // TODO: return distance
+  return 0;
+}
+
+uint16_t void_switches_get_mapped_value(uint8_t row, uint8_t column, uint16_t max) {
+  uint16_t value = vswitches[row][column].values[vswitches[row][column].head];
+
+  // Clamp value to range defined by calibration
+  if (value > vswitches[row][column].max_value)
+    value = vswitches[row][column].max_value;
+  if (value < vswitches[row][column].min_value)
+    value = vswitches[row][column].min_value;
+
+  return (value - vswitches[row][column].min_value) * max / (vswitches[row][column].max_value - vswitches[row][column].min_value);
+}
+
+// TODO: Gamepad mode
