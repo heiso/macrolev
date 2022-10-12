@@ -11,6 +11,9 @@
     "clocks.h": "c",
     "cstdlib": "c",
     "void_switches.h": "c",
-    "config.h": "c"
+    "config.h": "c",
+    "*.tcc": "c",
+    "cmath": "c",
+    "functional": "c"
   }
 }

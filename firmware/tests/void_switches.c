@@ -7,44 +7,45 @@
 int main(void) {
   stdio_init_all();
 
-  void_switches_init();
-  void_switches_calibration();
+  while (!stdio_usb_connected()) {
+    sleep_ms(100);
+  }
+
+  void_switches_init(25, 0, 0);
 
   while (1) {
-    uint32_t start = time_us_32();
-
-    void_switches_loop();
-
-    for (uint8_t row = 0; row < ROWS; row++) {
-      for (uint8_t column = 0; column < COLUMNS; column++) {
-        uint8_t range = 10;
-        uint8_t travel = void_switches_get_mapped_value(row, column, range);
-        printf("%d,%d [", row, column);
-        for (int i = 0; i <= range; i++) {
-          if (i <= travel) {
-            if (i >= range / 2) {
-              printf("x");
-            } else {
-              printf("o");
-            }
-          } else {
-            printf("-");
-          }
-        }
-        printf("]  ");
-      }
-    }
-
-    uint32_t duration = time_us_32() - start;
-    printf(" -> %dus\n", duration);
+    void_switches_loop(true);
   }
   return 0;
 }
 
-void void_switches_on_keydown(uint8_t column, uint8_t row, uint index) {
-  printf("DOWN %d, %d\n", column, row);
+void void_switches_on_triggered(struct void_switch *vswitch) {
+  printf("%d-%d TRIGGERED at %d\n", vswitch->row, vswitch->column, vswitch->actuation.changed_at);
 }
 
-void void_switches_on_keyup(uint8_t column, uint8_t row, uint index) {
-  printf("UP %d, %d\n", column, row);
+void void_switches_on_reset(struct void_switch *vswitch) {
+  printf("%d-%d RESET at %d\n", vswitch->row, vswitch->column, vswitch->actuation.changed_at);
+}
+
+#define range 10
+void void_switches_on_change(struct void_switch *vswitch) {
+  // if (vswitch->row == 0 && vswitch->column == 0) {
+  //   printf("\n");
+  // }
+
+  // uint8_t new_value = (vswitch->state.distance * range) / 100;
+
+  // printf("%d,%d [", vswitch->row, vswitch->column);
+  // for (int i = 0; i <= range; i++) {
+  //   if (i <= new_value) {
+  //     if (i >= range / 2) {
+  //       printf("x");
+  //     } else {
+  //       printf("o");
+  //     }
+  //   } else {
+  //     printf("-");
+  //   }
+  // }
+  // printf("]  ");
 }

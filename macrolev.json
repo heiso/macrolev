@@ -1,0 +1,242 @@
+{
+    "frameEnd": "",
+    "frameStart": "",
+    "groups": [
+        {
+            "datasets": [
+                {
+                    "alarm": 600,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Distance",
+                    "units": "",
+                    "value": "%1",
+                    "widget": "gauge"
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Trigger point",
+                    "units": "",
+                    "value": "%8",
+                    "widget": ""
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Sarting_from",
+                    "units": "",
+                    "value": "%17",
+                    "widget": ""
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Releasing",
+                    "units": "",
+                    "value": "%15",
+                    "widget": ""
+                }
+            ],
+            "title": "Actuation",
+            "widget": "multiplot"
+        },
+        {
+            "datasets": [
+                {
+                    "alarm": 600,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Velocity",
+                    "units": "",
+                    "value": "%2",
+                    "widget": ""
+                },
+                {
+                    "alarm": 600,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Acceleration",
+                    "units": "",
+                    "value": "%3",
+                    "widget": ""
+                },
+                {
+                    "alarm": 600,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Jerk",
+                    "units": "",
+                    "value": "%4",
+                    "widget": ""
+                }
+            ],
+            "title": "Analysis",
+            "widget": "multiplot"
+        },
+        {
+            "datasets": [
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Min value",
+                    "units": "",
+                    "value": "%5",
+                    "widget": "bar"
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Max value",
+                    "units": "",
+                    "value": "%6",
+                    "widget": "bar"
+                },
+                {
+                    "alarm": 3000,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Raw",
+                    "units": "",
+                    "value": "%9",
+                    "widget": ""
+                },
+                {
+                    "alarm": 3000,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Sampled value",
+                    "units": "",
+                    "value": "%10",
+                    "widget": ""
+                }
+            ],
+            "title": "Calibration",
+            "widget": "multiplot"
+        },
+        {
+            "datasets": [
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Duration before wait",
+                    "units": "",
+                    "value": "%11",
+                    "widget": ""
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Duration",
+                    "units": "",
+                    "value": "%12",
+                    "widget": ""
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Sample count",
+                    "units": "",
+                    "value": "%13",
+                    "widget": ""
+                },
+                {
+                    "alarm": 1,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Status",
+                    "units": "",
+                    "value": "%7",
+                    "widget": ""
+                }
+            ],
+            "title": "Misc",
+            "widget": ""
+        }
+    ],
+    "separator": "",
+    "title": "Macrolev"
+}

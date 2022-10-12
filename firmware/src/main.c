@@ -10,127 +10,52 @@
 #include "usb_descriptors.h"
 #include "void_switches.h"
 
-typedef struct report {
-  REPORT_ID report_id;
-  uint16_t value;
-  bool consumed;
-} Report;
-static uint8_t read = 0;
-static uint8_t write = 0;
-#define REPORT_SIZE 14
-static Report reports[REPORT_SIZE];
-static bool last_report_complete = true;
+/**
+ * MUST HAVE
+ * - understand how keyup hid report should be sent, we might keep the same order
+ * - consumer descriptor
+ * - keyboard descriptor
+ * - keymap and macro (multiple keycodes in one keypress)
+ *
+ * NICE TO HAVE
+ * - rewrite in rust
+ * - set keymap trough usb
+ * - NKRO and custom hid descriptor
+ *
+ * NOTES
+ * https://github.com/qmk/qmk_firmware/blob/master/docs/usb_nkro.txt
+ * https://www.devever.net/~hl/usbnkro
+ * https://www.microsoft.com/applied-sciences/projects/anti-ghosting-demo
+ * https://eleccelerator.com/tutorial-about-usb-hid-report-descriptors/
+ *
+ *
+ * usbhid-dump
+ */
 
-void consume_report() {
-  reports[read].consumed = true;
-  read = (read + 1) % REPORT_SIZE;
-}
+static bool can_send_report;
+static bool report_sent;
+static uint8_t modifiers = 0;
+static uint8_t keycodes[6] = {HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE};
+static uint16_t consumer_report = HID_KEY_NONE;
+static REPORT_ID current_report_id = REPORT_ID_KEYBOARD;
 
-void queue_report(REPORT_ID report_id, uint16_t value) {
-  reports[write].report_id = report_id;
-  reports[write].value = value;
-  reports[write].consumed = false;
-
-  write = (write + 1) % REPORT_SIZE;
-
-  // if no room left, consume the oldest item in the queue
-  if (write == read) {
-    consume_report();
-  }
-}
-
-bool has_reports() {
-  return read != write;
-}
+#define SET_BIT(BITFIELD, INDEX) BITFIELD |= ((uint8_t)1 << INDEX)
+#define CLR_BIT(BITFIELD, INDEX) BITFIELD &= ~((uint8_t)1 << INDEX)
+#define IS_BIT_SET(BITFIELD, INDEX) ((BITFIELD >> INDEX) & 1)
 
 void volume_down() {
-  queue_report(REPORT_ID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_VOLUME_DECREMENT);
-  drv2605l_setWaveform(0, 1);
-  drv2605l_setWaveform(1, 0);
-  drv2605l_go();
+  consumer_report = HID_USAGE_CONSUMER_VOLUME_DECREMENT;
+  report_sent = false;
 }
 
 void volume_up() {
-  queue_report(REPORT_ID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_VOLUME_INCREMENT);
-  drv2605l_setWaveform(0, 1);
-  drv2605l_setWaveform(1, 0);
-  drv2605l_go();
+  consumer_report = HID_USAGE_CONSUMER_VOLUME_INCREMENT;
+  report_sent = false;
 }
 
 void play_pause() {
-  queue_report(REPORT_ID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_PLAY_PAUSE);
-  drv2605l_setWaveform(0, 1);
-  drv2605l_setWaveform(1, 0);
-  drv2605l_go();
-}
-
-void press_key(uint8_t keycode) {
-  queue_report(REPORT_ID_KEYBOARD, keycode);
-}
-
-void send_hid_report() {
-  if (last_report_complete && has_reports()) {
-    last_report_complete = false;
-
-    if (has_reports()) {
-      uint8_t index = read;
-      consume_report();
-
-      if (reports[index].value)
-
-        switch (reports[index].report_id) {
-
-        case REPORT_ID_CONSUMER_CONTROL: {
-          tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &reports[index].value, sizeof(reports[index].value));
-          if (reports[index].value != 0) {
-            queue_report(REPORT_ID_CONSUMER_CONTROL, 0);
-          }
-        }
-
-        case REPORT_ID_KEYBOARD: {
-          uint8_t keycodes[6] = {0};
-          keycodes[0] = reports[index].value;
-
-          uint8_t i = 0;
-          while (keycodes[i] != 0 && reports[read].consumed == false &&
-                 reports[read].report_id == REPORT_ID_KEYBOARD &&
-                 reports[read].value != 0 &&
-                 i < 6) {
-            i++;
-            keycodes[i] = reports[read].value;
-            consume_report();
-          }
-
-          tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycodes);
-
-          // if (keycodes[i] != 0) {
-          //   queue_report(REPORT_ID_KEYBOARD, 0);
-          // }
-        }
-        }
-    }
-  }
-}
-
-void hid_task(void) {
-  if (!tud_hid_ready())
-    return;
-
-  const uint32_t interval_ms = 2;
-  static uint32_t start_ms = 0;
-
-  if (board_millis() - start_ms < interval_ms)
-    return;
-  start_ms += interval_ms;
-
-  // Remote wakeup
-  if (tud_suspended()) {
-    // Wake up host if we are in suspend mode
-    // and REMOTE_WAKEUP feature is enabled by hosta
-    tud_remote_wakeup();
-  } else {
-    send_hid_report();
-  }
+  consumer_report = HID_USAGE_CONSUMER_PLAY_PAUSE;
+  report_sent = false;
 }
 
 void irq_callback(uint gpio, uint32_t events) {
@@ -147,7 +72,8 @@ void tud_suspend_cb(bool remote_wakeup_en) {
 // Application can use this to send the next report
 // Note: For composite reports, report[0] is report ID
 void tud_hid_report_complete_cb(uint8_t instance, uint8_t const *report, uint8_t len) {
-  last_report_complete = true;
+  current_report_id = current_report_id == REPORT_ID_KEYBOARD ? REPORT_ID_CONSUMER_CONTROL : REPORT_ID_KEYBOARD;
+  can_send_report = true;
 }
 
 // Invoked when received GET_REPORT control request
@@ -162,35 +88,67 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_t
 void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
 }
 
-void void_switches_on_keydown(uint8_t column, uint8_t row, uint index) {
+void void_switches_on_triggered(struct void_switch *vswitch) {
   drv2605l_setWaveform(0, 1);
   drv2605l_setWaveform(1, 0);
   drv2605l_go();
-  uint8_t keycodes[6] = {0};
-  keycodes[0] = KEYMAP[index];
-  tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycodes);
+  if (KEYMAP[vswitch->row][vswitch->column] != HID_KEY_NONE) {
+    uint8_t index = vswitch->row * COLUMNS + vswitch->column;
+    keycodes[index] = KEYMAP[vswitch->row][vswitch->column];
+    modifiers |= KEYMAP_MODIFIERS[vswitch->row][vswitch->column];
+    report_sent = false;
+  } else if (KEYMAP_CONSUMER[vswitch->row][vswitch->column]) {
+    consumer_report = KEYMAP_CONSUMER[vswitch->row][vswitch->column];
+    report_sent = false;
+  }
 }
 
-void void_switches_on_keyup(uint8_t column, uint8_t row, uint index) {
+void void_switches_on_reset(struct void_switch *vswitch) {
   drv2605l_setWaveform(0, 1);
   drv2605l_setWaveform(1, 0);
   drv2605l_go();
-  tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, 0);
+  if (KEYMAP[vswitch->row][vswitch->column] != HID_KEY_NONE) {
+    uint8_t index = vswitch->row * COLUMNS + vswitch->column;
+    modifiers &= ~(KEYMAP_MODIFIERS[vswitch->row][vswitch->column]);
+    keycodes[index] = HID_KEY_NONE;
+    report_sent = false;
+  } else if (KEYMAP_CONSUMER[vswitch->row][vswitch->column]) {
+    consumer_report = HID_KEY_NONE;
+    report_sent = false;
+  }
 }
 
-int main(void) {
+void void_switches_on_change(struct void_switch *vswitch) {}
+
+int main() {
   board_init();
-  init_rotary_encoder(&irq_callback);
+  // init_rotary_encoder(&irq_callback);
   tusb_init();
   drv2605l_init();
   drv2605l_selectLibrary(1);
   drv2605l_setMode(DRV2605_MODE_INTTRIG);
-  void_switches_init();
+  void_switches_init(25, 0, 0);
+
+  can_send_report = true;
+  report_sent = true;
 
   while (1) {
     tud_task();
-    hid_task();
     void_switches_loop();
+
+    if (tud_hid_ready() && !report_sent && can_send_report) {
+      if (tud_suspended()) {
+        tud_remote_wakeup();
+      } else {
+        can_send_report = false;
+        if (current_report_id == REPORT_ID_KEYBOARD) {
+          tud_hid_keyboard_report(REPORT_ID_KEYBOARD, modifiers, keycodes);
+        } else {
+          tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &consumer_report, sizeof(consumer_report));
+          report_sent = true;
+        }
+      }
+    }
   }
   return 0;
 }
