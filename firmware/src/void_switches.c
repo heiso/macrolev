@@ -8,12 +8,14 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define DEBUG 1
+
 #define MIN_TIME_BETWEEN_EVENTS_US 10000 // 10ms
 #define CONSTANT_LOOP_DURATION_US 50
 #define CALIBRATION_CYCLES 1000
 
-#define MIN_VALUE_APPROX 400
-#define MAX_VALUE_APPROX 800
+#define MIN_VALUE_APPROX 1800
+#define MAX_VALUE_APPROX 2100
 #define MIN_OFFSET 10
 #define MAX_OFFSET 40
 
@@ -234,7 +236,7 @@ void void_switches_loop() {
 
 #ifdef DEBUG
   uint32_t loop_duration = time_us_32() - start;
-  struct void_switch *vswitch = &vswitches[1][1];
+  struct void_switch *vswitch = &vswitches[0][0];
   printf("/*");
   // Misc values
   printf("%d,", vswitch->calibration.is_calibrating);
@@ -255,8 +257,10 @@ void void_switches_loop() {
   // Motion check
   printf("%d,", vswitch->state.distance);
   printf("%d,", vswitch->state.velocity);
-  printf("%d,", vswitch->state.is_pressing ? vswitch->state.motion.started_from : 0);
-  printf("%d,", !vswitch->state.is_pressing ? vswitch->state.motion.started_from : 0);
+  // printf("%d,", vswitch->state.is_pressing ? vswitch->state.motion.started_from : 0);
+  // printf("%d,", !vswitch->state.is_pressing ? vswitch->state.motion.started_from : 0);
+  printf("%d,", 0);
+  printf("%d,", 0);
 
   // Trigger/reset check
   printf("%d,", vswitch->state.distance);

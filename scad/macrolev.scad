@@ -3,12 +3,11 @@ include <openscad-bits/lib.scad>
 use <openscad-bits/lib.scad>
 
 IS_PRESSED = false;
-// SWITCH_COLUMNS_COUNT = 1;
-// SWITCH_ROWS_COUNT = 2;
 SWITCH_COLUMNS_COUNT = 3;
 SWITCH_ROWS_COUNT = 2;
 SWITCH_PLATE_TILT = 6;
-KEYCAP_SKIRT_HEIGHT = 5;
+KEYCAP_SKIRT_HEIGHT = -3.41;
+// KEYCAP_SKIRT_HEIGHT = 5;
 
 /* [Hidden] */
 
@@ -43,6 +42,10 @@ hall_effect_sensor_x = 4;
 hall_effect_sensor_y = 3;
 hall_effect_sensor_z = 1.5;
 hall_effect_sensor_tolerance = 0.1;
+
+diode_r = 2.7 / 2;
+diode_h = 5;
+diode_tolerance = 0.1;
 
 wedge_height = hall_effect_sensor_z + 1;
 wedge_support_width = 2.5;
@@ -88,11 +91,11 @@ module hall_effect_sensor(cutout = false)
 {
     if (cutout)
     {
-        translate([ 0, 10 / 2, hall_effect_sensor_z / 2 ]) cube(
+        translate([ 0, 10 / 2, (hall_effect_sensor_z + hall_effect_sensor_tolerance) / 2 ]) cube(
             [
                 hall_effect_sensor_x + hall_effect_sensor_tolerance,
-                hall_effect_sensor_y + hall_effect_sensor_tolerance + 10,
-                hall_effect_sensor_z
+                hall_effect_sensor_y + hall_effect_sensor_tolerance + 10, hall_effect_sensor_z +
+                hall_effect_sensor_tolerance
             ],
             true);
     }
@@ -100,6 +103,18 @@ module hall_effect_sensor(cutout = false)
     {
         color("black") translate([ 0, 0, hall_effect_sensor_z / 2 ])
             cube([ hall_effect_sensor_x, hall_effect_sensor_y, hall_effect_sensor_z ], true);
+    }
+}
+
+module diode(cutout = false)
+{
+    if (cutout)
+    {
+        cylinder(r = diode_r + diode_tolerance / 2, h = diode_h + diode_tolerance, true);
+    }
+    else
+    {
+        color("black") cylinder(r = diode_r, h = diode_h, true);
     }
 }
 
@@ -116,7 +131,17 @@ module hall_effect_sensor_support()
 
 module hall_effect_sensor_origin()
 {
-    translate([ 4, -4, body_bottom_plate_thickness ]) rotate([ 0, 0, 45 ]) children();
+    translate([ 0, 0, (diode_r * 2) - hall_effect_sensor_z ]) hall_effect_sensor_xy_origin() children();
+}
+
+module diode_origin()
+{
+    translate([ -4, 2, diode_r ]) rotate([ 45, 90, 0 ]) children();
+}
+
+module hall_effect_sensor_xy_origin()
+{
+    translate([ 4, -4, 0 ]) rotate([ 0, 0, 45 ]) children();
 }
 
 module void_switch_support()
@@ -195,7 +220,7 @@ module switch_plate()
 
 module switch_plate_z_origin()
 {
-    translate([ 0, 0, body_bottom_plate_thickness + wedge_height ]) children();
+    translate([ 0, 0, 4 ]) children();
 }
 
 module switch_plate_xy_origin()
@@ -205,7 +230,8 @@ module switch_plate_xy_origin()
 
 module switch_plate_origin()
 {
-    switch_plate_tilt() switch_plate_z_origin() switch_plate_xy_origin() children();
+    // switch_plate_tilt()
+    switch_plate_z_origin() switch_plate_xy_origin() children();
 }
 
 module body()
@@ -323,6 +349,79 @@ module body()
     }
 }
 
+module test_body()
+{
+    difference()
+    {
+        union()
+        {
+            // Bottom plate
+            translate([ body_modules_space_width / 2, 0, 0 ]) linear_extrude(1)
+                square([ body_bottom_plate_x, body_y - body_wall_thickness * 2 ], true);
+
+            // External walls
+            translate([ body_modules_space_width / 2 + body_wall_thickness / 2, 0, 0 ]) linear_extrude(body_z)
+                difference()
+            {
+                offset(body_wall_thickness) offset(-body_wall_thickness)
+                    square([ body_x - body_modules_space_width - body_wall_thickness, body_y ], true);
+                offset(-body_wall_thickness)
+                    square([ body_x - body_modules_space_width - body_wall_thickness, body_y ], true);
+            }
+        }
+
+        // Cable hole
+        translate([ 0, 13, 0 ]) rotate([ 0, 90, 0 ]) cylinder(r = 3, h = body_x, center = true);
+        translate([ 0, -6, 0 ]) rotate([ 0, 90, 0 ]) cylinder(r = 3, h = body_x, center = true);
+    }
+}
+
+module fake_pcb()
+{
+    height = diode_r * 2 + .2;
+    translate([ body_modules_space_width / 2 + body_wall_thickness / 2, 0, 0 ]) difference()
+    {
+        union()
+        {
+
+            difference()
+            {
+                // Plate
+                switch_xy_origins() linear_extrude(height)
+                    square(switch_distance_between_holes + switch_hole_size, true);
+
+                // Hall effect sensor supports
+                translate([ 0, 0, -.1 ]) switch_xy_origins() hall_effect_sensor_origin()
+                    hall_effect_sensor(cutout = true);
+
+                // Channels
+                switch_xy_origins()
+                {
+                    translate([ -2, 2, diode_r ]) cube([ 12, 12, diode_r * 2 ], true);
+                    translate([ -16.5, 0, 0 ]) cube([ switch_placeholder_width + 1, 8, diode_r * 2 ]);
+                }
+            }
+
+            translate([
+                -(switch_plate_x / 2 - switch_placeholder_width / 8.5),
+                switch_plate_y / 2 - switch_placeholder_width / 8.5, 0
+            ]) linear_extrude(height = height) circle(r = switch_placeholder_width / 8.5);
+            translate([
+                switch_plate_x / 2 - switch_placeholder_width / 8.5,
+                switch_plate_y / 2 - switch_placeholder_width / 8.5, 0
+            ]) linear_extrude(height = height) circle(r = switch_placeholder_width / 8.5);
+            translate([
+                switch_plate_x / 2 - switch_placeholder_width / 8.5,
+                -(switch_plate_y / 2 - switch_placeholder_width / 8.5), 0
+            ]) linear_extrude(height = height) circle(r = switch_placeholder_width / 8.5);
+            translate([
+                -(switch_plate_x / 2 - switch_placeholder_width / 8.5),
+                -(switch_plate_y / 2 - switch_placeholder_width / 8.5), 0
+            ]) linear_extrude(height = height) circle(r = switch_placeholder_width / 8.5);
+        }
+    }
+}
+
 module wedge()
 {
     difference()
@@ -367,22 +466,44 @@ module wedge()
 
 module wedge_origin()
 {
-    switch_plate_tilt() switch_plate_xy_origin() translate([ 0, 0, body_bottom_plate_thickness ]) children();
+    // switch_plate_tilt()
+    switch_plate_xy_origin() translate([ 0, 0, body_bottom_plate_thickness ]) children();
 }
+
+// - resolve hall effect sensor range problem
+// - resolve hall effect sensor range problem
+// - resolve hall effect sensor range problem
+// - resolve hall effect sensor range problem
+// - resolve hall effect sensor range problem
+// - usb-c link to main pcb with flex cable
+// - printed proto plate (ppb haha)
+// - link ppb and switch plate together with magnets
+// - add rotary encoder
+// - kicad
+// - esp32 for BLE
 
 if ($preview)
 {
-    render()
+    // render()
+    // {
+    //     body();
+    // }
+    render() clip(xmin = 0)
     {
-        body();
+        test_body();
     }
 
-    color("blue") render()
+    color("blue") render() // clip(xmax = 13)
     {
-        wedge_origin() wedge();
+        translate([ 0, 0, 1 ]) fake_pcb();
     }
 
-    color("grey") render()
+    // color("blue") render()
+    // {
+    //     wedge_origin() wedge();
+    // }
+
+    color("grey") render() // clip(xmax = 10)
     {
         switch_plate_origin() switch_plate();
     }
@@ -392,7 +513,11 @@ if ($preview)
         switch_plate_origin() switch_xy_origins() switch_origin() void_switch(down = IS_PRESSED, keycap = true);
     }
 
-    switch_plate_tilt() switch_plate_xy_origin() switch_xy_origins() hall_effect_sensor_origin() hall_effect_sensor();
+    // switch_plate_tilt()
+    switch_plate_xy_origin() switch_xy_origins() hall_effect_sensor_origin() hall_effect_sensor();
+
+    // switch_plate_tilt()
+    switch_plate_xy_origin() switch_xy_origins() diode_origin() diode();
 
     kb2040_origin() kb2040();
 
@@ -400,7 +525,8 @@ if ($preview)
 }
 else
 {
+    translate([ 0, +body_y + 10, 0 ]) rotate([ 0, 180, 0 ]) fake_pcb();
     switch_plate();
-    rotate([ -SWITCH_PLATE_TILT, 0, 0 ]) translate([ 0, -body_y - 10, 0 ]) body();
-    translate([ 0, (-body_y - 10) * 2, wedge_height ]) rotate([ 180, 0, 0 ]) wedge();
+    translate([ 0, -body_y - 10, 0 ]) test_body();
+    // rotate([ -SWITCH_PLATE_TILT, 0, 0 ]) translate([ 0, -body_y - 10, 0 ]) body();
 }

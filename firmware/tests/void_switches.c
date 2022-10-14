@@ -20,11 +20,11 @@ int main(void) {
 }
 
 void void_switches_on_triggered(struct void_switch *vswitch) {
-  printf("%d-%d TRIGGERED at %d\n", vswitch->row, vswitch->column, vswitch->actuation.changed_at);
+  // printf("%d-%d TRIGGERED at %d\n", vswitch->row, vswitch->column, vswitch->actuation.changed_at);
 }
 
 void void_switches_on_reset(struct void_switch *vswitch) {
-  printf("%d-%d RESET at %d\n", vswitch->row, vswitch->column, vswitch->actuation.changed_at);
+  // printf("%d-%d RESET at %d\n", vswitch->row, vswitch->column, vswitch->actuation.changed_at);
 }
 
 #define range 10
