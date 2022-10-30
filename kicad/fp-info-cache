@@ -1,4 +1,4 @@
-20386205944351545
+20429531615302419
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -86022,3 +86022,185 @@ varistor SIOV
 0
 2
 2
+footprint
+CONN-SMD_4P-P1.00_SM04B-SRSS-TB-LF-SN
+CONN-SMD_4P-P1.00_SM04B-SRSS-TB-LF-SN footprint
+CONN-SMD_4P-P1.00_SM04B-SRSS-TB-LF-SN footprint
+0
+6
+6
+footprint
+LQFN-56_L7.0-W7.0-P0.4-EP
+LQFN-56_L7.0-W7.0-P0.4-EP footprint
+LQFN-56_L7.0-W7.0-P0.4-EP footprint
+0
+57
+57
+footprint
+OSC-SMD_4P-L3.2-W2.5-BL
+OSC-SMD_4P-L3.2-W2.5-BL footprint
+OSC-SMD_4P-L3.2-W2.5-BL footprint
+0
+4
+4
+footprint
+R0402
+R0402 footprint
+R0402 footprint
+0
+2
+2
+footprint
+SOD-323_L1.8-W1.3-LS2.5-RD
+SOD-323_L1.8-W1.3-LS2.5-RD footprint
+SOD-323_L1.8-W1.3-LS2.5-RD footprint
+0
+2
+2
+footprint
+SW-SMD_4P-L5.1-W5.1-P3.70-LS6.5-TL-2
+SW-SMD_4P-L5.1-W5.1-P3.70-LS6.5-TL-2 footprint
+SW-SMD_4P-L5.1-W5.1-P3.70-LS6.5-TL-2 footprint
+0
+4
+4
+footprint
+USB-C_SMD-TYPE-C-31-M-12
+USB-C_SMD-TYPE-C-31-M-12 footprint
+USB-C_SMD-TYPE-C-31-M-12 footprint
+0
+20
+20
+void_switch
+VoidSwitch_1.5u_SMD
+Void Switch 1.5U Layout Template
+Void Switch Hall Effect keyswitch 1.5U
+0
+0
+0
+void_switch
+VoidSwitch_1.25u_SMD
+Void Switch 1.25U Layout Template
+Void Switch Hall Effect keyswitch 1.25U
+0
+0
+0
+void_switch
+VoidSwitch_1.75u_SMD
+Void Switch 1.75U Layout Template
+Void Switch Hall Effect keyswitch 1.75U
+0
+0
+0
+void_switch
+VoidSwitch_1u_SMD
+Void Switch 1U Layout Template
+Void Switch Hall Effect keyswitch 1.00u 1U
+0
+0
+0
+void_switch
+VoidSwitch_2.5u_SMD
+Void Switch 2.5U Layout Template
+Void Switch Hall Effect keyswitch 2.5U
+0
+0
+0
+void_switch
+VoidSwitch_2.25u_SMD
+Void Switch 2.25U Layout Template
+Void Switch Hall Effect keyswitch 2.25U
+0
+0
+0
+void_switch
+VoidSwitch_2.75u_SMD
+Void Switch 2.75U Layout Template
+Void Switch Hall Effect keyswitch 2.75U
+0
+0
+0
+void_switch
+VoidSwitch_2u_SMD
+Void Switch 2U Layout Template
+Void Switch Hall Effect keyswitch 2U
+0
+0
+0
+void_switch
+VoidSwitch_2uv_SMD
+Void Switch 2U Layout Template (Vertical e.g. for numpad)
+Void Switch Hall Effect keyswitch 2UV
+0
+0
+0
+void_switch
+VoidSwitch_3u_SMD
+Void Switch 3U Layout Template
+Void Switch Hall Effect keyswitch 3U
+0
+0
+0
+void_switch
+VoidSwitch_5u_SMD
+Void Switch 5U Layout Template
+Void Switch Hall Effect keyswitch 5U
+0
+0
+0
+void_switch
+VoidSwitch_6.25u_SMD
+Void Switch 6.25U Layout Template
+Void Switch Hall Effect keyswitch 6.25U
+0
+0
+0
+void_switch
+VoidSwitch_6u_SMD
+Void Switch 6U Layout Template
+Void Switch Hall Effect keyswitch 6U
+0
+0
+0
+void_switch
+VoidSwitch_60_pct
+Layout Template for a 60% keyboard
+Void Switch Hall Effect keyswitch sixty 60
+0
+0
+0
+void_switch
+VoidSwitch_65_pct
+Layout Template for a 65% keyboard
+Void Switch Hall Effect keyswitch 65
+0
+0
+0
+void_switch
+VoidSwitch_75_pct
+Layout Template for a 75% keyboard
+Void Switch Hall Effect keyswitch 75
+0
+0
+0
+void_switch
+VoidSwitch_Repo_QR_0.5mm
+QR Code that points to the void_switch repo (0.5mm version)
+qr code void switch
+0
+569
+0
+void_switch
+VoidSwitch_TKL
+Layout Template for a tenkeyless (TLK) keyboard
+Void Switch Hall Effect keyswitch tkl
+0
+0
+0
+void_switch
+VoidSwitch_full_size
+Layout Template for a full size keyboard
+Void Switch Hall Effect keyswitch full
+0
+0
+0

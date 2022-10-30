@@ -137,7 +137,7 @@
         {
             "datasets": [
                 {
-                    "alarm": 0,
+                    "alarm": 2000,
                     "fft": false,
                     "fftSamples": 1024,
                     "graph": true,
