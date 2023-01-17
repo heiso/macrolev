@@ -45,7 +45,7 @@
         "silk_text_upright": false,
         "zones": {
           "45_degree_only": false,
-          "min_clearance": 0.508
+          "min_clearance": 0.15
         }
       },
       "diff_pair_dimensions": [
@@ -128,6 +128,10 @@
         {
           "diameter": 0.0,
           "drill": 0.0
+        },
+        {
+          "diameter": 0.6,
+          "drill": 0.3
         }
       ],
       "zones_allow_external_fillets": false,
@@ -389,6 +393,27 @@
         "track_width": 0.25,
         "via_diameter": 0.6,
         "via_drill": 0.3,
+        "wire_width": 6.0
+      },
+      {
+        "bus_width": 12.0,
+        "clearance": 0.22,
+        "diff_pair_gap": 0.1524,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.77,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "USB Data",
+        "nets": [
+          "/D+",
+          "/D-"
+        ],
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.18,
+        "via_diameter": 0.508,
+        "via_drill": 0.254,
         "wire_width": 6.0
       }
     ],
