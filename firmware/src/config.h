@@ -34,7 +34,7 @@
 // #define PIN_I2C_SDA 18
 // #define PIN_I2C_SCL 19
 
-#define COLUMNS 3 // One adc per column
+#define COLUMNS 1 // One adc per column
 #define ROWS 1
 
 // static uint8_t KEYMAP_CONSUMER[ROWS][COLUMNS] = {

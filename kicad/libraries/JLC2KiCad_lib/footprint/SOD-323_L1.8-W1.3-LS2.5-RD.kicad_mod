@@ -18,7 +18,7 @@
   (fp_text user REF** (at 0 4.726213) (layer F.Fab)
     (effects (font (size 1 1) (thickness 0.15)))
   )
-  (model /Users/heiso/Projects/perso/keyboard/macrolev/kicad/libraries/JLC2KiCad_lib/footprint/packages3d/SOD-323_L1.8-W1.3-LS2.5-RD.wrl
+  (model /Users/heiso/Projects/heiso/macrolev/kicad/libraries/JLC2KiCad_lib/footprint/packages3d/SOD-323_L1.8-W1.3-LS2.5-RD.wrl
     (at (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 -180))

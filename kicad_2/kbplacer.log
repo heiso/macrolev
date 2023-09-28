@@ -1,0 +1,4 @@
+[kbplacer_plugin_action.py:78]: Plugin executed with KiCad version: 6.0.7
+[kbplacer_plugin_action.py:79]: Plugin executed with python version: '3.8.2 (v3.8.2:7b3ab5921f, Feb 24 2020, 17:52:18) \n[Clang 6.0 (clang-600.0.57)]'
+[kbplacer_dialog.py:392]: Language: en
+[kbplacer_plugin_action.py:120]: GUI state: {"switch_section": {"annotation": "SW{}", "layout_path": "/Users/heiso/Desktop/mac-iso-azerty-(fr).json", "x_distance": "19.05", "y_distance": "19.05"}, "switch_diodes_section": {"enable": false, "element_info": {"annotation_format": "D{}", "position_option": "Default", "position": {"relative_position": [5.08, 3.03], "orientation": 90.0, "side": "BACK"}}}, "additional_elements": {"elements_info": []}, "misc_section": {"route_tracks": false, "template_path": ""}}

@@ -3,6 +3,7 @@
     "Leathong.openscad-language-support",
     "chris-hock.pioasm",
     "twxs.cmake",
-    "ms-vscode.cmake-tools"
+    "ms-vscode.cmake-tools",
+    "esbenp.prettier-vscode",
   ]
 }

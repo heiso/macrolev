@@ -1971,7 +1971,7 @@
       (net 12 "GND") (pinfunction "C") (pintype "unspecified") (tstamp dbabbac4-2fb0-48c0-8158-0a5aff682ee4))
     (pad "4" smd rect locked (at 3.299975 1.850191) (size 1.7 1) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 12 "GND") (pinfunction "D") (pintype "unspecified") (tstamp 90ed62ec-de0a-47b4-b67b-6b19ef05d1e6))
-    (model "/Users/heiso/Projects/perso/keyboard/macrolev/kicad/libraries/JLC2KiCad_lib/footprint/packages3d/SW-SMD_4P-L5.1-W5.1-P3.70-LS6.5-TL-2.wrl"
+    (model "/Users/heiso/Projects/heiso/macrolev/kicad/libraries/JLC2KiCad_lib/footprint/packages3d/SW-SMD_4P-L5.1-W5.1-P3.70-LS6.5-TL-2.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -3005,7 +3005,7 @@
       (net 24 "/QSPI_SS") (pinfunction "QSPI_SS") (pintype "bidirectional") (tstamp 7b846960-7c1a-4ddf-a8b1-83e36f519207))
     (pad "57" smd rect locked (at 0 -0.000127) (size 3.1 3.1) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 12 "GND") (pinfunction "GND") (pintype "bidirectional") (tstamp 0728e8bc-7665-40d3-97b6-a92be163421f))
-    (model "/Users/heiso/Projects/perso/keyboard/macrolev/kicad/libraries/JLC2KiCad_lib/footprint/packages3d/LQFN-56_L7.0-W7.0-P0.4-EP.wrl"
+    (model "/Users/heiso/Projects/heiso/macrolev/kicad/libraries/JLC2KiCad_lib/footprint/packages3d/LQFN-56_L7.0-W7.0-P0.4-EP.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -3272,7 +3272,7 @@
       (net 113 "Net-(C19-Pad1)") (pinfunction "OSC2") (pintype "unspecified") (tstamp 0881c3ba-67b5-45d1-85eb-5d63a527f8ee))
     (pad "4" smd rect locked (at -0.973076 -1.001842 270) (size 1.4 1.2) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 12 "GND") (pinfunction "GND") (pintype "unspecified") (tstamp db593c84-f885-48d4-a2f0-8cc85a963f33))
-    (model "/Users/heiso/Projects/perso/keyboard/macrolev/kicad/libraries/JLC2KiCad_lib/footprint/packages3d/OSC-SMD_4P-L3.2-W2.5-BL.wrl"
+    (model "/Users/heiso/Projects/heiso/macrolev/kicad/libraries/JLC2KiCad_lib/footprint/packages3d/OSC-SMD_4P-L3.2-W2.5-BL.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4540,7 +4540,7 @@
       (net 12 "GND") (pinfunction "C") (pintype "unspecified") (tstamp df75d70b-18b1-4f1b-acf2-bfa566733d6b))
     (pad "4" smd rect locked (at 3.299975 1.850191) (size 1.7 1) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 12 "GND") (pinfunction "D") (pintype "unspecified") (tstamp b5f01a65-1211-46b2-8e8c-7921c0ecd468))
-    (model "/Users/heiso/Projects/perso/keyboard/macrolev/kicad/libraries/JLC2KiCad_lib/footprint/packages3d/SW-SMD_4P-L5.1-W5.1-P3.70-LS6.5-TL-2.wrl"
+    (model "/Users/heiso/Projects/heiso/macrolev/kicad/libraries/JLC2KiCad_lib/footprint/packages3d/SW-SMD_4P-L5.1-W5.1-P3.70-LS6.5-TL-2.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))

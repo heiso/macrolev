@@ -24,7 +24,7 @@
   (fp_text user REF** (at 0 6.198997) (layer F.Fab)
     (effects (font (size 1 1) (thickness 0.15)))
   )
-  (model /Users/heiso/Projects/perso/keyboard/macrolev/kicad/libraries/JLC2KiCad_lib/footprint/packages3d/CONN-SMD_4P-P1.00_SM04B-SRSS-TB-LF-SN.wrl
+  (model /Users/heiso/Projects/heiso/macrolev/kicad/libraries/JLC2KiCad_lib/footprint/packages3d/CONN-SMD_4P-P1.00_SM04B-SRSS-TB-LF-SN.wrl
     (at (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 0))

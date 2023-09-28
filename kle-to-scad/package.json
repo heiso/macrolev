@@ -1,0 +1,22 @@
+{
+  "name": "kle-to-scad",
+  "version": "1.0.0",
+  "description": "",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "node --loader tsx --watch ./src",
+    "generate": "node --no-warnings --loader tsx ./src",
+    "build": "echo '🚧 Building plate scad file...' && npm run generate && echo '🚧 Building plate dxf file...' && openscad -o ./output/plate.dxf ./output/plate.scad && echo '🚧 Building support scad file...' && npm run generate support && echo '🚧 Building plate dxf file...' && openscad -o ./output/support.dxf ./output/support.scad"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.6.3",
+    "prettier": "^3.0.3",
+    "tsx": "^3.12.10",
+    "typescript": "^5.2.2"
+  }
+}
