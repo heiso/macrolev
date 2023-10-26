@@ -1,4 +1,4 @@
 (sym_lib_table
-  (lib (name "default_lib")(type "KiCad")(uri "${KIPRJMOD}/libraries/JLC2KiCad_lib/Schematic/default_lib.kicad_sym")(options "")(descr ""))
-  (lib (name "void_switch")(type "KiCad")(uri "${KIPRJMOD}/libraries/void_switch_kicad/symbols/voidswitch.kicad_sym")(options "")(descr ""))
+  (version 7)
+  (lib (name "erichelgeson/Kicad-STM32")(type "Legacy")(uri "/Users/heiso/Projects/erichelgeson/Kicad-STM32/Symbols/YAAJ_BlackPill_SWD_Breakout.lib")(options "")(descr ""))
 )

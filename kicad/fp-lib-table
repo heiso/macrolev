@@ -1,4 +1,6 @@
 (fp_lib_table
-  (lib (name "footprint")(type "KiCad")(uri "${KIPRJMOD}/libraries/JLC2KiCad_lib/footprint")(options "")(descr ""))
-  (lib (name "void_switch")(type "KiCad")(uri "${KIPRJMOD}/libraries/void_switch_kicad/footprints")(options "")(descr ""))
+  (version 7)
+  (lib (name "Lekker switch")(type "KiCad")(uri "${KIPRJMOD}/libraries/SW_MX_Lekker")(options "")(descr ""))
+  (lib (name "erichelgeson/Kicad-STM32")(type "KiCad")(uri "/Users/heiso/Projects/erichelgeson/Kicad-STM32/Footprints")(options "")(descr ""))
+  (lib (name "switch")(type "KiCad")(uri "${KIPRJMOD}/libraries/switch")(options "")(descr ""))
 )

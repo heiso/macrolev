@@ -1,4 +1,0 @@
-(fp_lib_table
-  (version 7)
-  (lib (name "Lekker switch")(type "KiCad")(uri "${KIPRJMOD}/libraries/SW_MX_Lekker")(options "")(descr ""))
-)
