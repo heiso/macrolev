@@ -2984,7 +2984,7 @@
     (pin "2" (uuid 917da669-0c8a-42e7-9f89-54fdb24179bb))
     (pin "3" (uuid 359d8554-f918-44de-ac59-69d3cf54dc73))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U25") (unit 1)
         )
@@ -3009,7 +3009,7 @@
     )
     (pin "1" (uuid 0756d5ef-328c-4bee-b3f0-bcee8070780f))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR070") (unit 1)
         )
@@ -3034,7 +3034,7 @@
     )
     (pin "1" (uuid 1a453145-f61d-4781-9b47-0a08ae587393))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR07") (unit 1)
         )
@@ -3059,7 +3059,7 @@
     )
     (pin "1" (uuid b3d3662b-af25-40da-96e6-4d7c1427f046))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR050") (unit 1)
         )
@@ -3084,7 +3084,7 @@
     )
     (pin "1" (uuid fbfca786-a7a0-42e2-814e-88ac23665727))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0104") (unit 1)
         )
@@ -3110,7 +3110,7 @@
     (pin "1" (uuid 4ad36c63-db3c-4a85-a0c3-9bb79d279219))
     (pin "2" (uuid b2221e89-3d52-4836-ad4f-d3a9dded8059))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C7") (unit 1)
         )
@@ -3135,7 +3135,7 @@
     )
     (pin "1" (uuid 53a69a1e-84e7-4550-b77e-80a469c4bdea))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0166") (unit 1)
         )
@@ -3160,7 +3160,7 @@
     )
     (pin "1" (uuid aab91de1-76d6-4bbc-a551-e4087eca269c))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0159") (unit 1)
         )
@@ -3185,7 +3185,7 @@
     )
     (pin "1" (uuid c847772b-1535-4f3f-aa50-35a2eaac5f00))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0164") (unit 1)
         )
@@ -3236,7 +3236,7 @@
     (pin "8" (uuid 683c2e08-f556-48bf-a0e0-aca83c21c1ef))
     (pin "9" (uuid 905e2503-aff8-46db-8ddc-41ddedcd0bca))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "AMUX2") (unit 1)
         )
@@ -3266,7 +3266,7 @@
     )
     (pin "1" (uuid 3a763c5d-d27f-484b-ab9c-d6879bbb5626))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR061") (unit 1)
         )
@@ -3293,7 +3293,7 @@
     (pin "2" (uuid a13d9801-87d7-4536-81aa-184d4f63fe35))
     (pin "3" (uuid 0c04db40-dfc5-4a38-a713-12967829d443))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U37") (unit 1)
         )
@@ -3320,7 +3320,7 @@
     (pin "2" (uuid 26b79622-c780-4d7d-88c0-6758091b78f0))
     (pin "3" (uuid 688fd416-4f74-4390-9235-568b6e2f82f0))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U19") (unit 1)
         )
@@ -3347,7 +3347,7 @@
     (pin "2" (uuid e347ca1c-cf12-4ed4-b36e-faf188ee41cf))
     (pin "3" (uuid ccc454ab-04f2-4f4e-bfec-404b3651fdac))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U48") (unit 1)
         )
@@ -3374,7 +3374,7 @@
     (pin "2" (uuid a905cc4d-425c-4be0-b3bc-83e77b6c8e6a))
     (pin "3" (uuid fe62f49f-c1f5-4ccc-96b1-7c6489a79b76))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U34") (unit 1)
         )
@@ -3401,7 +3401,7 @@
     (pin "2" (uuid ba03e7f2-1a80-4a5e-b6ce-394d56ac3d20))
     (pin "3" (uuid 0d234a8d-1700-4aa6-a734-ef34d2785591))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U18") (unit 1)
         )
@@ -3426,7 +3426,7 @@
     )
     (pin "1" (uuid 598d29a0-1d83-4ee7-b555-cd28d4acb91f))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR05") (unit 1)
         )
@@ -3451,7 +3451,7 @@
     )
     (pin "1" (uuid 7166040f-2afe-4cab-b66e-dbfa45f1b2bc))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR024") (unit 1)
         )
@@ -3478,7 +3478,7 @@
     (pin "2" (uuid 4c18df14-3d2c-4f63-9c40-e447b0043cdf))
     (pin "3" (uuid bb572e4d-a21e-4399-813d-cf5c05d0c607))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U56") (unit 1)
         )
@@ -3503,7 +3503,7 @@
     )
     (pin "1" (uuid 70036c7f-13bc-4e9c-ae99-7a8d97c59d63))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR035") (unit 1)
         )
@@ -3528,7 +3528,7 @@
     )
     (pin "1" (uuid ccdf8d25-c050-40a4-bf54-8892f6d1b318))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR047") (unit 1)
         )
@@ -3553,7 +3553,7 @@
     )
     (pin "1" (uuid e443d1d2-7657-4685-95b1-ba7eab6b86ac))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR09") (unit 1)
         )
@@ -3578,7 +3578,7 @@
     )
     (pin "1" (uuid b73bee83-3851-4dc1-b190-6feed9971e3f))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0151") (unit 1)
         )
@@ -3603,7 +3603,7 @@
     )
     (pin "1" (uuid aa3caca7-8b54-462b-90e7-aa1881cd5b1a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0153") (unit 1)
         )
@@ -3628,7 +3628,7 @@
     )
     (pin "1" (uuid 3e660df3-2957-4e5f-92d9-e620e65976d9))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0119") (unit 1)
         )
@@ -3653,7 +3653,7 @@
     )
     (pin "1" (uuid 4701bf09-f373-4819-9ac2-be905e8724ef))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR030") (unit 1)
         )
@@ -3726,7 +3726,7 @@
     (pin "8" (uuid ebcd3e2a-cf2b-413e-a6a8-849aff048b0a))
     (pin "9" (uuid 95f0d92a-0a44-4e50-a453-32f500185343))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U69") (unit 1)
         )
@@ -3751,7 +3751,7 @@
     )
     (pin "1" (uuid 9898caeb-580a-441e-97b8-77871fed3b41))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR099") (unit 1)
         )
@@ -3776,7 +3776,7 @@
     )
     (pin "1" (uuid c9d5df15-ad53-493b-b181-6d10bd28f3a3))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR048") (unit 1)
         )
@@ -3801,7 +3801,7 @@
     )
     (pin "1" (uuid fd836ede-380c-4085-8846-703bff02cafc))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR01") (unit 1)
         )
@@ -3828,7 +3828,7 @@
     (pin "2" (uuid 973c040c-d9a7-4e50-a0e8-020706b6e62c))
     (pin "3" (uuid 4aac9764-f812-47d8-b1f2-dfe1e8ed72ab))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U3") (unit 1)
         )
@@ -3853,7 +3853,7 @@
     )
     (pin "1" (uuid 4ed16cb4-ace7-48c4-9a8e-88a5c859e306))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR068") (unit 1)
         )
@@ -3878,7 +3878,7 @@
     )
     (pin "1" (uuid ad1cc1a0-2ff9-4d32-ad00-6e05d834e1b6))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0113") (unit 1)
         )
@@ -3905,7 +3905,7 @@
     (pin "2" (uuid 9d6a0aeb-d34b-4768-8c83-6173c9829457))
     (pin "3" (uuid 3f9d6d4e-7bc0-4daf-8fe0-44d835a5e0db))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U30") (unit 1)
         )
@@ -3932,7 +3932,7 @@
     (pin "2" (uuid 3b2341e3-2be4-4266-9d71-81c09021a168))
     (pin "3" (uuid 99d6a564-405c-46b8-8b53-319df26229a7))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U2") (unit 1)
         )
@@ -3959,7 +3959,7 @@
     (pin "2" (uuid 64e7cda2-8b07-4f8b-9c0e-06d194aa93a5))
     (pin "3" (uuid 9851de6c-7541-4394-83e2-9af3606092e1))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U12") (unit 1)
         )
@@ -3984,7 +3984,7 @@
     )
     (pin "1" (uuid 6565b9c5-f1e0-4ca8-993f-35acf0855f8c))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR073") (unit 1)
         )
@@ -4009,7 +4009,7 @@
     )
     (pin "1" (uuid f4a0220b-4100-43fd-9be5-35a237157dd3))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR093") (unit 1)
         )
@@ -4034,7 +4034,7 @@
     )
     (pin "1" (uuid 99ecf357-db9e-4317-a29e-f91a63af8767))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR086") (unit 1)
         )
@@ -4058,7 +4058,7 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "FID1") (unit 1)
         )
@@ -4083,7 +4083,7 @@
     )
     (pin "1" (uuid 59002ad9-9fe1-4cac-bc9a-d86a55c8d68f))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR075") (unit 1)
         )
@@ -4108,7 +4108,7 @@
     )
     (pin "1" (uuid 7a0d768c-83ad-407a-a18e-303146f34749))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0101") (unit 1)
         )
@@ -4133,7 +4133,7 @@
     )
     (pin "1" (uuid 987fc703-971f-49a7-8b5a-447344799a28))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR020") (unit 1)
         )
@@ -4158,7 +4158,7 @@
     )
     (pin "1" (uuid e80b86c5-d315-42d9-ac71-8fb5e2988b2c))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0132") (unit 1)
         )
@@ -4183,7 +4183,7 @@
     )
     (pin "1" (uuid 88efda16-9e4d-42a2-af09-d95183fdda9a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0112") (unit 1)
         )
@@ -4208,7 +4208,7 @@
     )
     (pin "1" (uuid e0d7b578-96ee-45ff-a86f-828ca4083922))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0116") (unit 1)
         )
@@ -4233,7 +4233,7 @@
     )
     (pin "1" (uuid 1a349185-07d7-488d-98f6-6c8dfbd001d8))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR038") (unit 1)
         )
@@ -4259,7 +4259,7 @@
     (pin "1" (uuid 69e8a9f8-9b50-4b34-847a-87d1696781e9))
     (pin "2" (uuid 004d3911-14c1-44f5-8d8a-7951a895d4bb))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "FB2") (unit 1)
         )
@@ -4284,7 +4284,7 @@
     )
     (pin "1" (uuid 8b296b2c-c599-4d55-8d6e-9bec9bb2f342))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR049") (unit 1)
         )
@@ -4310,7 +4310,7 @@
     (pin "1" (uuid f96984d2-fac6-4f49-a2f7-fe8a98a4c60c))
     (pin "2" (uuid d631a9a2-44fa-420a-9662-17de894de987))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C10") (unit 1)
         )
@@ -4337,7 +4337,7 @@
     (pin "2" (uuid d54d72ad-ad03-42a4-87ac-0cbb780bd1f3))
     (pin "3" (uuid e766c348-206c-4caf-8e08-de4e9a774d97))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U42") (unit 1)
         )
@@ -4362,7 +4362,7 @@
     )
     (pin "1" (uuid 1c015d38-69ea-47d6-8210-4fa3a393fd34))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0134") (unit 1)
         )
@@ -4387,7 +4387,7 @@
     )
     (pin "1" (uuid 3bb439c8-9f7d-4dee-837f-0a9da1e279c0))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#FLG01") (unit 1)
         )
@@ -4414,7 +4414,7 @@
     (pin "2" (uuid 7888571e-fc88-4333-8db1-9103e7676c12))
     (pin "3" (uuid c2dbbd54-7d66-48aa-9069-8e783acde5c6))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U62") (unit 1)
         )
@@ -4439,7 +4439,7 @@
     )
     (pin "1" (uuid 1b5b119f-1aea-4bba-a765-c6432c0fadf6))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0100") (unit 1)
         )
@@ -4464,7 +4464,7 @@
     )
     (pin "1" (uuid f5b25278-7e46-4499-ac20-cd32b6fffeaa))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0145") (unit 1)
         )
@@ -4491,7 +4491,7 @@
     (pin "2" (uuid 3831439d-a3ab-4589-b21c-5a9a70f14da1))
     (pin "3" (uuid 61efe6e5-0521-43ea-ace5-2c0c1bbfb86f))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U10") (unit 1)
         )
@@ -4516,7 +4516,7 @@
     )
     (pin "1" (uuid b55b8406-211a-4611-8a78-6e34b788726d))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR079") (unit 1)
         )
@@ -4543,7 +4543,7 @@
     (pin "2" (uuid f27fee90-9f05-49c3-af40-2cce9b375b79))
     (pin "3" (uuid a843e165-00fd-4cb4-a402-6d5e471b4f35))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U66") (unit 1)
         )
@@ -4568,7 +4568,7 @@
     )
     (pin "1" (uuid 5e1981bf-82ef-429f-9c3b-f71526a4dd36))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0127") (unit 1)
         )
@@ -4594,7 +4594,7 @@
     (pin "1" (uuid c3ef7a1c-da44-4242-9ddb-672eeca9cff3))
     (pin "2" (uuid 569f209c-51c4-4914-b81e-046e03d426ce))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C8") (unit 1)
         )
@@ -4619,7 +4619,7 @@
     )
     (pin "1" (uuid da796bbe-3878-4e16-8ab4-f18cec83ebe0))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR063") (unit 1)
         )
@@ -4644,7 +4644,7 @@
     )
     (pin "1" (uuid 189e9654-ac5c-4b3b-ad7e-77430b06a86a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0123") (unit 1)
         )
@@ -4669,7 +4669,7 @@
     )
     (pin "1" (uuid 82fb92e5-001d-4457-ae32-a5d74e64e8eb))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0162") (unit 1)
         )
@@ -4694,7 +4694,7 @@
     )
     (pin "1" (uuid 1ef76d48-d4b8-48e3-830d-32eac830c38d))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR092") (unit 1)
         )
@@ -4719,7 +4719,7 @@
     )
     (pin "1" (uuid f8105077-8d43-4b4b-ae70-b64fc5ed1aae))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR071") (unit 1)
         )
@@ -4746,7 +4746,7 @@
     (pin "2" (uuid d163c9e7-7ee1-4c5a-92da-86f7165c0d22))
     (pin "3" (uuid 2dd23d96-26d2-4075-beb2-08ef5f336c8d))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U38") (unit 1)
         )
@@ -4773,7 +4773,7 @@
     (pin "2" (uuid 45784c43-5b42-495f-9728-b18301ad3940))
     (pin "3" (uuid 1867b0e2-0291-48b0-89c5-64f8919cb0f8))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U64") (unit 1)
         )
@@ -4797,7 +4797,7 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "FID2") (unit 1)
         )
@@ -4824,7 +4824,7 @@
     (pin "2" (uuid b6d32638-ff90-4eb3-83f7-464b3b75960f))
     (pin "3" (uuid 3f7d9a53-db39-4a38-9bb4-a32cd10ea533))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U32") (unit 1)
         )
@@ -4849,7 +4849,7 @@
     )
     (pin "1" (uuid e7a920b1-fb0d-498d-b19b-ee3d6f18691f))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0152") (unit 1)
         )
@@ -4875,7 +4875,7 @@
     (pin "1" (uuid 393f9241-9e90-4e8e-9dc8-a91c0d3f6a4d))
     (pin "2" (uuid 0eefd6a1-6a99-48ea-b036-cfcc4ef6b713))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C9") (unit 1)
         )
@@ -4900,7 +4900,7 @@
     )
     (pin "1" (uuid 757f7cbb-4c36-4068-9f7f-623cc9ec9eea))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR081") (unit 1)
         )
@@ -4925,7 +4925,7 @@
     )
     (pin "1" (uuid da9de3c4-a58d-464b-adb5-d37220744714))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR019") (unit 1)
         )
@@ -4951,7 +4951,7 @@
     (pin "1" (uuid 1170cd64-1853-4a58-b305-5c08c9d84a8a))
     (pin "2" (uuid 571e2efe-ed9c-45b1-985d-f641a7455e75))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C12") (unit 1)
         )
@@ -4976,7 +4976,7 @@
     )
     (pin "1" (uuid 696ab452-badb-4ed9-9f9f-388eb0e1ab42))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR034") (unit 1)
         )
@@ -5001,7 +5001,7 @@
     )
     (pin "1" (uuid 3ede12d0-df3d-4bb1-b245-2d51a65a921b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0102") (unit 1)
         )
@@ -5026,7 +5026,7 @@
     )
     (pin "1" (uuid 861e7260-af7b-46b6-a018-1a5a772cb684))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR031") (unit 1)
         )
@@ -5051,7 +5051,7 @@
     )
     (pin "1" (uuid 9eec3d13-4c60-4d1a-bd6d-94c95605d4c1))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0129") (unit 1)
         )
@@ -5076,7 +5076,7 @@
     )
     (pin "1" (uuid d35d8f16-0ebf-4acd-afb6-3041bf77455b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0142") (unit 1)
         )
@@ -5102,7 +5102,7 @@
     (pin "1" (uuid 30a29fb2-0a15-4f2d-b312-c476f847dba9))
     (pin "2" (uuid af416258-91eb-4bdf-a83a-7ab657c5d2fd))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "D1") (unit 1)
         )
@@ -5126,7 +5126,7 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "FID3") (unit 1)
         )
@@ -5151,7 +5151,7 @@
     )
     (pin "1" (uuid 40019c06-3334-4b0c-8625-fa7ed524a322))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR089") (unit 1)
         )
@@ -5178,7 +5178,7 @@
     (pin "2" (uuid 6c75ae64-d530-46eb-8d38-aee056f9242d))
     (pin "3" (uuid 192fe98c-e142-4af5-9e41-c65678770846))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U11") (unit 1)
         )
@@ -5203,7 +5203,7 @@
     )
     (pin "1" (uuid 41e68906-1f80-45ca-8071-4e6530020d3a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR010") (unit 1)
         )
@@ -5228,7 +5228,7 @@
     )
     (pin "1" (uuid 761cec99-2c4a-4f1f-b26a-3c22ee4df613))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR056") (unit 1)
         )
@@ -5255,7 +5255,7 @@
     (pin "2" (uuid 879f17a7-1d63-40fb-84b4-7ce6319be82b))
     (pin "3" (uuid 4f93bd95-7336-4b1b-80de-5af5ada421ce))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U55") (unit 1)
         )
@@ -5280,7 +5280,7 @@
     )
     (pin "1" (uuid b0c50a74-352c-439c-a00d-2df079bf1bf0))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR08") (unit 1)
         )
@@ -5307,7 +5307,7 @@
     (pin "2" (uuid 95f4a743-e3c4-4aa5-9c22-b8a00301cac1))
     (pin "3" (uuid a9da7dbd-a1e2-4de3-bf62-7ae6938a6522))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U23") (unit 1)
         )
@@ -5332,7 +5332,7 @@
     )
     (pin "1" (uuid d605bb8b-9d80-446b-a359-058a239fbb6a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR046") (unit 1)
         )
@@ -5357,7 +5357,7 @@
     )
     (pin "1" (uuid 5283417a-c1d8-430d-8134-84255891b8f7))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0126") (unit 1)
         )
@@ -5382,7 +5382,7 @@
     )
     (pin "1" (uuid 430fafb2-a378-41f2-8a56-87927bb7c5c4))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR032") (unit 1)
         )
@@ -5407,7 +5407,7 @@
     )
     (pin "1" (uuid 266cd6f4-7a85-4543-859a-4f632ca6864f))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#FLG03") (unit 1)
         )
@@ -5458,7 +5458,7 @@
     (pin "8" (uuid 96bc82a3-fda8-46e8-a287-b0760bb7f6c3))
     (pin "9" (uuid 9a5984fe-2106-44fa-9ead-a63eaa68c625))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "AMUX4") (unit 1)
         )
@@ -5490,7 +5490,7 @@
     (pin "2" (uuid 4b467889-c3cb-4891-a408-70f5e988fc8e))
     (pin "3" (uuid b1aea88e-fc59-4b5b-b8c7-51205e0df9a1))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U20") (unit 1)
         )
@@ -5515,7 +5515,7 @@
     )
     (pin "1" (uuid ea70ea38-f2f9-45e5-89c8-105bca3ac5a0))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#FLG02") (unit 1)
         )
@@ -5540,7 +5540,7 @@
     )
     (pin "1" (uuid 0d10d255-2a69-48f7-bbd6-ab6dfe9022eb))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0120") (unit 1)
         )
@@ -5571,7 +5571,7 @@
     (pin "3" (uuid 7fc1dc68-f473-4d83-b246-2a00189e50bb))
     (pin "4" (uuid 1cc5b5ab-c32b-4c1f-b25d-57ffa3091290))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "SW2") (unit 1)
         )
@@ -5597,7 +5597,7 @@
     (pin "1" (uuid 8b1ba09d-1dfb-4e85-aea6-758e32df7bb9))
     (pin "2" (uuid 01c6549a-ebcf-4c7e-9d77-8f937978385d))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C4") (unit 1)
         )
@@ -5622,7 +5622,7 @@
     )
     (pin "1" (uuid 33c3457f-2776-4ae7-8075-336a30b2497b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR087") (unit 1)
         )
@@ -5647,7 +5647,7 @@
     )
     (pin "1" (uuid d26e99a5-7504-4a9a-bb91-86cd3db2fd9a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0150") (unit 1)
         )
@@ -5672,7 +5672,7 @@
     )
     (pin "1" (uuid 8b357a09-d43c-4d44-891a-4e6d92c62bc4))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0146") (unit 1)
         )
@@ -5697,7 +5697,7 @@
     )
     (pin "1" (uuid 185732cd-2869-4463-8e66-79dd7e569d4b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR018") (unit 1)
         )
@@ -5724,7 +5724,7 @@
     (pin "2" (uuid 03fbcaad-073f-4243-ba3b-a2fc52438770))
     (pin "3" (uuid c3621b9a-8d53-40d5-845c-f90a9f1fa799))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U24") (unit 1)
         )
@@ -5749,7 +5749,7 @@
     )
     (pin "1" (uuid d113cd24-f88b-40cb-950a-58f15d97b97a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR029") (unit 1)
         )
@@ -5777,7 +5777,7 @@
     (pin "3" (uuid f1dcd61e-ab3d-49a0-82f9-46eb15fd428b))
     (pin "4" (uuid a11898de-6233-4472-8dda-1bddb2e06fc1))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "J3") (unit 1)
         )
@@ -5804,7 +5804,7 @@
     (pin "2" (uuid 7b5b6162-74aa-47e7-abf6-8d29068e78c0))
     (pin "3" (uuid 42df49eb-2861-4b27-ad3e-edd77c0428a0))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U8") (unit 1)
         )
@@ -5831,7 +5831,7 @@
     (pin "2" (uuid b6d6c2ce-780b-47ed-862a-8881fc7ab0d6))
     (pin "3" (uuid f3c00d24-4df8-4043-a4b4-37ef438939fe))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U54") (unit 1)
         )
@@ -5856,7 +5856,7 @@
     )
     (pin "1" (uuid c18fd2a7-c302-4b82-8e98-439105d7fc4e))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR02") (unit 1)
         )
@@ -5881,7 +5881,7 @@
     )
     (pin "1" (uuid ed147ab2-7b11-4eb3-b445-87bbe1bb0136))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR012") (unit 1)
         )
@@ -5906,7 +5906,7 @@
     )
     (pin "1" (uuid cdfd3c4a-9664-4d87-b070-b676e7bff8a1))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR017") (unit 1)
         )
@@ -5932,7 +5932,7 @@
     (pin "1" (uuid b80b389d-6cfb-4226-8cdf-8a4d7a51ddea))
     (pin "2" (uuid 4978a7c6-d393-4418-b8f4-52fd8231c334))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C11") (unit 1)
         )
@@ -5957,7 +5957,7 @@
     )
     (pin "1" (uuid 904d7b3b-3e48-48e6-a1b4-284d1b2dbd66))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR045") (unit 1)
         )
@@ -5982,7 +5982,7 @@
     )
     (pin "1" (uuid 0643106f-12da-41a4-b348-2a4b8e93039c))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR080") (unit 1)
         )
@@ -6009,7 +6009,7 @@
     (pin "2" (uuid c59dbd9b-f20d-43ef-b9f8-47a60b2aa371))
     (pin "3" (uuid 416e6abb-6601-46a4-89bd-6ca2c7a17408))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U46") (unit 1)
         )
@@ -6034,7 +6034,7 @@
     )
     (pin "1" (uuid 91cc232c-2494-4587-8e13-8e6f0a32cf3b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0107") (unit 1)
         )
@@ -6059,7 +6059,7 @@
     )
     (pin "1" (uuid d6b5fc28-f2b5-4348-b087-8f88bc5d76b9))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR054") (unit 1)
         )
@@ -6084,7 +6084,7 @@
     )
     (pin "1" (uuid 5ee7823e-2a06-4010-871c-fef96c6b8639))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR083") (unit 1)
         )
@@ -6109,7 +6109,7 @@
     )
     (pin "1" (uuid 716d95a8-073b-420b-81f8-7dcdacdbfcb6))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR084") (unit 1)
         )
@@ -6134,7 +6134,7 @@
     )
     (pin "1" (uuid e5954abb-b4cc-4098-adba-5da925c79940))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0111") (unit 1)
         )
@@ -6159,7 +6159,7 @@
     )
     (pin "1" (uuid 3dcf8456-6e2b-45f6-ad14-8fb9dd8747bd))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR011") (unit 1)
         )
@@ -6184,7 +6184,7 @@
     )
     (pin "1" (uuid 0fe3fd4d-cbf2-4794-8744-e35d57f0779b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR039") (unit 1)
         )
@@ -6209,7 +6209,7 @@
     )
     (pin "1" (uuid 70bd30ff-e52c-41bb-b609-3d6db5e029a0))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR023") (unit 1)
         )
@@ -6234,7 +6234,7 @@
     )
     (pin "1" (uuid d8e605b5-2021-4e36-af05-ba574ec32185))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR053") (unit 1)
         )
@@ -6259,7 +6259,7 @@
     )
     (pin "1" (uuid 8cae4dd1-5c73-4705-8fca-81f9e203d59a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0165") (unit 1)
         )
@@ -6284,7 +6284,7 @@
     )
     (pin "1" (uuid cfb21b33-69cf-42ec-890e-4813df00f8a4))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0140") (unit 1)
         )
@@ -6311,7 +6311,7 @@
     (pin "2" (uuid 38c2531e-cfad-4f59-9b98-4a73e3f82c97))
     (pin "3" (uuid c6b7216f-85b4-4957-9c5c-6373bf5dac06))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U6") (unit 1)
         )
@@ -6336,7 +6336,7 @@
     )
     (pin "1" (uuid cf953352-eb67-4975-a8ff-a10d88b86f13))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0121") (unit 1)
         )
@@ -6363,7 +6363,7 @@
     (pin "2" (uuid 91a147f3-cfc8-4bb4-9d01-34a99eeeb55b))
     (pin "3" (uuid dafd6544-ede5-4a38-8d65-429ff1b5a292))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U16") (unit 1)
         )
@@ -6388,7 +6388,7 @@
     )
     (pin "1" (uuid 7a7fdcac-29bf-4a79-88cd-7b2f26dbac70))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0114") (unit 1)
         )
@@ -6413,7 +6413,7 @@
     )
     (pin "1" (uuid b478ece5-6e50-4c8f-8567-68ecb1f12660))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0106") (unit 1)
         )
@@ -6440,7 +6440,7 @@
     (pin "2" (uuid 67385e4a-ce91-40a4-b9c5-3605dd04d5fa))
     (pin "3" (uuid 7d3c169a-eda9-4729-83a3-5cb2f9e6a9a5))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U13") (unit 1)
         )
@@ -6465,7 +6465,7 @@
     )
     (pin "1" (uuid 8fd70559-1c9d-4188-94d6-41242f020bcd))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR014") (unit 1)
         )
@@ -6491,7 +6491,7 @@
     (pin "1" (uuid 2c732e17-8482-4bc3-8b00-cb5035d542d9))
     (pin "2" (uuid 3001e972-2d0e-43f9-ac47-28262b28860f))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C2") (unit 1)
         )
@@ -6517,7 +6517,7 @@
     (pin "1" (uuid 59a1468b-6edf-4a22-8bb4-57b076a242b5))
     (pin "2" (uuid f835d36f-dd86-4ae2-be2e-1eb33a362ea2))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "R5") (unit 1)
         )
@@ -6542,7 +6542,7 @@
     )
     (pin "1" (uuid 69cc5c8a-2ad1-44d0-be83-5287d388d838))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0136") (unit 1)
         )
@@ -6570,7 +6570,7 @@
     (pin "3" (uuid b85937d4-3aeb-4ee5-b76a-2c365ab85c2d))
     (pin "4" (uuid 1407dd97-7379-4647-b51b-65e589eaa400))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "J2") (unit 1)
         )
@@ -6596,7 +6596,7 @@
     (pin "1" (uuid c14afc5f-ceba-4437-9d83-a4bae490f2c2))
     (pin "2" (uuid b1763266-1ec4-46a6-b5cb-f779ff96048e))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C6") (unit 1)
         )
@@ -6623,7 +6623,7 @@
     (pin "2" (uuid eb284f41-5544-4643-bae6-84aad2662b75))
     (pin "3" (uuid 63fbc32c-6bc0-4a02-828b-5d5e18a8301b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U58") (unit 1)
         )
@@ -6648,7 +6648,7 @@
     )
     (pin "1" (uuid 5c270b8b-4995-4436-a0b0-8cd5535e0ce7))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0167") (unit 1)
         )
@@ -6673,7 +6673,7 @@
     )
     (pin "1" (uuid 36cba65c-1dfa-40b2-a1f0-607aa99ef82b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR044") (unit 1)
         )
@@ -6704,7 +6704,7 @@
     (pin "3" (uuid e33fbf2f-cba5-4971-b356-3034b4ba612e))
     (pin "4" (uuid 770c292d-ee6b-41d1-bc5a-e30d19e9afb4))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "SW1") (unit 1)
         )
@@ -6729,7 +6729,7 @@
     )
     (pin "1" (uuid 73e91153-b110-4e0b-880c-57bf527239fa))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR055") (unit 1)
         )
@@ -6754,7 +6754,7 @@
     )
     (pin "1" (uuid 5ff35a4e-b354-49b2-8068-addb1244598b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0130") (unit 1)
         )
@@ -6781,7 +6781,7 @@
     (pin "2" (uuid 424e6ab0-1ee2-475a-8bec-05aa42ba4648))
     (pin "3" (uuid 70aee6b7-3ddf-475d-87d9-ca9a3142bad0))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U4") (unit 1)
         )
@@ -6808,7 +6808,7 @@
     (pin "2" (uuid ff497a49-5809-47b4-9b36-6a1bd4127098))
     (pin "3" (uuid 3c214e58-c458-4c15-902f-775442d34029))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U1") (unit 1)
         )
@@ -6833,7 +6833,7 @@
     )
     (pin "1" (uuid 3a38ea83-23cd-4f0f-8e63-99fa3c45ef3e))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR025") (unit 1)
         )
@@ -6858,7 +6858,7 @@
     )
     (pin "1" (uuid 7cb48a7f-f67e-4853-a7a8-7ed53082a064))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0115") (unit 1)
         )
@@ -6883,7 +6883,7 @@
     )
     (pin "1" (uuid 99fb05b4-89d0-424a-a5a4-ae9057b372fa))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR026") (unit 1)
         )
@@ -6909,7 +6909,7 @@
     (pin "1" (uuid 9d55b354-5a8c-437c-8bff-a4efa80f2839))
     (pin "2" (uuid 05e70846-9e8c-4b42-b851-bc25e36bb7c8))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C13") (unit 1)
         )
@@ -6934,7 +6934,7 @@
     )
     (pin "1" (uuid f63ab469-79e8-43af-89b8-07043ee734e2))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0147") (unit 1)
         )
@@ -6959,7 +6959,7 @@
     )
     (pin "1" (uuid 7a34a249-26d2-4965-aad9-ec13cb65c218))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR095") (unit 1)
         )
@@ -6984,7 +6984,7 @@
     )
     (pin "1" (uuid ab8e71c4-6fb3-4618-9013-7bbe42daf7a5))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR021") (unit 1)
         )
@@ -7011,7 +7011,7 @@
     (pin "2" (uuid 3d72a984-5c37-4b0d-91f4-fbd98c8e7cec))
     (pin "3" (uuid 030ec000-e564-4ae7-9cf2-d66f78a41e47))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U43") (unit 1)
         )
@@ -7036,7 +7036,7 @@
     )
     (pin "1" (uuid bfa94c56-aa35-4f14-98d9-ea438cf1a1e4))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR028") (unit 1)
         )
@@ -7061,7 +7061,7 @@
     )
     (pin "1" (uuid f5235edc-54f6-40bc-8543-ea153936a334))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0105") (unit 1)
         )
@@ -7086,7 +7086,7 @@
     )
     (pin "1" (uuid ef466484-fad9-4e48-9ef0-73b92867cbc6))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0137") (unit 1)
         )
@@ -7111,7 +7111,7 @@
     )
     (pin "1" (uuid 876778cc-1754-4e40-bbcb-69dfa2ecea52))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR058") (unit 1)
         )
@@ -7136,7 +7136,7 @@
     )
     (pin "1" (uuid 881a70b0-4c41-4acf-a49b-732ef7a5bd78))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR043") (unit 1)
         )
@@ -7161,7 +7161,7 @@
     )
     (pin "1" (uuid 598dc1cb-8b90-4ab4-a623-4b31b0226271))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0155") (unit 1)
         )
@@ -7186,7 +7186,7 @@
     )
     (pin "1" (uuid 0ead47f5-2a39-4f89-aae3-8414826adb49))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR077") (unit 1)
         )
@@ -7213,7 +7213,7 @@
     (pin "2" (uuid 9a5118f6-e304-4768-a110-084e8ae29b6b))
     (pin "3" (uuid f457e46c-09dc-4f86-b459-84ef7db4094a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U44") (unit 1)
         )
@@ -7240,7 +7240,7 @@
     (pin "2" (uuid bd7791eb-bef9-45db-8ec5-c1752b51e71b))
     (pin "3" (uuid bcb8c62f-9385-4ac0-8217-1a254f3a08f2))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U28") (unit 1)
         )
@@ -7267,7 +7267,7 @@
     (pin "2" (uuid cf824849-943b-4d66-989b-8f79ea417d2d))
     (pin "3" (uuid b77f14eb-a881-4418-9005-18c41349b552))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U65") (unit 1)
         )
@@ -7294,7 +7294,7 @@
     (pin "2" (uuid f86773c6-dc2b-4717-8fd9-81ee6f298aad))
     (pin "3" (uuid fda7cf31-d2be-41d8-911a-deb184dacafe))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U31") (unit 1)
         )
@@ -7319,7 +7319,7 @@
     )
     (pin "1" (uuid e6842538-5c6f-449b-aec6-4c2a7dd62c9a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR057") (unit 1)
         )
@@ -7344,7 +7344,7 @@
     )
     (pin "1" (uuid 48e899aa-2740-46e2-99d9-9dd145a7f891))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR033") (unit 1)
         )
@@ -7369,7 +7369,7 @@
     )
     (pin "1" (uuid 0f60ca82-0ad6-4ee7-bb88-17db05843854))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR062") (unit 1)
         )
@@ -7396,7 +7396,7 @@
     (pin "2" (uuid c738368d-e6dd-44e9-9fdb-64e393d1f43e))
     (pin "3" (uuid c1bb1acd-9518-43e4-9ff1-42d8b93ac404))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U60") (unit 1)
         )
@@ -7421,7 +7421,7 @@
     )
     (pin "1" (uuid 8f068704-5bd9-445a-86ea-64fa2ef71354))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR022") (unit 1)
         )
@@ -7447,7 +7447,7 @@
     (pin "1" (uuid 3695985d-1254-4ba4-b5cf-4dcec5f59ea6))
     (pin "2" (uuid ee3bee09-c295-4434-90c7-ae3bff6f10dd))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C5") (unit 1)
         )
@@ -7474,7 +7474,7 @@
     (pin "2" (uuid 7e460170-9176-4456-9325-d489820f4757))
     (pin "3" (uuid b053335c-c05c-4e38-af8e-77cef85b37a1))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U57") (unit 1)
         )
@@ -7501,7 +7501,7 @@
     (pin "2" (uuid fc85d4de-d6c7-403f-ab1a-18e768b3e399))
     (pin "3" (uuid 7ddcb018-b4ad-4bae-a647-1f4a69f6b535))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U45") (unit 1)
         )
@@ -7528,7 +7528,7 @@
     (pin "2" (uuid ff7444bb-b1c6-432a-a3e4-8c514ec01f6d))
     (pin "3" (uuid 388537ea-33d5-46da-815c-8603ebc24b43))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U22") (unit 1)
         )
@@ -7553,7 +7553,7 @@
     )
     (pin "1" (uuid 10024f03-4da4-4b8b-93e8-0e7774e38d0e))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0109") (unit 1)
         )
@@ -7578,7 +7578,7 @@
     )
     (pin "1" (uuid cc881f0c-ba63-40ae-8d9c-6b324b6c91f2))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR090") (unit 1)
         )
@@ -7603,7 +7603,7 @@
     )
     (pin "1" (uuid 9cf8a258-2828-4893-a18f-8095f079df1a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR03") (unit 1)
         )
@@ -7629,7 +7629,7 @@
     (pin "1" (uuid 4cf15c12-e587-42bc-bdcc-bd994fe2e6cb))
     (pin "2" (uuid d023ab51-d385-491f-800c-a0bcd62b0660))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "R4") (unit 1)
         )
@@ -7656,7 +7656,7 @@
     (pin "2" (uuid 24da29a2-14ef-4bcb-b4a3-e51a7b3bfbf4))
     (pin "3" (uuid 023497c7-614c-4e1a-b513-804d5f76dc54))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U29") (unit 1)
         )
@@ -7683,7 +7683,7 @@
     (pin "2" (uuid ad543528-1069-4044-9788-8e95ae0d58e7))
     (pin "3" (uuid 29b5f079-3f62-4a09-9786-b58c6b24d347))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U27") (unit 1)
         )
@@ -7708,7 +7708,7 @@
     )
     (pin "1" (uuid b873f9b5-3b2e-4ad7-9315-ccb0c15200ae))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR042") (unit 1)
         )
@@ -7733,7 +7733,7 @@
     )
     (pin "1" (uuid 15f222e7-817c-48fb-a8da-3ce60732d6a2))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0122") (unit 1)
         )
@@ -7760,7 +7760,7 @@
     (pin "2" (uuid b721ed00-5bfa-4a9f-93c8-355c07003bc2))
     (pin "3" (uuid 5d2a3867-bbd0-40cc-8c78-cf5f65b15015))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U49") (unit 1)
         )
@@ -7787,7 +7787,7 @@
     (pin "2" (uuid d4ff8116-dda2-4b4d-8498-66ec05031e83))
     (pin "3" (uuid cacb3d4e-6889-44dc-9e99-78317a49ac2a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U40") (unit 1)
         )
@@ -7814,7 +7814,7 @@
     (pin "2" (uuid 4f263d08-b656-46be-a8eb-adfaca641f95))
     (pin "3" (uuid e6fb8ba9-c0a3-4111-8ba5-17f7f8b70d47))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U50") (unit 1)
         )
@@ -7839,7 +7839,7 @@
     )
     (pin "1" (uuid 5465e42c-6b27-42e3-aaa8-2e65ddcefdb5))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0118") (unit 1)
         )
@@ -7866,7 +7866,7 @@
     (pin "2" (uuid a1b0027a-9778-474e-bb43-75f893bf1ff2))
     (pin "3" (uuid d487f016-44fc-4bb3-8b5e-bea469e37070))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U36") (unit 1)
         )
@@ -7893,7 +7893,7 @@
     (pin "2" (uuid d5c6e7b5-6ae9-42ee-822b-a9fd82377b16))
     (pin "3" (uuid a786a123-96f1-4958-93c4-ae34f78dbd08))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U47") (unit 1)
         )
@@ -7918,7 +7918,7 @@
     )
     (pin "1" (uuid 43726c80-a3b0-420f-822d-802aa668de41))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR041") (unit 1)
         )
@@ -7943,7 +7943,7 @@
     )
     (pin "1" (uuid 4291e7da-3b18-4f9f-93f0-3b646c0daed8))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0169") (unit 1)
         )
@@ -7970,7 +7970,7 @@
     (pin "2" (uuid c9a9e508-455b-4e91-941e-0918f96cd274))
     (pin "3" (uuid 8298b0c2-d177-4e4e-8676-2c3e25a2fb18))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U7") (unit 1)
         )
@@ -8021,7 +8021,7 @@
     (pin "8" (uuid 37806e3c-66b7-44aa-b08b-14151f61be3c))
     (pin "9" (uuid 974934ac-34a6-4e35-99b0-4a3223cc0fc4))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "AMUX3") (unit 1)
         )
@@ -8051,7 +8051,7 @@
     )
     (pin "1" (uuid 24b0abd2-bff0-4fe2-b36f-ec46e1261fc9))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR065") (unit 1)
         )
@@ -8076,7 +8076,7 @@
     )
     (pin "1" (uuid c4bd2777-2bfb-484e-9a8a-026aeaa3f74b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0117") (unit 1)
         )
@@ -8101,7 +8101,7 @@
     )
     (pin "1" (uuid 9dfe369c-d063-4f1f-a242-c3e3d183bba3))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR066") (unit 1)
         )
@@ -8126,7 +8126,7 @@
     )
     (pin "1" (uuid 516cb215-8295-4c70-84c7-01f9fe6d8219))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0108") (unit 1)
         )
@@ -8151,7 +8151,7 @@
     )
     (pin "1" (uuid dcb427a9-6871-4c0f-81f1-8656ca4ab3f6))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR096") (unit 1)
         )
@@ -8176,7 +8176,7 @@
     )
     (pin "1" (uuid 5b82dcdc-826b-4076-a988-3f49faae611b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR036") (unit 1)
         )
@@ -8201,7 +8201,7 @@
     )
     (pin "1" (uuid a1ec28c2-e014-46bd-934d-d360e1e23402))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR060") (unit 1)
         )
@@ -8227,7 +8227,7 @@
     (pin "1" (uuid 7cf3a62c-c252-4491-b717-9e01c6bd829b))
     (pin "2" (uuid 3a7f9540-e12d-4944-a8fa-b2ac7beccaef))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C3") (unit 1)
         )
@@ -8254,7 +8254,7 @@
     (pin "2" (uuid 398f24bd-0af1-4190-bcef-4d009496bf29))
     (pin "3" (uuid 2475e974-cdbb-4423-8f01-864ca6e88b47))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U14") (unit 1)
         )
@@ -8279,7 +8279,7 @@
     )
     (pin "1" (uuid 157753c9-7538-42a3-8eea-ed722c680d29))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0144") (unit 1)
         )
@@ -8304,7 +8304,7 @@
     )
     (pin "1" (uuid 808f4676-dd8f-41d8-8f73-19c04a496fa1))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0110") (unit 1)
         )
@@ -8331,7 +8331,7 @@
     (pin "2" (uuid 4b78c7ae-4118-4a7a-88aa-6260de783af3))
     (pin "3" (uuid 7785949a-2af9-4f09-9185-d9f030e9933f))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U68") (unit 1)
         )
@@ -8356,7 +8356,7 @@
     )
     (pin "1" (uuid aaea707d-9429-4efc-ba20-da243aef24d6))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR085") (unit 1)
         )
@@ -8381,7 +8381,7 @@
     )
     (pin "1" (uuid ae0ca528-209e-486a-a989-cb9eea44116e))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR06") (unit 1)
         )
@@ -8406,7 +8406,7 @@
     )
     (pin "1" (uuid b2c280f6-af17-4d39-b614-1302b04c8dce))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR067") (unit 1)
         )
@@ -8431,7 +8431,7 @@
     )
     (pin "1" (uuid 95db71b1-5c56-4636-b80d-841da3f1c510))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0149") (unit 1)
         )
@@ -8456,7 +8456,7 @@
     )
     (pin "1" (uuid 6e78370c-8b36-41ad-ac51-51ae8e17661c))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR074") (unit 1)
         )
@@ -8507,7 +8507,7 @@
     (pin "8" (uuid 5d5de4d5-26e0-4119-a9c9-616f4d5239d4))
     (pin "9" (uuid a520303c-0421-4259-a2a1-3174cfb86d19))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "AMUX1") (unit 1)
         )
@@ -8540,7 +8540,7 @@
     (pin "3" (uuid 5bed5c7c-ea44-480d-af5a-40ec55a0a821))
     (pin "4" (uuid 043c451f-8b97-4d53-923d-c00bdfd349a8))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "J4") (unit 1)
         )
@@ -8565,7 +8565,7 @@
     )
     (pin "1" (uuid 662687e6-ec0e-481b-b713-b58ecdccf2c5))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR076") (unit 1)
         )
@@ -8590,7 +8590,7 @@
     )
     (pin "1" (uuid 00688322-7e40-4cec-90a3-c5367731c673))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0143") (unit 1)
         )
@@ -8617,7 +8617,7 @@
     (pin "2" (uuid d6e7b415-bad2-42f6-8695-b7c436c0e53b))
     (pin "3" (uuid ee9b5d76-bc3c-4b5c-b4dd-04b7af230aa0))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U51") (unit 1)
         )
@@ -8642,7 +8642,7 @@
     )
     (pin "1" (uuid c10b06af-f593-4e88-96fc-d2c0e78a3e76))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR015") (unit 1)
         )
@@ -8669,7 +8669,7 @@
     (pin "2" (uuid 0f1229b8-ad7f-4cda-b3de-90a40738b7cc))
     (pin "3" (uuid 8e113add-74ca-4fd7-8c30-03899d0c486e))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U5") (unit 1)
         )
@@ -8696,7 +8696,7 @@
     (pin "2" (uuid d5764b1c-63a9-4d0f-a675-de1246f78247))
     (pin "3" (uuid c2ca62b5-942d-4715-96f7-2655f952df16))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U15") (unit 1)
         )
@@ -8723,7 +8723,7 @@
     (pin "2" (uuid dfdd557f-f993-411b-9e1c-4011d4561db6))
     (pin "3" (uuid af79fd4a-196d-48de-b787-ae5c659a3b78))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U52") (unit 1)
         )
@@ -8750,7 +8750,7 @@
     (pin "2" (uuid 259ed972-6149-477b-b345-0c13aa104f79))
     (pin "3" (uuid 8f35779a-df12-48d7-9c3b-7afa880ba4e8))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U9") (unit 1)
         )
@@ -8777,7 +8777,7 @@
     (pin "2" (uuid 53f05711-9ec5-4460-bb20-f096ed16f7d3))
     (pin "3" (uuid 3b0268c5-d4ab-4819-8a8b-c945d15c14dd))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U41") (unit 1)
         )
@@ -8802,7 +8802,7 @@
     )
     (pin "1" (uuid 1d2a0910-164c-4b12-9656-5cf5a2bd197a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR051") (unit 1)
         )
@@ -8827,7 +8827,7 @@
     )
     (pin "1" (uuid b2d91fee-ff5f-4f22-b191-ed612ddc6576))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR027") (unit 1)
         )
@@ -8854,7 +8854,7 @@
     (pin "2" (uuid cf2c92da-273e-40f0-84f7-944c61aff145))
     (pin "3" (uuid 523c2f8e-5434-4f6e-b873-203c485bf797))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U21") (unit 1)
         )
@@ -8881,7 +8881,7 @@
     (pin "2" (uuid a040b558-e4b7-462e-8b0f-c0f2f6d6e956))
     (pin "3" (uuid 7b0a409c-4b0c-4ed6-b5aa-b7f34a2365fd))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U59") (unit 1)
         )
@@ -8907,7 +8907,7 @@
     (pin "1" (uuid 7b67b562-d4b4-44d2-a989-6ec181f06e6a))
     (pin "2" (uuid d157c901-8326-4a06-b839-3872f546a104))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "FB1") (unit 1)
         )
@@ -8932,7 +8932,7 @@
     )
     (pin "1" (uuid 6002966b-8dd8-41e7-9499-71c793c1f041))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0131") (unit 1)
         )
@@ -8957,7 +8957,7 @@
     )
     (pin "1" (uuid 66492467-452a-4184-90ff-c29501847a92))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR040") (unit 1)
         )
@@ -8982,7 +8982,7 @@
     )
     (pin "1" (uuid ca849094-2a76-40fd-bf30-576b2b709e9b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR094") (unit 1)
         )
@@ -9007,7 +9007,7 @@
     )
     (pin "1" (uuid 20fe2132-3f5a-4c2e-a851-abf9cdafca08))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR069") (unit 1)
         )
@@ -9032,7 +9032,7 @@
     )
     (pin "1" (uuid 0131a700-52a0-4ebf-b987-5e3210978d34))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0125") (unit 1)
         )
@@ -9059,7 +9059,7 @@
     (pin "2" (uuid 7254241d-50dd-4a74-a069-b0037d9023bf))
     (pin "3" (uuid 0febe881-3dde-49c1-b2b8-1f7c495d1a65))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U67") (unit 1)
         )
@@ -9084,7 +9084,7 @@
     )
     (pin "1" (uuid e49c77ea-306a-4be4-97c1-6757e29d1157))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR091") (unit 1)
         )
@@ -9109,7 +9109,7 @@
     )
     (pin "1" (uuid 346a54ad-7a7b-43bc-b9cd-7be6d72c12bd))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR098") (unit 1)
         )
@@ -9134,7 +9134,7 @@
     )
     (pin "1" (uuid 0212d660-9c0f-4b7c-80d3-4de3150e2e02))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0158") (unit 1)
         )
@@ -9161,7 +9161,7 @@
     (pin "2" (uuid 487e0a45-3b61-49da-88da-3e6d88c63b20))
     (pin "3" (uuid ee2faa9f-f3ea-4ff8-a3ea-e22ea5cb7cee))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U26") (unit 1)
         )
@@ -9186,7 +9186,7 @@
     )
     (pin "1" (uuid 674bfecf-b5f9-4232-8d07-c7a0d9751965))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0148") (unit 1)
         )
@@ -9211,7 +9211,7 @@
     )
     (pin "1" (uuid 9cb67772-563d-4836-ad80-527512fd4b78))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR013") (unit 1)
         )
@@ -9238,7 +9238,7 @@
     (pin "2" (uuid e435928e-2202-42cd-b422-ae9e62e1f5fa))
     (pin "3" (uuid c7d9eef3-8ec3-4ad7-8de5-7984599ffe85))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U61") (unit 1)
         )
@@ -9263,7 +9263,7 @@
     )
     (pin "1" (uuid db7f65c1-1c99-428f-b250-60d805fe9e17))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0124") (unit 1)
         )
@@ -9290,7 +9290,7 @@
     (pin "2" (uuid 4dd5bdcf-9fbe-4f53-b1f9-4a353a805975))
     (pin "3" (uuid fa2d5de2-b244-4260-8424-095d45f9f6b0))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U39") (unit 1)
         )
@@ -9315,7 +9315,7 @@
     )
     (pin "1" (uuid 4d9edc67-74d1-4114-a208-7b75027dcbbe))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0161") (unit 1)
         )
@@ -9340,7 +9340,7 @@
     )
     (pin "1" (uuid 0676b611-bdf2-4c77-ba97-92e2f7cfccd3))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR072") (unit 1)
         )
@@ -9367,7 +9367,7 @@
     (pin "2" (uuid d2411e66-a12b-4824-bf13-c93602f72635))
     (pin "3" (uuid de920acc-ecc0-457a-9f13-5c1df1b219f4))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U33") (unit 1)
         )
@@ -9392,7 +9392,7 @@
     )
     (pin "1" (uuid 3462805c-bb2e-449d-a124-3bda90c32ab2))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR059") (unit 1)
         )
@@ -9419,7 +9419,7 @@
     (pin "2" (uuid 5fadf2da-b3d2-46a4-a6a8-8c942322e993))
     (pin "3" (uuid 657c938e-16d4-409d-8697-9083f6a370ec))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U63") (unit 1)
         )
@@ -9444,7 +9444,7 @@
     )
     (pin "1" (uuid b7aedd8b-7edd-432c-9cb3-4b5bba599959))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR064") (unit 1)
         )
@@ -9471,7 +9471,7 @@
     (pin "2" (uuid d870052c-aa57-47e6-a4fc-44cca0d6c117))
     (pin "3" (uuid c1b4ff11-9df2-47ba-abb3-e483498f8fc9))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U53") (unit 1)
         )
@@ -9502,7 +9502,7 @@
     (pin "3" (uuid b5774d8f-c11b-42a9-bea8-9619c203af8b))
     (pin "4" (uuid fb653dad-dc6a-4e0c-a309-1ca2622765b3))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "Y1") (unit 1)
         )
@@ -9527,7 +9527,7 @@
     )
     (pin "1" (uuid aa97e4d4-c066-4195-bcc9-d682e50872f6))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0141") (unit 1)
         )
@@ -9552,7 +9552,7 @@
     )
     (pin "1" (uuid 2384c181-ee3f-4706-9930-a71fd09939ce))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR078") (unit 1)
         )
@@ -9577,7 +9577,7 @@
     )
     (pin "1" (uuid e559791d-94da-4915-8774-6aa9b963e5e7))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR082") (unit 1)
         )
@@ -9628,7 +9628,7 @@
     (pin "8" (uuid 69e918d9-ea24-48a0-8cc4-eeab7c08edfc))
     (pin "9" (uuid 398bcd1c-2c21-48ff-a287-32683412f5ca))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "AMUX0") (unit 1)
         )
@@ -9658,7 +9658,7 @@
     )
     (pin "1" (uuid 5b5ff4f1-5418-4dab-bbe6-c7e06ecbda0e))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR097") (unit 1)
         )
@@ -9683,7 +9683,7 @@
     )
     (pin "1" (uuid fd628fac-5c70-4e7a-b119-fd7ca762e72b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0128") (unit 1)
         )
@@ -9708,7 +9708,7 @@
     )
     (pin "1" (uuid 16264f6f-2de1-4f61-ac0f-c4aecc158210))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR04") (unit 1)
         )
@@ -9733,7 +9733,7 @@
     )
     (pin "1" (uuid 381db79c-4e26-494a-a9d7-b51de0d8916a))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0138") (unit 1)
         )
@@ -9759,7 +9759,7 @@
     (pin "1" (uuid 97b2996f-0b04-4431-9127-c78c28d561a1))
     (pin "2" (uuid f05b8697-e45c-4fa7-8250-d4927868ecc0))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "C1") (unit 1)
         )
@@ -9784,7 +9784,7 @@
     )
     (pin "1" (uuid 7da08db1-cc51-4bce-87d1-cb5d43b027cd))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR088") (unit 1)
         )
@@ -9809,7 +9809,7 @@
     )
     (pin "1" (uuid 20eb31c2-78cd-4c48-bacd-36b91a09ea7b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0103") (unit 1)
         )
@@ -9834,7 +9834,7 @@
     )
     (pin "1" (uuid 4d457243-5c41-4d52-b1ab-e2bedd2c313b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0135") (unit 1)
         )
@@ -9861,7 +9861,7 @@
     (pin "2" (uuid caaa1c20-cd58-4751-a2a3-597e0b134670))
     (pin "3" (uuid e9988d62-b0e1-42d3-8fe0-9598597ef6a4))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U35") (unit 1)
         )
@@ -9886,7 +9886,7 @@
     )
     (pin "1" (uuid 889fa379-0fac-4f26-8bea-805a5176ba53))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0139") (unit 1)
         )
@@ -9911,7 +9911,7 @@
     )
     (pin "1" (uuid bea4f6e2-fcad-4fbd-8977-7247162a2392))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR016") (unit 1)
         )
@@ -9936,7 +9936,7 @@
     )
     (pin "1" (uuid 4e83fa2a-b2e4-4cca-8960-6ecd109e9c55))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR037") (unit 1)
         )
@@ -9961,7 +9961,7 @@
     )
     (pin "1" (uuid 2350e908-e78a-4173-a876-995b3effbc1c))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR052") (unit 1)
         )
@@ -9986,7 +9986,7 @@
     )
     (pin "1" (uuid 744fcb14-9ece-4114-8a20-93f6424e8aa3))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0154") (unit 1)
         )
@@ -10013,7 +10013,7 @@
     (pin "2" (uuid 5373b37e-b7ed-4669-b40b-b6a466f9be33))
     (pin "3" (uuid 1930a909-8279-4a2f-92a9-1a8ac0c1128e))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "U17") (unit 1)
         )
@@ -10038,7 +10038,7 @@
     )
     (pin "1" (uuid 96be9848-cb5d-4e2f-afe0-4cdbaef87b7b))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0133") (unit 1)
         )
@@ -10063,7 +10063,7 @@
     )
     (pin "1" (uuid 20c1e1ad-18f9-4944-945c-a30cb19f3e19))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "#PWR0163") (unit 1)
         )
@@ -10089,7 +10089,7 @@
     (pin "1" (uuid 38d4863b-d470-47ca-9c09-c62ba8f79856))
     (pin "2" (uuid d6d9603a-b54e-46b3-8764-acdd5887fb12))
     (instances
-      (project "kicad_2"
+      (project "macrolev"
         (path "/24af5553-bb98-43bd-b85c-c6b0b021d5e0"
           (reference "R3") (unit 1)
         )

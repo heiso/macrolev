@@ -43,7 +43,27 @@ Custom analog keyboard based on the Lekker Switch from Wooting.
 - [Riskable projects](https://github.com/riskable)
 - [Fluxpad with lekker switches](https://github.com/sssata/fluxpad)
 - [STM32F411CEU6 documentation](https://www.st.com/en/microcontrollers-microprocessors/stm32f411ce.html#documentation)
+- [Wooting 60HE pcb](https://github.com/heiso/macrolev/tree/main/ref/Wooting-60HE)
 
 ## Tooling
 
 - [JLC2KiCad_lib](https://github.com/TousstNicolas/JLC2KiCad_lib)
+
+## PCB
+
+![schema](./assets/schema.png)  
+[Schema](./assets/schema.pdf)
+
+(All components are located on the back of the PCB. To enhance readability, I've flipped the board view)
+
+![pcb](./assets/pcb.png)  
+B.Silkscreen (white) - B.Cu (blue) - F.Cu (red)
+
+![usbc](./assets/usbc.png)  
+USB-C board
+
+![mcu zoomed](./assets/mcu-zoomed.png)  
+MCU zoomed
+
+![buttons zoomed](./assets/buttons-zoomed.png)  
+Buttons zoomed
