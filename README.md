@@ -51,6 +51,9 @@ Custom analog keyboard based on the Lekker Switch from Wooting.
 
 ## PCB
 
+[Review request on PrintedCircuitBoard](https://www.reddit.com/r/PrintedCircuitBoard/comments/17hjp88/review_request_analog_keyboard)  
+[Second review request on PrintedCircuitBoard](https://www.reddit.com/r/PrintedCircuitBoard/comments/17kqc2j/review_request_analog_keyboard_2/)
+
 ![schema](./assets/schema.png)  
 [Schema](./assets/schema.pdf)
 
@@ -64,6 +67,3 @@ USB-C board
 
 ![mcu zoomed](./assets/mcu-zoomed.png)  
 MCU zoomed
-
-![buttons zoomed](./assets/buttons-zoomed.png)  
-Buttons zoomed
