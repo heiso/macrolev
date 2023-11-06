@@ -2,6 +2,7 @@
 # Format documentation: https://kicad.org/help/file-formats/
 
 gerber/*
+gerber.zip
 
 # Temporary files
 *.000
