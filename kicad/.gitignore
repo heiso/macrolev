@@ -1,9 +1,6 @@
 # For PCBs designed using KiCad: https://www.kicad.org/
 # Format documentation: https://kicad.org/help/file-formats/
 
-gerber/*
-gerber.zip
-
 # Temporary files
 *.000
 *.bak
@@ -31,3 +28,6 @@ fp-info-cache
 # Exported BOM files
 *.xml
 *.csv
+!macrolev-bom.csv
+!macrolev-bottom-pos.csv
+!macrolev-top-pos.csv
