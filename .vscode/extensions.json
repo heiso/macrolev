@@ -1,9 +1,8 @@
 {
   "recommendations": [
-    "Leathong.openscad-language-support",
-    "chris-hock.pioasm",
-    "twxs.cmake",
-    "ms-vscode.cmake-tools",
+    "leathong.openscad-language-support",
     "esbenp.prettier-vscode",
+    "ms-vscode.cpptools",
+    "xaver.clang-format"
   ]
 }

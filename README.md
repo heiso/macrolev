@@ -12,7 +12,10 @@ Custom analog keyboard based on the Lekker Switch from Wooting.
 
 ### Must Have
 
-- Move from RP2040 to STM32F4 mcu
+- ~~Move from RP2040 to STM32F4 mcu~~
+- jtag
+- debug adc values
+- change keyboard descriptor
 
 ### Should Have
 

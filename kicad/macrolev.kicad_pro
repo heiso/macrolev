@@ -615,12 +615,12 @@
   },
   "pcbnew": {
     "last_paths": {
-      "gencad": "",
+      "gencad": "macrolev.cad",
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "kicad_2.step",
-      "vrml": ""
+      "step": "macrolev.step",
+      "vrml": "macrolev.wrl"
     },
     "page_layout_descr_file": ""
   },
