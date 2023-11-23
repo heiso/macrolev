@@ -39,7 +39,6 @@ Custom analog keyboard based on the Lekker Switch from Wooting.
 - [layout/design ref](https://geekhack.org/index.php?topic=103671.0)
 - [cirque trackpad](https://www.cirque.com/glidepoint-circle-trackpads)
 - [MagLev_Switch_MX](https://github.com/famichu/MagLev_Switch_MX)
-- [Keyboard ghosting interactive demonstration](https://www.microsoft.com/applied-sciences/projects/anti-ghosting-demo)
 - [Anatomy of a keyboard](https://matt3o.com/anatomy-of-a-keyboard/)
 - [Switches/Stabs Kicad footprints from ebastler/marbastlib](https://github.com/ebastler/marbastlib)
 - [Reddit Post about someone building a lekker switch based keyboard](https://www.reddit.com/r/PrintedCircuitBoard/comments/152kt63/review_request_analog_hall_effect_75_iso_keyboard/)
@@ -50,6 +49,7 @@ Custom analog keyboard based on the Lekker Switch from Wooting.
 
 ## Tooling
 
+- [Keyboard ghosting interactive demonstration](https://www.microsoft.com/applied-sciences/projects/anti-ghosting-demo)
 - [JLC2KiCad_lib](https://github.com/TousstNicolas/JLC2KiCad_lib)
 
 ## PCB

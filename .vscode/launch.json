@@ -13,7 +13,11 @@
       "servertype": "stlink",
       "preLaunchTask": "flash",
       "showDevDebugOutput": "raw",
-      "svdFile": "${workspaceRoot}/firmware/debug-files/STM32F411.svd"
+      "svdFile": "${workspaceRoot}/firmware/debug-files/STM32F411.svd",
+      "liveWatch": {
+        "enabled": true,
+        "samplesPerSecond": 4
+      }
     }
   ]
 }

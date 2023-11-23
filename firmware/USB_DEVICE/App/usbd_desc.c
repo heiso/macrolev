@@ -23,7 +23,6 @@
 #include "usbd_conf.h"
 #include "usbd_core.h"
 
-
 /* USER CODE BEGIN INCLUDE */
 
 /* USER CODE END INCLUDE */
