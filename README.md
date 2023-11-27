@@ -49,8 +49,10 @@ Custom analog keyboard based on the Lekker Switch from Wooting.
 
 ## Tooling
 
+- [QMK keyboard test](https://config.qmk.fm/#/test)
 - [Keyboard ghosting interactive demonstration](https://www.microsoft.com/applied-sciences/projects/anti-ghosting-demo)
 - [JLC2KiCad_lib](https://github.com/TousstNicolas/JLC2KiCad_lib)
+- [Debug HardFault](https://interrupt.memfault.com/blog/cortex-m-hardfault-debug)
 
 ## PCB
 
