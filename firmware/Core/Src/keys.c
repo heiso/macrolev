@@ -7,7 +7,7 @@
 #define CALIBRATION_CYCLES 20
 
 #define IDLE_VALUE_APPROX 1800
-#define MAX_DISTANCE_APPROX 300
+#define MAX_DISTANCE_APPROX 500
 #define IDLE_VALUE_OFFSET 10
 #define MAX_DISTANCE_OFFSET 40
 
@@ -15,7 +15,7 @@
 #define AMUX_SELECT_PINS_COUNT 4
 #define AMUX_CHANNEL_COUNT 16
 
-extern ADC_HandleTypeDef hadc1;
+ADC_HandleTypeDef hadc1;
 
 uint32_t adc_channels[ADC_CHANNEL_COUNT] = {ADC_CHANNEL_3, ADC_CHANNEL_4, ADC_CHANNEL_5, ADC_CHANNEL_6, ADC_CHANNEL_7};
 uint32_t amux_select_pins[AMUX_SELECT_PINS_COUNT] = {GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14, GPIO_PIN_15};
@@ -51,6 +51,26 @@ void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t co
 }
 
 void keys_init(uint16_t trigger_offset, uint16_t rapid_trigger_offset, uint8_t is_continuous_rapid_trigger_enabled) {
+  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
+   */
+  hadc1.Instance = ADC1;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+  hadc1.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc1.Init.ScanConvMode = DISABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.DiscontinuousConvMode = ENABLE;
+  hadc1.Init.DiscontinuousConvMode = DISABLE;
+  hadc1.Init.NbrOfDiscConversion = 1;
+  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc1.Init.NbrOfConversion = 1;
+  hadc1.Init.DMAContinuousRequests = DISABLE;
+  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  if (HAL_ADC_Init(&hadc1) != HAL_OK) {
+    Error_Handler();
+  }
+
   sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
   sConfig.Rank = 1;
 
@@ -92,9 +112,9 @@ void update_key_state(struct key *key) {
 
   if (key->calibration.is_calibrating == 0) {
     // Calibrate idle value
-    if (state.value > key->calibration.idle_value) {
-      key->calibration.idle_value = state.value;
-    }
+    // if (state.value > key->calibration.idle_value) {
+    //   key->calibration.idle_value = (1 - 0.8) * state.value + 0.8 * key->calibration.idle_value;
+    // }
 
     // Get distance from top
     if (state.value >= key->calibration.idle_value - IDLE_VALUE_OFFSET) {
@@ -104,16 +124,21 @@ void update_key_state(struct key *key) {
     }
 
     // Calibrate max distance value
-    if (key->state.distance > key->calibration.max_distance) {
-      key->calibration.max_distance = key->state.distance;
+    if (state.distance > key->calibration.max_distance) {
+      // key->calibration.max_distance = (1 - 0.8) * state.distance + 0.8 * key->calibration.max_distance;
+      key->calibration.max_distance = state.distance;
+    }
+
+    // Limit max distance
+    if (state.distance >= key->calibration.max_distance - MAX_DISTANCE_OFFSET) {
+      state.distance = key->calibration.max_distance;
     }
 
     // Map distance in percentages
-    // state.distance = 100 - (state.distance * 100 / (key->calibration.max_value - key->calibration.min_value));
-    state.distance = (state.distance * 100 / key->calibration.max_distance);
+    state.distance_percentage = (state.distance * 100) / key->calibration.max_distance;
 
     // Update velocity
-    state.velocity = state.distance - key->state.distance;
+    state.velocity = state.distance_percentage - key->state.distance_percentage;
 
     // Update Acceleration
     state.acceleration = (state.velocity - key->state.velocity) / 2;
@@ -152,36 +177,39 @@ void update_key(struct key *key) {
 
     uint32_t now = HAL_GetTick();
     uint8_t is_ready_to_trigger = key->actuation.triggered_at + MIN_TIME_BETWEEN_EVENTS < now;
-    uint8_t has_moved_more_than_min = abs(key->state.distance - key->actuation.changed_at) > 10;
-    uint8_t is_after_trigger_offset = key->state.distance > key->actuation.trigger_offset;
+    uint8_t has_moved_more_than_min = abs(key->state.distance_percentage - key->actuation.changed_at) > 10;
+    uint8_t is_after_trigger_offset = key->state.distance_percentage > key->actuation.trigger_offset;
 
     // Trigger
     if (is_ready_to_trigger && key->actuation.is_reset && has_moved_more_than_min && is_after_trigger_offset) {
       key->actuation.is_reset = 0;
       key->actuation.triggered_at = now;
-      key->actuation.changed_at = key->state.distance;
+      key->actuation.changed_at = key->state.distance_percentage;
       // keys_on_triggered(key);
+      keys_on_change(key);
     }
 
     // Reset
     else if (!key->actuation.is_reset && has_moved_more_than_min && !is_after_trigger_offset) {
-      key->actuation.changed_at = key->state.distance;
+      key->actuation.changed_at = key->state.distance_percentage;
       key->actuation.is_reset = 1;
       // keys_on_reset(key);
+      keys_on_change(key);
     }
 
     // Full reset
-    if (key->state.distance == 0) {
+    if (key->state.distance_percentage == 0) {
       key->actuation.changed_at = 0;
-      // if (!key->actuation.is_reset) {
-      //   keys_on_reset(key);
-      // }
+      if (!key->actuation.is_reset) {
+        // keys_on_reset(key);
+        keys_on_change(key);
+      }
     }
 
     // Send event if motion detected
-    if (is_ready_to_trigger && has_moved_more_than_min) {
-      keys_on_change(key);
-    }
+    // if (is_ready_to_trigger && has_moved_more_than_min) {
+    //   keys_on_change(key);
+    // }
   }
 }
 

@@ -17,6 +17,7 @@ struct calibration {
 struct state {
   int16_t value;
   int16_t distance;
+  int16_t distance_percentage;
   int16_t velocity;
   int16_t acceleration;
   int16_t jerk;
@@ -41,8 +42,6 @@ struct key {
   uint8_t is_enabled;
   uint8_t row;
   uint8_t column;
-  uint8_t adc_channel;
-  uint8_t amux_channel;
   struct calibration calibration;
   struct state state;
   struct actuation actuation;

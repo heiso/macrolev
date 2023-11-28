@@ -1,9 +1,3 @@
-[submodule "void_switch"]
-	path = void_switch
-	url = git@github.com:riskable/void_switch.git
-[submodule "keycap_playground"]
-	path = keycap_playground
-	url = git@github.com:riskable/keycap_playground.git
-[submodule "kicad/libraries/void_switch_kicad"]
-	path = kicad/libraries/void_switch_kicad
-	url = git@github.com:riskable/void_switch_kicad.git
+[submodule "firmware/tinyusb"]
+	path = firmware/tinyusb
+	url = git@github.com:hathach/tinyusb.git
