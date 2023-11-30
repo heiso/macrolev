@@ -1,0 +1,9 @@
+../Core/Src/main.c:181:6:SystemClock_Config	88	static,ignoring_inline_asm
+../Core/Src/main.c:594:9:get_bitmask_for_modifier	0	static
+../Core/Src/main.c:616:6:keys_on_change	32	static
+../Core/Src/main.c:118:5:main	72	static,ignoring_inline_asm
+../Core/Src/main.c:692:6:tud_hid_set_protocol_cb	0	static
+../Core/Src/main.c:703:6:tud_hid_report_complete_cb	0	static
+../Core/Src/main.c:714:10:tud_hid_get_report_cb	0	static
+../Core/Src/main.c:727:6:tud_hid_set_report_cb	0	static
+../Core/Src/main.c:737:6:Error_Handler	0	static,ignoring_inline_asm

@@ -37,20 +37,18 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 struct calibration {
-  uint8_t is_calibrating;
   uint16_t cycles_count;
   uint16_t idle_value;
   uint16_t max_distance;
 };
 
 struct state {
-  int16_t value;
-  int16_t distance;
-  int16_t distance_percentage;
+  uint16_t value;
+  uint16_t distance;
+  uint16_t distance_percentage;
   int16_t velocity;
   int16_t acceleration;
   int16_t jerk;
-  uint8_t is_pressing;
 };
 
 enum actuation_status {
@@ -72,6 +70,7 @@ struct actuation {
 
 struct key {
   uint8_t is_enabled;
+  uint8_t idle_counter;
   uint8_t row;
   uint8_t column;
   uint8_t has_tap_layer;
@@ -110,7 +109,8 @@ void Error_Handler(void);
 #define MAX_DISTANCE_APPROX 500
 #define IDLE_VALUE_OFFSET 10
 #define MAX_DISTANCE_OFFSET 40
-#define TAP_TIMEOUT 125
+#define TAP_TIMEOUT 90
+#define IDLE_CYCLES_UNTIL_SLEEP 15
 
 #define ADC_CHANNEL_COUNT 5
 #define AMUX_SELECT_PINS_COUNT 4

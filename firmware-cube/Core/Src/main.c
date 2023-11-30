@@ -48,7 +48,7 @@ ADC_HandleTypeDef hadc1;
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
-ADC_ChannelConfTypeDef sConfig = {0};
+ADC_ChannelConfTypeDef ADC_channel_Config = {0};
 
 // {adc_channel, amux_channel}
 const uint8_t channels_by_row_col[MATRIX_ROWS][MATRIX_COLS][2] = {
@@ -81,14 +81,13 @@ const uint16_t keymaps[2][MATRIX_ROWS][MATRIX_COLS] = {
 const uint32_t adc_channels[ADC_CHANNEL_COUNT] = {ADC_CHANNEL_3, ADC_CHANNEL_4, ADC_CHANNEL_5, ADC_CHANNEL_6, ADC_CHANNEL_7};
 const uint32_t amux_select_pins[AMUX_SELECT_PINS_COUNT] = {GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14, GPIO_PIN_15};
 
-static struct key keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT];
+static struct key keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT] = {0};
 
 static uint8_t should_send_report = 0;
 static uint8_t can_send_report = 0;
 
 static uint8_t modifiers = 0;
-static uint8_t keycodes[6] = {0, 0, 0, 0, 0, 0};
-static uint8_t current_keycode_index = 0;
+static uint8_t keycodes[6] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -97,12 +96,12 @@ static void MX_GPIO_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
-static void update_key_state(struct key *key);
+static uint8_t update_key_state(struct key *key);
 static void update_key(struct key *key);
 static void keys_loop();
 static void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t col, uint16_t trigger_offset, uint16_t rapid_trigger_offset, uint8_t is_continuous_rapid_trigger_enabled);
 static void keys_init(uint16_t trigger_offset, uint16_t rapid_trigger_offset, uint8_t is_continuous_rapid_trigger_enabled);
-static void keys_on_change(struct key *key);
+static void handle_keycodes(struct key *key);
 
 /* USER CODE END PFP */
 
@@ -141,8 +140,6 @@ int main(void) {
   MX_ADC1_Init();
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
-
-  HAL_Delay(300);
 
   keys_init(25, 0, 0);
 
@@ -293,6 +290,8 @@ static void MX_ADC1_Init(void) {
   }
   /* USER CODE BEGIN ADC1_Init 2 */
 
+  // memcpy(&ADC_channel_Config, &sConfig, sizeof(ADC_ChannelConfTypeDef));
+
   /* USER CODE END ADC1_Init 2 */
 }
 
@@ -358,160 +357,138 @@ static void MX_GPIO_Init(void) {
 }
 
 /* USER CODE BEGIN 4 */
-void update_key_state(struct key *key) {
+uint8_t update_key_state(struct key *key) {
   struct state state;
 
   // Get a reading
   state.value = HAL_ADC_GetValue(&hadc1);
 
-  if (key->calibration.is_calibrating) {
+  if (key->calibration.cycles_count < CALIBRATION_CYCLES) {
     // Calibrate idle value
     key->calibration.idle_value = (1 - 0.6) * state.value + 0.6 * key->calibration.idle_value;
-
     key->calibration.cycles_count++;
 
-    if (key->calibration.cycles_count >= CALIBRATION_CYCLES) {
-      key->calibration.is_calibrating = 0;
-    }
+    return 0;
   }
 
-  if (key->calibration.is_calibrating == 0) {
-    // Calibrate idle value
-    // if (state.value > key->calibration.idle_value) {
-    //   key->calibration.idle_value = (1 - 0.8) * state.value + 0.8 * key->calibration.idle_value;
-    // }
-
-    // Get distance from top
-    if (state.value >= key->calibration.idle_value - IDLE_VALUE_OFFSET) {
-      state.distance = 0;
-    } else {
-      state.distance = key->calibration.idle_value - state.value;
-    }
-
-    // Calibrate max distance value
-    if (state.distance > key->calibration.max_distance) {
-      // key->calibration.max_distance = (1 - 0.8) * state.distance + 0.8 * key->calibration.max_distance;
-      key->calibration.max_distance = state.distance;
-    }
-
-    // Limit max distance
-    if (state.distance >= key->calibration.max_distance - MAX_DISTANCE_OFFSET) {
-      state.distance = key->calibration.max_distance;
-    }
-
-    // Map distance in percentages
-    state.distance_percentage = (state.distance * 100) / key->calibration.max_distance;
-
-    // Update velocity
-    state.velocity = state.distance_percentage - key->state.distance_percentage;
-
-    // Update Acceleration
-    state.acceleration = (state.velocity - key->state.velocity) / 2;
-    // state.acceleration = 0;
-
-    // Update jerk
-    state.jerk = (state.acceleration - key->state.acceleration) / 3;
-    // state.jerk = 0;
-
-    // Update movement
-    state.is_pressing = key->state.velocity > 0 && state.velocity > 0;
+  // Calibrate idle value
+  if (state.value > key->calibration.idle_value) {
+    // opti possible sur float
+    key->calibration.idle_value = (1 - 0.8) * state.value + 0.8 * key->calibration.idle_value;
+    state.value = key->calibration.idle_value;
   }
+
+  // maybe deactivate when graph
+  if (key->state.distance == 0 && state.value >= key->calibration.idle_value - IDLE_VALUE_OFFSET) {
+    // maybe have an idle state and counter (if 5 cycle without changes, do nothing)
+    if (key->idle_counter >= IDLE_CYCLES_UNTIL_SLEEP) {
+      return 0;
+    }
+    key->idle_counter++;
+  }
+
+  // Get distance from top
+  if (state.value >= key->calibration.idle_value - IDLE_VALUE_OFFSET) {
+    state.distance = 0;
+  } else {
+    state.distance = key->calibration.idle_value - state.value;
+    key->idle_counter = 0;
+  }
+
+  // Calibrate max distance value
+  if (state.distance > key->calibration.max_distance) {
+    key->calibration.max_distance = state.distance;
+  }
+
+  // Limit max distance
+  if (state.distance >= key->calibration.max_distance - MAX_DISTANCE_OFFSET) {
+    state.distance = key->calibration.max_distance;
+  }
+
+  // Map distance in percentages
+  state.distance_percentage = (state.distance * 100) / key->calibration.max_distance;
+
+  // Update velocity
+  state.velocity = state.distance_percentage - key->state.distance_percentage;
+
+  // Update Acceleration
+  state.acceleration = (state.velocity - key->state.velocity) / 2;
+
+  // Update jerk
+  state.jerk = (state.acceleration - key->state.acceleration) / 3;
 
   key->state = state;
+  return 1;
 }
 
 void update_key(struct key *key) {
-  update_key_state(key);
+  if (!update_key_state(key)) {
+    return;
+  }
 
-  if (!key->calibration.is_calibrating) {
-    /**
-     * https://www.youtube.com/watch?v=_Sl-T6iQr8U&t
-     *
-     * |-----| <- FULL RESET      -
-     * |     |                    | Continuous rapid trigger domain (deactivated when full_reset)
-     * |     |                    |
-     * |  -  | <- trigger_offset  -
-     * |     |                    | Rapid trigger domain
-     * |     |                    |
-     * |-----|                    -
-     *
-     */
+  /**
+   * https://www.youtube.com/watch?v=_Sl-T6iQr8U&t
+   *
+   * |-----| <- FULL RESET      -
+   * |     |                    | Continuous rapid trigger domain (deactivated when full_reset)
+   * |  -  | <- reset_offset    |
+   * |  -  | <- trigger_offset  -
+   * |     |                    | Rapid trigger domain
+   * |     |                    |
+   * |-----|                    -
+   *
+   */
 
-    uint32_t now = HAL_GetTick();
-    uint8_t is_ready_to_trigger = key->actuation.triggered_at + MIN_TIME_BETWEEN_EVENTS < now;
-    uint8_t has_moved_more_than_min = abs(key->state.distance_percentage - key->actuation.changed_at) > MIN_MOVEMENT_BETWEEN_EVENTS;
-    uint8_t is_after_trigger_offset = key->state.distance_percentage > key->actuation.trigger_offset;
+  uint32_t now = HAL_GetTick();
+  // uint8_t is_ready_to_trigger = key->actuation.triggered_at + MIN_TIME_BETWEEN_EVENTS < now;
+  // uint8_t has_moved_more_than_min = abs(key->state.distance_percentage - key->actuation.changed_at) > MIN_MOVEMENT_BETWEEN_EVENTS;
+  uint8_t is_after_trigger_offset = key->state.distance_percentage > key->actuation.trigger_offset;
+  uint8_t is_before_reset_offset = key->state.distance_percentage < key->actuation.trigger_offset - MIN_MOVEMENT_BETWEEN_EVENTS;
 
-    switch (key->actuation.status) {
+  switch (key->actuation.status) {
 
-    case STATUS_RESET:
-    case STATUS_RESET_AFTER_TAP:
-      // if reset, can be triggered or tap
-      if (has_moved_more_than_min && is_after_trigger_offset) {
-        if (key->has_tap_layer) {
-          key->actuation.status = STATUS_MIGHT_BE_TAP;
-        } else if (is_ready_to_trigger) {
-          key->actuation.status = STATUS_TRIGGERED;
-          keys_on_change(key);
-        }
-        key->actuation.triggered_at = now;
-        key->actuation.changed_at = key->state.distance_percentage;
-      }
-      break;
-
-    case STATUS_MIGHT_BE_TAP:
-      // if might be tap, can be tap or triggered
-      if (has_moved_more_than_min && !is_after_trigger_offset && now - key->actuation.triggered_at <= TAP_TIMEOUT) {
-        key->actuation.status = STATUS_TAP;
-      } else if (now - key->actuation.triggered_at > TAP_TIMEOUT) {
+  case STATUS_RESET:
+  case STATUS_RESET_AFTER_TAP: // can be degagé si on stocke le keycode index dans la key et qu'on le cible au reset
+    // if reset, can be triggered or tap
+    // if (has_moved_more_than_min && is_after_trigger_offset) {
+    if (is_after_trigger_offset) {
+      if (key->has_tap_layer) {
+        key->actuation.status = STATUS_MIGHT_BE_TAP;
+      } else {
         key->actuation.status = STATUS_TRIGGERED;
+        handle_keycodes(key);
       }
       key->actuation.changed_at = key->state.distance_percentage;
-      keys_on_change(key);
-      break;
+      key->actuation.triggered_at = now;
+    }
+    break;
 
-    case STATUS_TAP:
-      // if tap, can be reset
-      key->actuation.status = STATUS_RESET_AFTER_TAP;
+  case STATUS_MIGHT_BE_TAP:
+    // if might be tap, can be tap or triggered
+    if (is_before_reset_offset && now - key->actuation.triggered_at <= TAP_TIMEOUT) {
+      key->actuation.status = STATUS_TAP;
+      handle_keycodes(key);
+    } else if (now - key->actuation.triggered_at > TAP_TIMEOUT) {
+      key->actuation.status = STATUS_TRIGGERED;
+      handle_keycodes(key);
+    }
+    break;
+
+  case STATUS_TAP:
+    // if tap, can be reset
+    key->actuation.status = STATUS_RESET_AFTER_TAP;
+    key->actuation.changed_at = key->state.distance_percentage;
+    handle_keycodes(key);
+    break;
+
+  case STATUS_TRIGGERED:
+    // if triggered, can be reset
+    if (is_before_reset_offset) {
+      key->actuation.status = STATUS_RESET;
       key->actuation.changed_at = key->state.distance_percentage;
-      keys_on_change(key);
-      break;
-
-    case STATUS_TRIGGERED:
-      // if triggered, can be reset
-      if (has_moved_more_than_min && !is_after_trigger_offset) {
-        key->actuation.status = STATUS_RESET;
-        key->actuation.changed_at = key->state.distance_percentage;
-        keys_on_change(key);
-      }
-      break;
+      handle_keycodes(key);
     }
-
-    // // Trigger
-    // if (is_ready_to_trigger && key->actuation.is_reset && has_moved_more_than_min && is_after_trigger_offset) {
-    //   key->actuation.is_reset = 0;
-    //   key->actuation.triggered_at = now;
-    //   key->actuation.changed_at = key->state.distance_percentage;
-    //   // keys_on_triggered(key);
-    //   keys_on_change(key);
-    // }
-
-    // // Reset
-    // else if (!key->actuation.is_reset && has_moved_more_than_min && !is_after_trigger_offset) {
-    //   key->actuation.changed_at = key->state.distance_percentage;
-    //   key->actuation.is_reset = 1;
-    //   // keys_on_reset(key);
-    //   keys_on_change(key);
-    // }
-
-    // Full reset
-    if (key->state.distance_percentage == 0) {
-      key->actuation.changed_at = 0;
-      if (key->actuation.status != STATUS_RESET && key->actuation.status != STATUS_RESET_AFTER_TAP) {
-        key->actuation.status = STATUS_RESET;
-        keys_on_change(key);
-      }
-    }
+    break;
   }
 }
 
@@ -522,15 +499,9 @@ void keys_loop() {
     }
 
     for (uint8_t adc_channel = 0; adc_channel < ADC_CHANNEL_COUNT; adc_channel++) {
-      // if (keys[adc_channel][amux_channel].is_enabled == 0) {
-      //   // no hall effect sensor on this channel
-      //   continue;
-      // }
-
-      // sConfig.Channel = adc_channels[adc_channel];
-      // HAL_ADC_ConfigChannel(&hadc1, &sConfig);
       HAL_ADC_Start(&hadc1);
-      HAL_ADC_PollForConversion(&hadc1, 100);
+      // opti possible adc channel
+      HAL_ADC_PollForConversion(&hadc1, 1);
 
       if (keys[adc_channel][amux_channel].is_enabled == 1) {
         update_key(&keys[adc_channel][amux_channel]);
@@ -538,15 +509,6 @@ void keys_loop() {
     }
     HAL_ADC_Stop(&hadc1);
   }
-
-  // sConfig.Channel = adc_channels[0];
-  // HAL_ADC_ConfigChannel(&hadc1, &sConfig);
-  // HAL_ADC_Start(&hadc1);
-  // HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-
-  // update_key(&keys[0][0]);
-
-  // HAL_ADC_Stop(&hadc1);
 };
 
 void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t col, uint16_t trigger_offset, uint16_t rapid_trigger_offset, uint8_t is_continuous_rapid_trigger_enabled) {
@@ -559,7 +521,6 @@ void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t co
   key->row = row;
   key->column = col;
 
-  key->calibration.is_calibrating = 1;
   key->calibration.cycles_count = 0;
   key->calibration.idle_value = IDLE_VALUE_APPROX;
   key->calibration.max_distance = MAX_DISTANCE_APPROX;
@@ -572,93 +533,82 @@ void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t co
 }
 
 void keys_init(uint16_t trigger_offset, uint16_t rapid_trigger_offset, uint8_t is_continuous_rapid_trigger_enabled) {
-  for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
-    for (uint8_t adc_channel = 0; adc_channel < ADC_CHANNEL_COUNT; adc_channel++) {
-      struct key *key = &keys[adc_channel][amux_channel];
-      key->is_enabled = 0;
-    }
-  }
-
   for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
     for (uint8_t col = 0; col < MATRIX_COLS; col++) {
-      if (channels_by_row_col[row][col][0] == XXXX || channels_by_row_col[row][col][1] == XXXX) {
-        // no hall effect sensor on this channel
-        continue;
+      if (channels_by_row_col[row][col][0] != XXXX) {
+        init_key(channels_by_row_col[row][col][0], channels_by_row_col[row][col][1], row, col, trigger_offset, rapid_trigger_offset, is_continuous_rapid_trigger_enabled);
       }
-
-      init_key(channels_by_row_col[row][col][0], channels_by_row_col[row][col][1], row, col, trigger_offset, rapid_trigger_offset, is_continuous_rapid_trigger_enabled);
     }
   }
 }
 
 uint8_t get_bitmask_for_modifier(uint8_t keycode) {
-  if (keycode == HID_KEY_CONTROL_LEFT) {
+  switch (keycode) {
+  case HID_KEY_CONTROL_LEFT:
     return 0b00000001;
-  } else if (keycode == HID_KEY_SHIFT_LEFT) {
+  case HID_KEY_SHIFT_LEFT:
     return 0b00000010;
-  } else if (keycode == HID_KEY_ALT_LEFT) {
+  case HID_KEY_ALT_LEFT:
     return 0b00000100;
-  } else if (keycode == HID_KEY_GUI_LEFT) {
+  case HID_KEY_GUI_LEFT:
     return 0b00001000;
-  } else if (keycode == HID_KEY_CONTROL_RIGHT) {
+  case HID_KEY_CONTROL_RIGHT:
     return 0b00010000;
-  } else if (keycode == HID_KEY_SHIFT_RIGHT) {
+  case HID_KEY_SHIFT_RIGHT:
     return 0b00100000;
-  } else if (keycode == HID_KEY_ALT_RIGHT) {
+  case HID_KEY_ALT_RIGHT:
     return 0b01000000;
-  } else if (keycode == HID_KEY_GUI_RIGHT) {
+  case HID_KEY_GUI_RIGHT:
     return 0b10000000;
-  } else {
+  default:
     return NO_MODIFIER_BITMASK;
   }
 }
 
-void keys_on_change(struct key *key) {
-  if (keymaps[_BASE_LAYER][key->row][key->column] == XXXX) {
-    return;
-  }
+void handle_keycodes(struct key *key) {
+  uint8_t row = key->row;
+  uint8_t column = key->column;
 
   switch (key->actuation.status) {
   case STATUS_TRIGGERED:
-    key->modifier_bitmask = get_bitmask_for_modifier(keymaps[_BASE_LAYER][key->row][key->column]);
+    key->modifier_bitmask = get_bitmask_for_modifier(keymaps[_BASE_LAYER][row][column]);
     if (key->modifier_bitmask != NO_MODIFIER_BITMASK) {
       modifiers |= key->modifier_bitmask;
       should_send_report = 1;
-    } else if (current_keycode_index < 6) {
-      keycodes[current_keycode_index] = keymaps[_BASE_LAYER][key->row][key->column];
-      current_keycode_index++;
-      should_send_report = 1;
+    } else {
+      for (uint8_t i = 0; i < 6; i++) {
+        if (keycodes[i] == 0) {
+          keycodes[i] = keymaps[_BASE_LAYER][row][column];
+          should_send_report = 1;
+          break;
+        }
+      }
     }
     break;
 
   case STATUS_TAP:
-    key->modifier_bitmask = get_bitmask_for_modifier(keymaps[_TAP_LAYER][key->row][key->column]);
-    if (key->modifier_bitmask == NO_MODIFIER_BITMASK && current_keycode_index < 6) {
-      keycodes[current_keycode_index] = keymaps[_TAP_LAYER][key->row][key->column];
-      current_keycode_index++;
-      should_send_report = 1;
+    key->modifier_bitmask = get_bitmask_for_modifier(keymaps[_TAP_LAYER][row][column]);
+    if (key->modifier_bitmask == NO_MODIFIER_BITMASK) {
+      for (uint8_t i = 0; i < 6; i++) {
+        if (keycodes[i] == 0) {
+          keycodes[i] = keymaps[_TAP_LAYER][row][column];
+          should_send_report = 1;
+          break;
+        }
+      }
     }
     break;
 
   case STATUS_RESET_AFTER_TAP:
     if (key->modifier_bitmask == NO_MODIFIER_BITMASK) {
-      uint8_t new_keycodes[6] = {0, 0, 0, 0, 0, 0};
-      uint8_t new_keycode_index = 0;
-
       for (uint8_t i = 0; i < 6; i++) {
-        if (keycodes[i] != 0 && keycodes[i] != keymaps[_TAP_LAYER][key->row][key->column]) {
-          new_keycodes[new_keycode_index] = keycodes[i];
-          new_keycode_index++;
+        if (keycodes[i] == keymaps[_TAP_LAYER][row][column]) {
+          keycodes[i] = 0;
+          break;
         }
       }
-
-      for (uint8_t i = 0; i < 6; i++) {
-        keycodes[i] = new_keycodes[i];
-      }
-
-      current_keycode_index = new_keycode_index;
-      should_send_report = 1;
     }
+    should_send_report = 1;
     break;
 
   case STATUS_RESET:
@@ -666,21 +616,12 @@ void keys_on_change(struct key *key) {
       modifiers &= ~key->modifier_bitmask;
       key->modifier_bitmask = NO_MODIFIER_BITMASK;
     } else {
-      uint8_t new_keycodes[6] = {0, 0, 0, 0, 0, 0};
-      uint8_t new_keycode_index = 0;
-
       for (uint8_t i = 0; i < 6; i++) {
-        if (keycodes[i] != 0 && keycodes[i] != keymaps[_BASE_LAYER][key->row][key->column]) {
-          new_keycodes[new_keycode_index] = keycodes[i];
-          new_keycode_index++;
+        if (keycodes[i] == keymaps[_BASE_LAYER][row][column]) {
+          keycodes[i] = 0;
+          break;
         }
       }
-
-      for (uint8_t i = 0; i < 6; i++) {
-        keycodes[i] = new_keycodes[i];
-      }
-
-      current_keycode_index = new_keycode_index;
     }
     should_send_report = 1;
     break;
