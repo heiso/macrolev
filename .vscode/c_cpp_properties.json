@@ -1,8 +1,8 @@
 {
   "configurations": [
     {
-      "name": "formware-cube",
-      "includePath": ["${workspaceFolder}/firmware-cube/**"]
+      "name": "Firmware",
+      "includePath": ["${workspaceFolder}/firmware/**"]
     }
   ],
   "version": 4

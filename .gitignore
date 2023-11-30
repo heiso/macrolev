@@ -3,3 +3,5 @@ build
 openscad.echo
 openscad.log
 tmp
+Debug
+Release

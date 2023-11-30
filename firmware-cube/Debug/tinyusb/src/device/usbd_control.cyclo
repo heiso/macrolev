@@ -1,8 +1,0 @@
-../tinyusb/src/device/usbd_control.c:66:20:_status_stage_xact	2
-../tinyusb/src/device/usbd_control.c:74:6:tud_control_status	1
-../tinyusb/src/device/usbd_control.c:87:13:_data_stage_xact	6
-../tinyusb/src/device/usbd_control.c:106:6:tud_control_xfer	9
-../tinyusb/src/device/usbd_control.c:143:6:usbd_control_reset	1
-../tinyusb/src/device/usbd_control.c:149:6:usbd_control_set_complete_callback	1
-../tinyusb/src/device/usbd_control.c:155:6:usbd_control_set_request	1
-../tinyusb/src/device/usbd_control.c:166:6:usbd_control_xfer_cb	16
