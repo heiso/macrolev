@@ -1,9 +1,8 @@
 {
   "configurations": [
     {
-      "name": "Mac",
-      "includePath": ["${workspaceFolder}/firmware/**"],
-      "defines": ["STM32F411xE", "USE_HAL_DRIVER"]
+      "name": "formware-cube",
+      "includePath": ["${workspaceFolder}/firmware-cube/**"]
     }
   ],
   "version": 4

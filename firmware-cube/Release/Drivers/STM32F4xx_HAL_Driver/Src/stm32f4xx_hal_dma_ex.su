@@ -1,0 +1,3 @@
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c:100:19:HAL_DMAEx_MultiBufferStart	12	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c:154:19:HAL_DMAEx_MultiBufferStart_IT	16	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c:239:19:HAL_DMAEx_ChangeMemory	0	static

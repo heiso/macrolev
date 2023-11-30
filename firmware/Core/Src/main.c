@@ -36,7 +36,7 @@ int main(void) {
   // MX_ADC1_Init();
   // MX_I2C1_Init();
   // MX_USB_DEVICE_Init();
-  MX_USB_OTG_FS_PCD_Init();
+  // MX_USB_OTG_FS_PCD_Init();
 
   // uint32_t USB_delay = USBD_HID_GetPollingInterval(&hpcd_USB_OTG_FS);
 
@@ -51,23 +51,23 @@ int main(void) {
   // DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
   while (1) {
     // unsigned long t1 = DWT->CYCCNT;
-    tud_task();
+    // tud_task();
 
     keys_loop();
 
-    if (tud_hid_ready() && should_send_report && can_send_report) {
-      if (tud_suspended()) {
-        tud_remote_wakeup();
-      } else {
-        can_send_report = 0;
-        should_send_report = 0;
-        tud_hid_keyboard_report(ITF_NUM_KEYBOARD, modifiers, keycodes);
-        report[0] = modifiers;
-        for (uint8_t i = 0; i < 6; i++) {
-          report[2 + i] = keycodes[i];
-        }
-      }
-    }
+    // if (tud_hid_ready() && should_send_report && can_send_report) {
+    //   if (tud_suspended()) {
+    //     tud_remote_wakeup();
+    //   } else {
+    //     can_send_report = 0;
+    //     should_send_report = 0;
+    //     tud_hid_keyboard_report(ITF_NUM_KEYBOARD, modifiers, keycodes);
+    //     report[0] = modifiers;
+    //     for (uint8_t i = 0; i < 6; i++) {
+    //       report[2 + i] = keycodes[i];
+    //     }
+    //   }
+    // }
 
     // uint32_t now = HAL_GetTick();
     // // if (should_send_report && now - last_report_sent_at > USB_delay) {
@@ -192,10 +192,10 @@ static void SystemClock_Config(void) {
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 25;
-  RCC_OscInitStruct.PLL.PLLN = 370;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
-  RCC_OscInitStruct.PLL.PLLQ = 8;
+  RCC_OscInitStruct.PLL.PLLM = 13;
+  RCC_OscInitStruct.PLL.PLLN = 72;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 3;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
     Error_Handler();
   }
@@ -203,12 +203,12 @@ static void SystemClock_Config(void) {
   /** Initializes the CPU, AHB and APB buses clocks
    */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSE;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK) {
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) {
     Error_Handler();
   }
 }

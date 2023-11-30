@@ -1,0 +1,10 @@
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:141:19:HAL_PWREx_EnableBkUpReg	16	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:165:19:HAL_PWREx_DisableBkUpReg	16	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:189:6:HAL_PWREx_EnableFlashPowerDown	0	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:198:6:HAL_PWREx_DisableFlashPowerDown	0	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:211:10:HAL_PWREx_GetVoltageRange	0	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:288:19:HAL_PWREx_ControlVoltageScaling	24	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:359:6:HAL_PWREx_EnableMainRegulatorLowVoltage	0	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:370:6:HAL_PWREx_DisableMainRegulatorLowVoltage	0	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:381:6:HAL_PWREx_EnableLowRegulatorLowVoltage	0	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:392:6:HAL_PWREx_DisableLowRegulatorLowVoltage	0	static

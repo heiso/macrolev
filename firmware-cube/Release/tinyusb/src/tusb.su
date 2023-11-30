@@ -1,0 +1,16 @@
+../tinyusb/src/tusb.c:46:6:tusb_init	0	static
+../tinyusb/src/tusb.c:61:6:tusb_inited	0	static
+../tinyusb/src/tusb.c:80:17:tu_desc_find	0	static
+../tinyusb/src/tusb.c:90:17:tu_desc_find2	8	static
+../tinyusb/src/tusb.c:100:17:tu_desc_find3	12	static
+../tinyusb/src/tusb.c:115:6:tu_edpt_claim	0	static
+../tinyusb/src/tusb.c:135:6:tu_edpt_release	0	static
+../tinyusb/src/tusb.c:153:6:tu_edpt_validate	0	static,ignoring_inline_asm
+../tinyusb/src/tusb.c:192:6:tu_edpt_bind_driver	12	static
+../tinyusb/src/tusb.c:211:10:tu_desc_get_interface_total_len	16	static
+../tinyusb/src/tusb.c:245:6:tu_edpt_stream_init	16	static
+../tinyusb/src/tusb.c:320:6:tu_edpt_stream_write_zlp_if_needed	16	static,ignoring_inline_asm
+../tinyusb/src/tusb.c:331:10:tu_edpt_stream_write_xfer	16	static,ignoring_inline_asm
+../tinyusb/src/tusb.c:355:10:tu_edpt_stream_write	16	static
+../tinyusb/src/tusb.c:375:10:tu_edpt_stream_read_xfer	16	static,ignoring_inline_asm
+../tinyusb/src/tusb.c:408:10:tu_edpt_stream_read	16	static

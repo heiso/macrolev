@@ -1,3 +1,6 @@
 [submodule "firmware/tinyusb"]
 	path = firmware/tinyusb
 	url = git@github.com:hathach/tinyusb.git
+[submodule "firmware-cube/tinyusb"]
+	path = firmware-cube/tinyusb
+	url = git@github.com:hathach/tinyusb.git

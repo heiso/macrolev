@@ -1,0 +1,13 @@
+../tinyusb/src/class/hid/hid_device.c:64:23:get_index_by_itfnum	24	static
+../tinyusb/src/class/hid/hid_device.c:77:6:tud_hid_n_ready	24	static
+../tinyusb/src/class/hid/hid_device.c:84:6:tud_hid_n_report	56	static
+../tinyusb/src/class/hid/hid_device.c:106:9:tud_hid_n_interface_protocol	16	static
+../tinyusb/src/class/hid/hid_device.c:111:9:tud_hid_n_get_protocol	16	static
+../tinyusb/src/class/hid/hid_device.c:116:6:tud_hid_n_keyboard_report	24	static
+../tinyusb/src/class/hid/hid_device.c:134:6:tud_hid_n_mouse_report	32	static
+../tinyusb/src/class/hid/hid_device.c:149:6:tud_hid_n_gamepad_report	40	static
+../tinyusb/src/class/hid/hid_device.c:169:6:hidd_init	8	static
+../tinyusb/src/class/hid/hid_device.c:174:6:hidd_reset	16	static
+../tinyusb/src/class/hid/hid_device.c:180:10:hidd_open	80	static,ignoring_inline_asm
+../tinyusb/src/class/hid/hid_device.c:238:6:hidd_control_xfer_cb	80	static,ignoring_inline_asm
+../tinyusb/src/class/hid/hid_device.c:382:6:hidd_xfer_cb	40	static,ignoring_inline_asm
