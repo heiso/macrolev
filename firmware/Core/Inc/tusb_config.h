@@ -95,7 +95,7 @@ extern "C" {
 #define CFG_TUD_VENDOR 0
 
 // HID buffer size Should be sufficient to hold ID (if any) + Data
-#define CFG_TUD_HID_EP_BUFSIZE 8
+#define CFG_TUD_HID_EP_BUFSIZE 16
 
 #ifdef __cplusplus
 }

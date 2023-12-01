@@ -60,20 +60,27 @@ const uint8_t channels_by_row_col[MATRIX_ROWS][MATRIX_COLS][2] = {
 };
 
 // clang-format off
-const uint16_t keymaps[2][MATRIX_ROWS][MATRIX_COLS] = {
+const uint16_t keymaps[LAYERS_COUNT][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE_LAYER] = {
         {HID_KEY_ESCAPE, HID_KEY_GRAVE, HID_KEY_1, HID_KEY_2, HID_KEY_3, HID_KEY_4, HID_KEY_5, HID_KEY_6, HID_KEY_7, HID_KEY_8, HID_KEY_9, HID_KEY_0, HID_KEY_MINUS, HID_KEY_EQUAL, HID_KEY_BACKSPACE},
-        {____, HID_KEY_TAB, HID_KEY_Q, HID_KEY_W, HID_KEY_E, HID_KEY_R, HID_KEY_T, HID_KEY_Y, HID_KEY_U, HID_KEY_I, HID_KEY_O, HID_KEY_P, HID_KEY_BRACKET_LEFT, HID_KEY_BRACKET_RIGHT, HID_KEY_ENTER},
-        {0x5300, HID_KEY_CAPS_LOCK, HID_KEY_A, HID_KEY_S, HID_KEY_D, HID_KEY_F, HID_KEY_G, HID_KEY_H, HID_KEY_J, HID_KEY_K, HID_KEY_L, HID_KEY_SEMICOLON, HID_KEY_APOSTROPHE, HID_KEY_EUROPE_1, XXXX},
+        {SPECIAL(HID_USAGE_CONSUMER_VOLUME_INCREMENT), HID_KEY_TAB, HID_KEY_Q, HID_KEY_W, HID_KEY_E, HID_KEY_R, HID_KEY_T, HID_KEY_Y, HID_KEY_U, HID_KEY_I, HID_KEY_O, HID_KEY_P, HID_KEY_BRACKET_LEFT, HID_KEY_BRACKET_RIGHT, HID_KEY_ENTER},
+        {SPECIAL(HID_USAGE_CONSUMER_PLAY_PAUSE), HID_KEY_CAPS_LOCK, HID_KEY_A, HID_KEY_S, HID_KEY_D, HID_KEY_F, HID_KEY_G, HID_KEY_H, HID_KEY_J, HID_KEY_K, HID_KEY_L, HID_KEY_SEMICOLON, HID_KEY_APOSTROPHE, HID_KEY_EUROPE_1, XXXX},
         {XXXX, HID_KEY_SHIFT_LEFT, HID_KEY_EUROPE_2, HID_KEY_Z, HID_KEY_X, HID_KEY_C, HID_KEY_V, HID_KEY_B, HID_KEY_N, HID_KEY_M, HID_KEY_COMMA, HID_KEY_PERIOD, HID_KEY_SLASH, HID_KEY_SHIFT_RIGHT, XXXX},
         {XXXX, HID_KEY_CONTROL_LEFT, HID_KEY_ALT_LEFT, HID_KEY_GUI_LEFT, XXXX, HID_KEY_SPACE, XXXX, HID_KEY_SPACE, XXXX, HID_KEY_GUI_RIGHT, HID_KEY_ALT_RIGHT, XXXX, HID_KEY_ARROW_LEFT, HID_KEY_ARROW_DOWN, HID_KEY_ARROW_RIGHT},
     },
     [_TAP_LAYER] = {
         {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____},
         {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____},
-        {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, XXXX},
+        {SPECIAL(HID_USAGE_CONSUMER_VOLUME_DECREMENT), ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, XXXX},
         {XXXX, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, HID_KEY_ARROW_UP, XXXX},
         {XXXX, ____, ____, ____, XXXX, ____, XXXX, ____, XXXX, ____, ____, XXXX, ____, ____, ____},
+    },
+    [_LONG_LAYER] = {
+        {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____},
+        {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____},
+        {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, XXXX},
+        {XXXX, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, XXXX},
+        {XXXX, ____, ____, ____, XXXX, ____, XXXX, ____, XXXX, ____, ____, XXXX, SPECIAL(HID_USAGE_CONSUMER_SCAN_PREVIOUS), SPECIAL(HID_USAGE_CONSUMER_PLAY_PAUSE), SPECIAL(HID_USAGE_CONSUMER_SCAN_NEXT)},
     },
 };
 // clang-format on
@@ -84,10 +91,12 @@ const uint32_t amux_select_pins[AMUX_SELECT_PINS_COUNT] = {GPIO_PIN_12, GPIO_PIN
 static struct key keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT] = {0};
 
 static uint8_t should_send_report = 0;
+static uint8_t should_send_keyboard_report = 0;
 static uint8_t can_send_report = 0;
 
 static uint8_t modifiers = 0;
 static uint8_t keycodes[6] = {0};
+static uint16_t report = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -107,11 +116,10 @@ static void init_keys();
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
-int main(void)
-{
+ * @brief  The application entry point.
+ * @retval int
+ */
+int main(void) {
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -173,13 +181,18 @@ int main(void)
       }
     }
 
-    if (should_send_report && can_send_report && tud_hid_ready()) {
+    if ((should_send_report || should_send_keyboard_report) && can_send_report && tud_hid_ready()) {
       if (tud_suspended()) {
         tud_remote_wakeup();
       } else {
         can_send_report = 0;
-        should_send_report = 0;
-        tud_hid_keyboard_report(ITF_NUM_KEYBOARD, modifiers, keycodes);
+        if (should_send_report) {
+          should_send_report = 0;
+          tud_hid_report(ITF_NUM_CONSUMER_CONTROL, &report, 2);
+        } else {
+          should_send_keyboard_report = 0;
+          tud_hid_keyboard_report(ITF_NUM_KEYBOARD, modifiers, keycodes);
+        }
       }
     }
     /* USER CODE END WHILE */
@@ -190,22 +203,21 @@ int main(void)
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
-void SystemClock_Config(void)
-{
+ * @brief System Clock Configuration
+ * @retval None
+ */
+void SystemClock_Config(void) {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
-  */
+   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
+   * in the RCC_OscInitTypeDef structure.
+   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -214,33 +226,29 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 120;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
   RCC_OscInitStruct.PLL.PLLQ = 5;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
     Error_Handler();
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+   */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSE;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
-  {
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) {
     Error_Handler();
   }
 }
 
 /**
-  * @brief ADC1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_ADC1_Init(void)
-{
+ * @brief ADC1 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_ADC1_Init(void) {
 
   /* USER CODE BEGIN ADC1_Init 0 */
 
@@ -253,7 +261,7 @@ static void MX_ADC1_Init(void)
   /* USER CODE END ADC1_Init 1 */
 
   /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
-  */
+   */
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
@@ -266,18 +274,16 @@ static void MX_ADC1_Init(void)
   hadc1.Init.NbrOfConversion = 1;
   hadc1.Init.DMAContinuousRequests = DISABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
-  if (HAL_ADC_Init(&hadc1) != HAL_OK)
-  {
+  if (HAL_ADC_Init(&hadc1) != HAL_OK) {
     Error_Handler();
   }
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-  */
+   */
   sConfig.Channel = ADC_CHANNEL_3;
   sConfig.Rank = 1;
   sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-  {
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
     Error_Handler();
   }
   /* USER CODE BEGIN ADC1_Init 2 */
@@ -285,16 +291,14 @@ static void MX_ADC1_Init(void)
   // memcpy(&ADC_channel_Config, &sConfig, sizeof(ADC_ChannelConfTypeDef));
 
   /* USER CODE END ADC1_Init 2 */
-
 }
 
 /**
-  * @brief USB_OTG_FS Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USB_OTG_FS_PCD_Init(void)
-{
+ * @brief USB_OTG_FS Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_USB_OTG_FS_PCD_Init(void) {
 
   /* USER CODE BEGIN USB_OTG_FS_Init 0 */
 
@@ -313,26 +317,23 @@ static void MX_USB_OTG_FS_PCD_Init(void)
   hpcd_USB_OTG_FS.Init.lpm_enable = DISABLE;
   hpcd_USB_OTG_FS.Init.vbus_sensing_enable = DISABLE;
   hpcd_USB_OTG_FS.Init.use_dedicated_ep1 = DISABLE;
-  if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK)
-  {
+  if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK) {
     Error_Handler();
   }
   /* USER CODE BEGIN USB_OTG_FS_Init 2 */
 
   /* USER CODE END USB_OTG_FS_Init 2 */
-
 }
 
 /**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPIO_Init(void)
-{
+ * @brief GPIO Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_GPIO_Init(void) {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
@@ -340,17 +341,17 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PB12 PB13 PB14 PB15 */
-  GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -373,7 +374,15 @@ uint8_t get_bitmask_for_modifier(uint8_t keycode) {
   case HID_KEY_GUI_RIGHT:
     return 0b10000000;
   default:
-    return NO_MODIFIER_BITMASK;
+    return 0b00000000;
+  }
+}
+
+uint16_t get_usage_consumer_control(uint16_t value) {
+  if (value > 0xFF) {
+    return value & 0b0111111111111111;
+  } else {
+    return 0;
   }
 }
 
@@ -393,10 +402,23 @@ void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t co
   key->actuation.rapid_trigger_offset = rapid_trigger_offset;
   key->actuation.is_continuous_rapid_trigger_enabled = is_continuous_rapid_trigger_enabled;
 
-  for (uint8_t i = 0; i < 2; i++) {
-    uint8_t bitmask = get_bitmask_for_modifier(keymaps[i][row][column]);
-    key->layers[i].keycode = bitmask == NO_MODIFIER_BITMASK ? keymaps[i][row][column] : NO_KEYCODE;
-    key->layers[i].modifier_bitmask = bitmask;
+  for (uint8_t i = 0; i < LAYERS_COUNT; i++) {
+    if (keymaps[i][row][column] != ____) {
+      uint16_t usage_consumer_control = get_usage_consumer_control(keymaps[i][row][column]);
+      if (usage_consumer_control) {
+        key->layers[i].type = KEY_TYPE_CONSUMER_CONTROL;
+        key->layers[i].value = usage_consumer_control;
+      } else {
+        uint8_t bitmask = get_bitmask_for_modifier(keymaps[i][row][column]);
+        if (bitmask) {
+          key->layers[i].type = KEY_TYPE_MODIFIER;
+          key->layers[i].value = bitmask;
+        } else {
+          key->layers[i].type = KEY_TYPE_NORMAL;
+          key->layers[i].value = keymaps[i][row][column];
+        }
+      }
+    }
   }
 }
 
@@ -478,32 +500,50 @@ uint8_t update_key_state(struct key *key) {
 }
 
 void add_to_hid_report(struct key *key, uint8_t layer) {
-  if (key->layers[layer].modifier_bitmask != NO_MODIFIER_BITMASK) {
-    modifiers |= key->layers[layer].modifier_bitmask;
-    should_send_report = 1;
-  } else if (key->layers[layer].keycode != NO_KEYCODE) {
+  switch (key->layers[layer].type) {
+  case KEY_TYPE_MODIFIER:
+    modifiers |= key->layers[layer].value;
+    should_send_keyboard_report = 1;
+    break;
+
+  case KEY_TYPE_NORMAL:
     for (uint8_t i = 0; i < 6; i++) {
       if (keycodes[i] == 0) {
-        keycodes[i] = key->layers[layer].keycode;
-        should_send_report = 1;
+        keycodes[i] = key->layers[layer].value;
+        should_send_keyboard_report = 1;
         break;
       }
     }
+    break;
+
+  case KEY_TYPE_CONSUMER_CONTROL:
+    report = key->layers[layer].value;
+    should_send_report = 1;
+    break;
   }
 }
 
 void remove_from_hid_report(struct key *key, uint8_t layer) {
-  if (key->layers[layer].modifier_bitmask != NO_MODIFIER_BITMASK) {
-    modifiers &= ~key->layers[layer].modifier_bitmask;
-    should_send_report = 1;
-  } else if (key->layers[layer].keycode != NO_KEYCODE) {
+  switch (key->layers[layer].type) {
+  case KEY_TYPE_MODIFIER:
+    modifiers &= ~key->layers[layer].value;
+    should_send_keyboard_report = 1;
+    break;
+
+  case KEY_TYPE_NORMAL:
     for (uint8_t i = 0; i < 6; i++) {
-      if (keycodes[i] == key->layers[layer].keycode) {
+      if (keycodes[i] == key->layers[layer].value) {
         keycodes[i] = 0;
-        should_send_report = 1;
+        should_send_keyboard_report = 1;
         break;
       }
     }
+    break;
+
+  case KEY_TYPE_CONSUMER_CONTROL:
+    report = 0;
+    should_send_report = 1;
+    break;
   }
 }
 
@@ -532,7 +572,7 @@ void update_key_actuation(struct key *key) {
   case STATUS_RESET:
     // if reset, can be triggered or tap
     if (is_after_trigger_offset) {
-      if (key->layers[_TAP_LAYER].keycode != NO_KEYCODE || key->layers[_TAP_LAYER].modifier_bitmask != NO_MODIFIER_BITMASK) {
+      if (key->layers[_TAP_LAYER].value) {
         key->actuation.status = STATUS_MIGHT_BE_TAP;
       } else {
         key->actuation.status = STATUS_TRIGGERED;
@@ -624,11 +664,10 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
-void Error_Handler(void)
-{
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
+void Error_Handler(void) {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
@@ -637,16 +676,15 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
-void assert_failed(uint8_t *file, uint32_t line)
-{
+ * @brief  Reports the name of the source file and the source line number
+ *         where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
+void assert_failed(uint8_t *file, uint32_t line) {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */

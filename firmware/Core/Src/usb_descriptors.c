@@ -49,8 +49,8 @@ tusb_desc_device_t const desc_device =
         .bDeviceProtocol = 0x00,
         .bMaxPacketSize0 = CFG_TUD_ENDPOINT0_SIZE,
 
-        .idVendor = 0x05AC, // apple
-        .idProduct = USB_PID,
+        .idVendor = 0x03FE,
+        .idProduct = USB_PID + 1,
         .bcdDevice = 0x0100,
 
         .iManufacturer = 0x01,
@@ -71,7 +71,9 @@ uint8_t const *tud_descriptor_device_cb(void) {
 
 uint8_t const desc_hid_keyboard_report[] =
     {
-        TUD_HID_REPORT_DESC_KEYBOARD()};
+        TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(ITF_NUM_KEYBOARD)),
+        TUD_HID_REPORT_DESC_CONSUMER(HID_REPORT_ID(ITF_NUM_CONSUMER_CONTROL)),
+};
 
 // Invoked when received GET HID REPORT DESCRIPTOR
 // Application return pointer to descriptor
@@ -129,7 +131,7 @@ char const *string_desc_arr[] =
         (const char[]){0x09, 0x04}, // 0: is supported language is English (0x0409)
         "Heiso",                    // 1: Manufacturer
         "Macrolev",                 // 2: Product
-        "234567",                   // 3: Serials will use unique ID if possible
+        "345678",                   // 3: Serials will use unique ID if possible
 };
 
 static uint16_t _desc_str[32 + 1];

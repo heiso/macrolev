@@ -68,9 +68,16 @@ struct actuation {
   uint32_t triggered_at;
 };
 
+enum key_type {
+  KEY_TYPE_EMPTY,
+  KEY_TYPE_NORMAL,
+  KEY_TYPE_MODIFIER,
+  KEY_TYPE_CONSUMER_CONTROL,
+};
+
 struct layer {
-  uint8_t keycode;
-  uint8_t modifier_bitmask;
+  enum key_type type;
+  uint16_t value;
 };
 
 struct key {
@@ -82,6 +89,13 @@ struct key {
   struct calibration calibration;
   struct state state;
   struct actuation actuation;
+};
+
+enum {
+  _BASE_LAYER,
+  _TAP_LAYER,
+  _LONG_LAYER,
+  LAYERS_COUNT
 };
 /* USER CODE END ET */
 
@@ -123,13 +137,11 @@ void Error_Handler(void);
 
 #define MATRIX_ROWS 5
 #define MATRIX_COLS 15
-#define _BASE_LAYER 0
-#define _TAP_LAYER 1
 
 #define XXXX 0xff
 #define ____ 0x00
-#define NO_KEYCODE ____
-#define NO_MODIFIER_BITMASK 0b00000000
+
+#define SPECIAL(X) (0b1000000000000000 | X)
 
 /* USER CODE END Private defines */
 
