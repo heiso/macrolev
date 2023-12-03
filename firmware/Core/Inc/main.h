@@ -52,10 +52,10 @@ struct state {
 };
 
 enum actuation_status {
-  STATUS_RESET,
   STATUS_MIGHT_BE_TAP,
   STATUS_TAP,
   STATUS_TRIGGERED,
+  STATUS_RESET,
 };
 
 struct actuation {
@@ -83,8 +83,6 @@ struct layer {
 struct key {
   uint8_t is_enabled;
   uint8_t idle_counter;
-  uint8_t row;
-  uint8_t column;
   struct layer layers[2];
   struct calibration calibration;
   struct state state;
@@ -94,7 +92,6 @@ struct key {
 enum {
   _BASE_LAYER,
   _TAP_LAYER,
-  _LONG_LAYER,
   LAYERS_COUNT
 };
 /* USER CODE END ET */
@@ -128,7 +125,7 @@ void Error_Handler(void);
 #define MAX_DISTANCE_APPROX 500
 #define IDLE_VALUE_OFFSET 10
 #define MAX_DISTANCE_OFFSET 40
-#define TAP_TIMEOUT 90
+#define TAP_TIMEOUT 200
 #define IDLE_CYCLES_UNTIL_SLEEP 15
 
 #define ADC_CHANNEL_COUNT 5

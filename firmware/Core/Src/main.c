@@ -64,23 +64,16 @@ const uint16_t keymaps[LAYERS_COUNT][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE_LAYER] = {
         {HID_KEY_ESCAPE, HID_KEY_GRAVE, HID_KEY_1, HID_KEY_2, HID_KEY_3, HID_KEY_4, HID_KEY_5, HID_KEY_6, HID_KEY_7, HID_KEY_8, HID_KEY_9, HID_KEY_0, HID_KEY_MINUS, HID_KEY_EQUAL, HID_KEY_BACKSPACE},
         {SPECIAL(HID_USAGE_CONSUMER_VOLUME_INCREMENT), HID_KEY_TAB, HID_KEY_Q, HID_KEY_W, HID_KEY_E, HID_KEY_R, HID_KEY_T, HID_KEY_Y, HID_KEY_U, HID_KEY_I, HID_KEY_O, HID_KEY_P, HID_KEY_BRACKET_LEFT, HID_KEY_BRACKET_RIGHT, HID_KEY_ENTER},
-        {SPECIAL(HID_USAGE_CONSUMER_PLAY_PAUSE), HID_KEY_CAPS_LOCK, HID_KEY_A, HID_KEY_S, HID_KEY_D, HID_KEY_F, HID_KEY_G, HID_KEY_H, HID_KEY_J, HID_KEY_K, HID_KEY_L, HID_KEY_SEMICOLON, HID_KEY_APOSTROPHE, HID_KEY_EUROPE_1, XXXX},
+        {SPECIAL(HID_USAGE_CONSUMER_VOLUME_DECREMENT), HID_KEY_CAPS_LOCK, HID_KEY_A, HID_KEY_S, HID_KEY_D, HID_KEY_F, HID_KEY_G, HID_KEY_H, HID_KEY_J, HID_KEY_K, HID_KEY_L, HID_KEY_SEMICOLON, HID_KEY_APOSTROPHE, HID_KEY_EUROPE_1, XXXX},
         {XXXX, HID_KEY_SHIFT_LEFT, HID_KEY_EUROPE_2, HID_KEY_Z, HID_KEY_X, HID_KEY_C, HID_KEY_V, HID_KEY_B, HID_KEY_N, HID_KEY_M, HID_KEY_COMMA, HID_KEY_PERIOD, HID_KEY_SLASH, HID_KEY_SHIFT_RIGHT, XXXX},
-        {XXXX, HID_KEY_CONTROL_LEFT, HID_KEY_ALT_LEFT, HID_KEY_GUI_LEFT, XXXX, HID_KEY_SPACE, XXXX, HID_KEY_SPACE, XXXX, HID_KEY_GUI_RIGHT, HID_KEY_ALT_RIGHT, XXXX, HID_KEY_ARROW_LEFT, HID_KEY_ARROW_DOWN, HID_KEY_ARROW_RIGHT},
+        {XXXX, HID_KEY_CONTROL_LEFT, HID_KEY_ALT_LEFT, HID_KEY_GUI_LEFT, XXXX, HID_KEY_SPACE, XXXX, HID_KEY_SPACE, XXXX, HID_KEY_GUI_RIGHT, HID_KEY_ALT_RIGHT, XXXX, SPECIAL(HID_USAGE_CONSUMER_SCAN_PREVIOUS), SPECIAL(HID_USAGE_CONSUMER_PLAY_PAUSE), SPECIAL(HID_USAGE_CONSUMER_SCAN_NEXT)},
     },
     [_TAP_LAYER] = {
         {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____},
         {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____},
-        {SPECIAL(HID_USAGE_CONSUMER_VOLUME_DECREMENT), ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, XXXX},
-        {XXXX, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, HID_KEY_ARROW_UP, XXXX},
-        {XXXX, ____, ____, ____, XXXX, ____, XXXX, ____, XXXX, ____, ____, XXXX, ____, ____, ____},
-    },
-    [_LONG_LAYER] = {
-        {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____},
-        {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____},
         {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, XXXX},
-        {XXXX, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, XXXX},
-        {XXXX, ____, ____, ____, XXXX, ____, XXXX, ____, XXXX, ____, ____, XXXX, SPECIAL(HID_USAGE_CONSUMER_SCAN_PREVIOUS), SPECIAL(HID_USAGE_CONSUMER_PLAY_PAUSE), SPECIAL(HID_USAGE_CONSUMER_SCAN_NEXT)},
+        {XXXX, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, HID_KEY_ARROW_UP, XXXX},
+        {XXXX, ____, ____, ____, XXXX, ____, XXXX, ____, XXXX, ____, ____, XXXX, HID_KEY_ARROW_LEFT, HID_KEY_ARROW_DOWN, HID_KEY_ARROW_RIGHT},
     },
 };
 // clang-format on
@@ -89,6 +82,8 @@ const uint32_t adc_channels[ADC_CHANNEL_COUNT] = {ADC_CHANNEL_3, ADC_CHANNEL_4, 
 const uint32_t amux_select_pins[AMUX_SELECT_PINS_COUNT] = {GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14, GPIO_PIN_15};
 
 static struct key keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT] = {0};
+
+static uint8_t non_tap_key_triggered = 0;
 
 static uint8_t should_send_report = 0;
 static uint8_t should_send_keyboard_report = 0;
@@ -107,6 +102,8 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
 static void update_key(struct key *key);
 static void init_keys();
+static void add_to_hid_report(struct key *key, uint8_t layer);
+static void remove_from_hid_report(struct key *key, uint8_t layer);
 
 /* USER CODE END PFP */
 
@@ -159,6 +156,8 @@ int main(void) {
   while (1) {
     tud_task();
 
+    non_tap_key_triggered = 0;
+
     for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
       // TODO: set GPIOs at the same time using bitmap on register
       for (uint8_t i = 0; i < AMUX_SELECT_PINS_COUNT; i++) {
@@ -178,6 +177,27 @@ int main(void) {
         update_key(&keys[adc_channel][amux_channel]);
 
         HAL_ADC_Stop(&hadc1);
+      }
+    }
+
+    for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
+      for (uint8_t adc_channel = 0; adc_channel < ADC_CHANNEL_COUNT; adc_channel++) {
+        if (keys[adc_channel][amux_channel].is_enabled == 0 || keys[adc_channel][amux_channel].actuation.status != STATUS_MIGHT_BE_TAP) {
+          continue;
+        }
+
+        struct key *key = &keys[adc_channel][amux_channel];
+        uint8_t is_before_reset_offset = key->state.distance_percentage < key->actuation.reset_offset;
+        uint8_t is_before_timeout = HAL_GetTick() - key->actuation.triggered_at <= TAP_TIMEOUT;
+
+        // if might be tap, can be tap or triggered
+        if (is_before_reset_offset && is_before_timeout) {
+          key->actuation.status = STATUS_TAP;
+          add_to_hid_report(key, _TAP_LAYER);
+        } else if (!is_before_timeout || non_tap_key_triggered) {
+          key->actuation.status = STATUS_TRIGGERED;
+          add_to_hid_report(key, _BASE_LAYER);
+        }
       }
     }
 
@@ -574,8 +594,10 @@ void update_key_actuation(struct key *key) {
     if (is_after_trigger_offset) {
       if (key->layers[_TAP_LAYER].value) {
         key->actuation.status = STATUS_MIGHT_BE_TAP;
+        non_tap_key_triggered = 0;
       } else {
         key->actuation.status = STATUS_TRIGGERED;
+        non_tap_key_triggered = 1;
         add_to_hid_report(key, _BASE_LAYER);
       }
       key->actuation.changed_at = key->state.distance_percentage;
@@ -583,16 +605,17 @@ void update_key_actuation(struct key *key) {
     }
     break;
 
-  case STATUS_MIGHT_BE_TAP:
-    // if might be tap, can be tap or triggered
-    if (is_before_reset_offset && now - key->actuation.triggered_at <= TAP_TIMEOUT) {
-      key->actuation.status = STATUS_TAP;
-      add_to_hid_report(key, _TAP_LAYER);
-    } else if (now - key->actuation.triggered_at > TAP_TIMEOUT) {
-      key->actuation.status = STATUS_TRIGGERED;
-      add_to_hid_report(key, _BASE_LAYER);
-    }
-    break;
+    // case STATUS_MIGHT_BE_TAP:
+    //   // if might be tap, can be tap or triggered
+    //   if (is_before_reset_offset && now - key->actuation.triggered_at <= TAP_TIMEOUT) {
+    //     key->actuation.status = STATUS_TAP;
+    //     // add_to_hid_report(key, _TAP_LAYER);
+    //   } else if (now - key->actuation.triggered_at > TAP_TIMEOUT) {
+    //     key->actuation.status = STATUS_TRIGGERED;
+    //     non_tap_key_triggered = 1;
+    //     // add_to_hid_report(key, _BASE_LAYER);
+    //   }
+    //   break;
 
   case STATUS_TAP:
     // if tap, can be reset
