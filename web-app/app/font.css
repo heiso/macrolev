@@ -1,0 +1,91 @@
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src:
+    url('/fonts/Atkinson-Hyperlegible-Bold.woff2') format('woff2')
+      /* Chrome 36+, Opera 23+, Firefox 39+ */,
+    url('/fonts/Atkinson-Hyperlegible-Bold.woff') format('woff')
+      /* Chrome 5+, Firefox 3.6+, IE 9+, Safari 5.1+ */;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Fallback';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Arial Bold');
+  ascent-override: 79.8%;
+  descent-override: 25.16%;
+  line-gap-override: 15.04%;
+  size-adjust: 99.75%;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src:
+    url('/fonts/Atkinson-Hyperlegible-BoldItalic.woff2') format('woff2')
+      /* Chrome 36+, Opera 23+, Firefox 39+ */,
+    url('/fonts/Atkinson-Hyperlegible-BoldItalic.woff') format('woff')
+      /* Chrome 5+, Firefox 3.6+, IE 9+, Safari 5.1+ */;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Fallback';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Arial Bold Italic');
+  ascent-override: 79.32%;
+  descent-override: 25.01%;
+  line-gap-override: 14.95%;
+  size-adjust: 100.35%;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url('/fonts/Atkinson-Hyperlegible-Italic.woff2') format('woff2')
+      /* Chrome 36+, Opera 23+, Firefox 39+ */,
+    url('/fonts/Atkinson-Hyperlegible-Italic.woff') format('woff')
+      /* Chrome 5+, Firefox 3.6+, IE 9+, Safari 5.1+ */;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Fallback';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Arial Italic');
+  ascent-override: 80.32%;
+  descent-override: 25.33%;
+  line-gap-override: 15.14%;
+  size-adjust: 99.11%;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url('/fonts/Atkinson-Hyperlegible-Regular.woff2') format('woff2')
+      /* Chrome 36+, Opera 23+, Firefox 39+ */,
+    url('/fonts/Atkinson-Hyperlegible-Regular.woff') format('woff')
+      /* Chrome 5+, Firefox 3.6+, IE 9+, Safari 5.1+ */;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Fallback';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Arial');
+  ascent-override: 80.38%;
+  descent-override: 25.35%;
+  line-gap-override: 15.15%;
+  size-adjust: 99.03%;
+}

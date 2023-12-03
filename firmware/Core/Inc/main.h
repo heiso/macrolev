@@ -45,10 +45,10 @@ struct calibration {
 struct state {
   uint16_t value;
   uint16_t distance;
-  uint16_t distance_percentage;
-  int16_t velocity;
-  int16_t acceleration;
-  int16_t jerk;
+  uint8_t distance_8bits;
+  int8_t velocity;
+  int8_t acceleration;
+  int8_t jerk;
 };
 
 enum actuation_status {
@@ -60,10 +60,10 @@ enum actuation_status {
 
 struct actuation {
   enum actuation_status status;
-  uint16_t changed_at;
-  uint16_t reset_offset;
-  uint16_t trigger_offset;
-  uint16_t rapid_trigger_offset;
+  uint8_t changed_at;
+  uint8_t reset_offset;
+  uint8_t trigger_offset;
+  uint8_t rapid_trigger_offset;
   uint8_t is_continuous_rapid_trigger_enabled;
   uint32_t triggered_at;
 };
@@ -82,7 +82,10 @@ struct layer {
 
 struct key {
   uint8_t is_enabled;
+  uint8_t row;
+  uint8_t column;
   uint8_t idle_counter;
+  uint8_t is_idle;
   struct layer layers[2];
   struct calibration calibration;
   struct state state;
@@ -93,6 +96,15 @@ enum {
   _BASE_LAYER,
   _TAP_LAYER,
   LAYERS_COUNT
+};
+
+struct hid_generic_inout_report {
+  uint8_t row;
+  uint8_t column;
+  uint8_t distance;
+  int8_t velocity;
+  int8_t acceleration;
+  int8_t jerk;
 };
 /* USER CODE END ET */
 
@@ -118,7 +130,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN Private defines */
 #define CALIBRATION_CYCLES 20
 
-#define TRIGGER_OFFSET 25
+#define TRIGGER_OFFSET 64
 #define MIN_DISTANCE_BETWEEN_TRIGGER_AND_RESET 3
 
 #define IDLE_VALUE_APPROX 1800

@@ -1,8 +1,16 @@
 {
-  "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
   "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.tsdk": "./node_modules/typescript/lib",
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.prisma$",
+        "cmd": "npm run prisma-map"
+      }
+    ]
+  },
   "editor.quickSuggestions": {
     "strings": "on"
   },

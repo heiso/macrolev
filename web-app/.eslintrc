@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "@remix-run/eslint-config",
+    "@remix-run/eslint-config/node",
+    // "plugin:remix-react-routes/strict",
+
+    // prettier config will turn rules off according to prettier, it should always be at the end
+    "prettier"
+  ]
+}

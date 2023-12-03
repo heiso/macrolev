@@ -1,0 +1,12 @@
+node_modules
+routes.ts
+svgs.ts
+
+dist
+/.cache
+/build
+/public/build
+.env
+.env.*
+!.env.tpl
+.DS_Store

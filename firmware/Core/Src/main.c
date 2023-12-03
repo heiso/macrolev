@@ -81,17 +81,22 @@ const uint16_t keymaps[LAYERS_COUNT][MATRIX_ROWS][MATRIX_COLS] = {
 const uint32_t adc_channels[ADC_CHANNEL_COUNT] = {ADC_CHANNEL_3, ADC_CHANNEL_4, ADC_CHANNEL_5, ADC_CHANNEL_6, ADC_CHANNEL_7};
 const uint32_t amux_select_pins[AMUX_SELECT_PINS_COUNT] = {GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14, GPIO_PIN_15};
 
+static uint8_t debug = 0;
+static struct key *debugging_key = 0;
+
 static struct key keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT] = {0};
 
 static uint8_t non_tap_key_triggered = 0;
 
 static uint8_t should_send_report = 0;
 static uint8_t should_send_keyboard_report = 0;
+static uint8_t should_send_generic_inout_report = 0;
 static uint8_t can_send_report = 0;
 
 static uint8_t modifiers = 0;
 static uint8_t keycodes[6] = {0};
-static uint16_t report = 0;
+static uint8_t report = 0;
+static struct hid_generic_inout_report generic_inout_report = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -187,7 +192,7 @@ int main(void) {
         }
 
         struct key *key = &keys[adc_channel][amux_channel];
-        uint8_t is_before_reset_offset = key->state.distance_percentage < key->actuation.reset_offset;
+        uint8_t is_before_reset_offset = key->state.distance_8bits < key->actuation.reset_offset;
         uint8_t is_before_timeout = HAL_GetTick() - key->actuation.triggered_at <= TAP_TIMEOUT;
 
         // if might be tap, can be tap or triggered
@@ -201,20 +206,75 @@ int main(void) {
       }
     }
 
-    if ((should_send_report || should_send_keyboard_report) && can_send_report && tud_hid_ready()) {
-      if (tud_suspended()) {
-        tud_remote_wakeup();
-      } else {
-        can_send_report = 0;
-        if (should_send_report) {
-          should_send_report = 0;
-          tud_hid_report(ITF_NUM_CONSUMER_CONTROL, &report, 2);
-        } else {
-          should_send_keyboard_report = 0;
-          tud_hid_keyboard_report(ITF_NUM_KEYBOARD, modifiers, keycodes);
+    if (debug && should_send_generic_inout_report == 0) {
+      if (!debugging_key) {
+        for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
+          for (uint8_t adc_channel = 0; adc_channel < ADC_CHANNEL_COUNT; adc_channel++) {
+            if (keys[adc_channel][amux_channel].is_enabled == 0 || keys[adc_channel][amux_channel].is_idle) {
+              continue;
+            }
+            debugging_key = &keys[adc_channel][amux_channel];
+            break;
+          }
+        }
+      }
+
+      if (debugging_key) {
+        generic_inout_report.row = debugging_key->row;
+        generic_inout_report.column = debugging_key->column;
+        generic_inout_report.distance = debugging_key->state.distance_8bits;
+        generic_inout_report.velocity = debugging_key->state.velocity;
+        generic_inout_report.acceleration = debugging_key->state.acceleration;
+        generic_inout_report.jerk = debugging_key->state.jerk;
+
+        should_send_generic_inout_report = 1;
+
+        if (debugging_key->is_idle) {
+          debugging_key = 0;
         }
       }
     }
+
+    if (debug) {
+      if (should_send_generic_inout_report && can_send_report && tud_hid_n_ready(ITF_NUM_GENERIC_INOUT)) {
+        if (tud_suspended()) {
+          tud_remote_wakeup();
+        } else {
+          can_send_report = 0;
+          should_send_generic_inout_report = 0;
+          tud_hid_n_report(ITF_NUM_GENERIC_INOUT, 0, &generic_inout_report, 64);
+        }
+      }
+    } else {
+      if ((should_send_report || should_send_keyboard_report) && can_send_report && tud_hid_n_ready(ITF_NUM_KEYBOARD)) {
+        if (tud_suspended()) {
+          tud_remote_wakeup();
+        } else {
+          can_send_report = 0;
+          if (should_send_report) {
+            should_send_report = 0;
+            tud_hid_n_report(ITF_NUM_KEYBOARD, REPORT_ID_CONSUMER_CONTROL, &report, 2);
+          } else if (should_send_keyboard_report) {
+            should_send_keyboard_report = 0;
+            tud_hid_n_keyboard_report(ITF_NUM_KEYBOARD, REPORT_ID_KEYBOARD, modifiers, keycodes);
+          }
+        }
+      }
+    }
+
+    uint8_t debug_keys = 0;
+    for (uint8_t i = 0; i < 6; i++) {
+      if (keycodes[i] == HID_KEY_ESCAPE || keycodes[i] == HID_KEY_GRAVE || keycodes[i] == HID_KEY_1 || keycodes[i] == HID_KEY_2) {
+        debug_keys++;
+      }
+    }
+    if (debug_keys == 4) {
+      if (!debug) {
+        tud_hid_n_keyboard_report(ITF_NUM_KEYBOARD, REPORT_ID_KEYBOARD, 0, 0);
+      }
+      debug = !debug;
+    }
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -410,6 +470,9 @@ void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t co
   struct key *key = &keys[adc_channel][amux_channel];
 
   key->is_enabled = 1;
+  key->is_idle = 0;
+  key->row = row;
+  key->column = column;
 
   key->calibration.cycles_count = 0;
   key->calibration.idle_value = IDLE_VALUE_APPROX;
@@ -476,10 +539,10 @@ uint8_t update_key_state(struct key *key) {
     state.value = key->calibration.idle_value;
   }
 
-  // maybe deactivate when graph
+  // Do nothing if key is idle
   if (key->state.distance == 0 && state.value >= key->calibration.idle_value - IDLE_VALUE_OFFSET) {
-    // maybe have an idle state and counter (if 5 cycle without changes, do nothing)
     if (key->idle_counter >= IDLE_CYCLES_UNTIL_SLEEP) {
+      key->is_idle = 1;
       return 0;
     }
     key->idle_counter++;
@@ -490,6 +553,7 @@ uint8_t update_key_state(struct key *key) {
     state.distance = 0;
   } else {
     state.distance = key->calibration.idle_value - state.value;
+    key->is_idle = 0;
     key->idle_counter = 0;
   }
 
@@ -504,10 +568,10 @@ uint8_t update_key_state(struct key *key) {
   }
 
   // Map distance in percentages
-  state.distance_percentage = (state.distance * 100) / key->calibration.max_distance;
+  state.distance_8bits = (state.distance * 255) / key->calibration.max_distance;
 
   // Update velocity
-  state.velocity = state.distance_percentage - key->state.distance_percentage;
+  state.velocity = state.distance_8bits - key->state.distance_8bits;
 
   // Update Acceleration
   state.acceleration = (state.velocity - key->state.velocity) / 2;
@@ -584,8 +648,8 @@ void update_key_actuation(struct key *key) {
   // if rapid trigger enable, move trigger and reset offsets according to the distance taht began the trigger
 
   uint32_t now = HAL_GetTick();
-  uint8_t is_after_trigger_offset = key->state.distance_percentage > key->actuation.trigger_offset;
-  uint8_t is_before_reset_offset = key->state.distance_percentage < key->actuation.reset_offset;
+  uint8_t is_after_trigger_offset = key->state.distance_8bits > key->actuation.trigger_offset;
+  uint8_t is_before_reset_offset = key->state.distance_8bits < key->actuation.reset_offset;
 
   switch (key->actuation.status) {
 
@@ -600,27 +664,15 @@ void update_key_actuation(struct key *key) {
         non_tap_key_triggered = 1;
         add_to_hid_report(key, _BASE_LAYER);
       }
-      key->actuation.changed_at = key->state.distance_percentage;
+      key->actuation.changed_at = key->state.distance_8bits;
       key->actuation.triggered_at = now;
     }
     break;
 
-    // case STATUS_MIGHT_BE_TAP:
-    //   // if might be tap, can be tap or triggered
-    //   if (is_before_reset_offset && now - key->actuation.triggered_at <= TAP_TIMEOUT) {
-    //     key->actuation.status = STATUS_TAP;
-    //     // add_to_hid_report(key, _TAP_LAYER);
-    //   } else if (now - key->actuation.triggered_at > TAP_TIMEOUT) {
-    //     key->actuation.status = STATUS_TRIGGERED;
-    //     non_tap_key_triggered = 1;
-    //     // add_to_hid_report(key, _BASE_LAYER);
-    //   }
-    //   break;
-
   case STATUS_TAP:
     // if tap, can be reset
     key->actuation.status = STATUS_RESET;
-    key->actuation.changed_at = key->state.distance_percentage;
+    key->actuation.changed_at = key->state.distance_8bits;
     remove_from_hid_report(key, _TAP_LAYER);
     break;
 
@@ -628,7 +680,7 @@ void update_key_actuation(struct key *key) {
     // if triggered, can be reset
     if (is_before_reset_offset) {
       key->actuation.status = STATUS_RESET;
-      key->actuation.changed_at = key->state.distance_percentage;
+      key->actuation.changed_at = key->state.distance_8bits;
       remove_from_hid_report(key, _BASE_LAYER);
     }
     break;

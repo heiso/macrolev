@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "prisma.prisma",
+    "dbaeumer.vscode-eslint",
+    "emeraldwalk.runonsave",
+    "qwtel.sqlite-viewer"
+  ]
+}
