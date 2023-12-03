@@ -222,16 +222,49 @@ int main(void) {
       if (debugging_key) {
         generic_inout_report.row = debugging_key->row;
         generic_inout_report.column = debugging_key->column;
-        generic_inout_report.distance = debugging_key->state.distance_8bits;
+        generic_inout_report.idle_value = debugging_key->calibration.idle_value;
+        generic_inout_report.max_distance = debugging_key->calibration.max_distance;
+        generic_inout_report.value = debugging_key->state.value;
+        generic_inout_report.distance = debugging_key->state.distance;
+        generic_inout_report.distance_8bits = debugging_key->state.distance_8bits;
         generic_inout_report.velocity = debugging_key->state.velocity;
         generic_inout_report.acceleration = debugging_key->state.acceleration;
         generic_inout_report.jerk = debugging_key->state.jerk;
+        generic_inout_report.trigger = debugging_key->actuation.status == STATUS_TRIGGERED || debugging_key->actuation.status == STATUS_TAP;
+        generic_inout_report.reset = debugging_key->actuation.status == STATUS_RESET;
 
         should_send_generic_inout_report = 1;
 
         if (debugging_key->is_idle) {
           debugging_key = 0;
         }
+      }
+    }
+
+    uint8_t debug_keys = 0;
+    if (!debug) {
+      for (uint8_t i = 0; i < 6; i++) {
+        if (keycodes[i] == HID_KEY_ESCAPE || keycodes[i] == HID_KEY_GRAVE || keycodes[i] == HID_KEY_1 || keycodes[i] == HID_KEY_2) {
+          debug_keys++;
+        }
+      }
+      if (debug_keys == 4) {
+        debug = !debug;
+        for (uint8_t i = 0; i < 6; i++) {
+          keycodes[i] = 0;
+        }
+        modifiers = 0;
+        can_send_report = 0;
+        tud_hid_n_keyboard_report(ITF_NUM_KEYBOARD, REPORT_ID_KEYBOARD, modifiers, keycodes);
+      }
+    } else {
+      for (uint8_t i = 0; i < 6; i++) {
+        if (keycodes[i] == HID_KEY_GRAVE || keycodes[i] == HID_KEY_1 || keycodes[i] == HID_KEY_2 || keycodes[i] == HID_KEY_3) {
+          debug_keys++;
+        }
+      }
+      if (debug_keys == 4) {
+        debug = !debug;
       }
     }
 
@@ -261,20 +294,6 @@ int main(void) {
         }
       }
     }
-
-    uint8_t debug_keys = 0;
-    for (uint8_t i = 0; i < 6; i++) {
-      if (keycodes[i] == HID_KEY_ESCAPE || keycodes[i] == HID_KEY_GRAVE || keycodes[i] == HID_KEY_1 || keycodes[i] == HID_KEY_2) {
-        debug_keys++;
-      }
-    }
-    if (debug_keys == 4) {
-      if (!debug) {
-        tud_hid_n_keyboard_report(ITF_NUM_KEYBOARD, REPORT_ID_KEYBOARD, 0, 0);
-      }
-      debug = !debug;
-    }
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
