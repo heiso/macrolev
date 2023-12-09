@@ -66,14 +66,14 @@ export function Logo({ className, ...props }: LogoProps) {
       timeoutRef.current = setTimeout(() => {
         setBump(false)
         timeoutRef.current = undefined
-      }, 500)
+      }, 1000)
     }
   }, [bump])
 
   return (
     <div
       ref={ref}
-      className={`cursor-pointer transition duration-75 select-none w-fit ${
+      className={`px-4 cursor-pointer transition duration-75 select-none w-fit ${
         bump ? 'scale-110' : ''
       } ${className ?? ''}`}
       onClick={() => setBump(true)}
@@ -85,30 +85,30 @@ export function Logo({ className, ...props }: LogoProps) {
           transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
         }}
       >
-        <LogoSVG id="U_U" className={`fill-gray-200 ${bump ? 'hidden' : 'block'}`} />
-
-        <LogoSVG id="O_O" className={`fill-gray-200 ${bump ? 'block' : 'hidden'}`} />
+        <LogoSVG id="keys" className="stroke-gray-200 fill-transparent" />
 
         <LogoSVG
-          id="w"
+          id="legends"
           style={{
             transform: `translate3d(${rotation.dx}px,${rotation.dy}px,0)`,
           }}
-          className="fill-gray-200 absolute top-0 left-0 right-0 bottom-0 z-15"
-        />
-
-        <LogoSVG
-          id="blushes-a"
-          style={{
-            transform: `translate3d(${rotation.dx * 2}px,${rotation.dy * 2}px,0)`,
-          }}
-          className={`fill-pink-500 absolute top-0 left-0 right-0 bottom-0 z-10 ${
+          className={`fill-gray-200 stroke-gray-200 absolute top-0 left-0 right-0 bottom-0 z-10 ${
             bump ? 'hidden' : 'block'
           }`}
         />
 
         <LogoSVG
-          id="blushes-b"
+          id="bumped_legends"
+          style={{
+            transform: `translate3d(${rotation.dx}px,${rotation.dy}px,0)`,
+          }}
+          className={`fill-gray-200 stroke-gray-200 absolute top-0 left-0 right-0 bottom-0 z-15 ${
+            bump ? 'block' : 'hidden'
+          }`}
+        />
+
+        <LogoSVG
+          id="blushes"
           style={{
             transform: `translate3d(${rotation.dx * 2}px,${rotation.dy * 2}px,0)`,
           }}
@@ -125,7 +125,7 @@ type LogoSVGProps = SVGProps<SVGSVGElement> & { id: LogoSvg }
 
 function LogoSVG({ id, ...props }: LogoSVGProps) {
   return (
-    <svg width="226" height="108" viewBox="0 0 226 108" {...props}>
+    <svg width="170" height="120" viewBox="0 0 170 120" {...props}>
       <use href={`/logo.svg#${id}`} />
     </svg>
   )

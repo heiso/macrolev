@@ -30,6 +30,7 @@ const outputTS = `svgs.ts`
               .replace('<svg', `<symbol id="${file.replace('.svg', '')}"`)
               .replace('</svg>', '</symbol>')
               .replace(/fill="[#|a-z|0-9]*"/gi, '')
+              .replace(/stroke="[#|a-z|0-9]*"/gi, '')
           })
           .join('\n')}
       </defs>

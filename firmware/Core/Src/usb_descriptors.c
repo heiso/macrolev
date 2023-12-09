@@ -57,7 +57,8 @@ tusb_desc_device_t const desc_device =
         .iProduct = 0x02,
         .iSerialNumber = 0x03,
 
-        .bNumConfigurations = 0x01};
+        .bNumConfigurations = 0x01,
+};
 
 // Invoked when received GET DEVICE DESCRIPTOR
 // Application return pointer to descriptor
@@ -75,18 +76,19 @@ uint8_t const desc_hid_keyboard_report[] =
         TUD_HID_REPORT_DESC_CONSUMER(HID_REPORT_ID(REPORT_ID_CONSUMER_CONTROL)),
 };
 
-uint8_t const desc_hid_monitor_report[] =
+uint8_t const desc_hid_custom_report[] =
     {
-        TUD_HID_REPORT_DESC_GENERIC_INOUT(64)};
+        TUD_HID_REPORT_DESC_GENERIC_INOUT(HID_GENERIC_INOUT_REPORT_BUFFSIZE),
+};
 
 // Invoked when received GET HID REPORT DESCRIPTOR
 // Application return pointer to descriptor
 // Descriptor contents must exist long enough for transfer to complete
 uint8_t const *tud_hid_descriptor_report_cb(uint8_t instance) {
-  if (instance == 0) {
+  if (instance == ITF_NUM_KEYBOARD) {
     return desc_hid_keyboard_report;
-  } else if (instance == 1) {
-    return desc_hid_monitor_report;
+  } else if (instance == ITF_NUM_GENERIC_INOUT) {
+    return desc_hid_custom_report;
   }
 
   return NULL;
@@ -97,16 +99,10 @@ uint8_t const *tud_hid_descriptor_report_cb(uint8_t instance) {
 //--------------------------------------------------------------------+
 
 // #define CONFIG_TOTAL_LEN (TUD_CONFIG_DESC_LEN + 2 * TUD_HID_DESC_LEN)
-#define CONFIG_TOTAL_LEN (TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN + TUD_HID_DESC_LEN)
+#define CONFIG_TOTAL_LEN (TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN + TUD_HID_INOUT_DESC_LEN)
 
-#if CFG_TUSB_MCU == OPT_MCU_LPC175X_6X || CFG_TUSB_MCU == OPT_MCU_LPC177X_8X || CFG_TUSB_MCU == OPT_MCU_LPC40XX
-// LPC 17xx and 40xx endpoint type (bulk/interrupt/iso) are fixed by its number
-// 1 Interrupt, 2 Bulk, 3 Iso, 4 Interrupt, 5 Bulk etc ...
 #define EPNUM_KEYBOARD 0x81
-#else
-#define EPNUM_KEYBOARD 0x81
-#define EPNUM_MONITOR 0x82
-#endif
+#define EPNUM_HID_CUSTOM 0x82
 
 uint8_t const desc_configuration[] =
     {
@@ -114,8 +110,9 @@ uint8_t const desc_configuration[] =
         TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP, 100),
 
         // Interface number, string index, protocol, report descriptor len, EP In address, size & polling interval
-        TUD_HID_DESCRIPTOR(ITF_NUM_KEYBOARD, 0, HID_ITF_PROTOCOL_KEYBOARD, sizeof(desc_hid_keyboard_report), EPNUM_KEYBOARD, CFG_TUD_HID_EP_BUFSIZE, 10),
-        TUD_HID_DESCRIPTOR(ITF_NUM_GENERIC_INOUT, 0, HID_ITF_PROTOCOL_NONE, sizeof(desc_hid_monitor_report), EPNUM_MONITOR, CFG_TUD_HID_EP_BUFSIZE, 10)};
+        TUD_HID_DESCRIPTOR(ITF_NUM_KEYBOARD, 4, HID_ITF_PROTOCOL_KEYBOARD, sizeof(desc_hid_keyboard_report), EPNUM_KEYBOARD, CFG_TUD_HID_EP_BUFSIZE, 10),
+        TUD_HID_INOUT_DESCRIPTOR(ITF_NUM_GENERIC_INOUT, 5, HID_ITF_PROTOCOL_NONE, sizeof(desc_hid_custom_report), EPNUM_HID_CUSTOM, 0x80 | EPNUM_HID_CUSTOM, HID_GENERIC_INOUT_REPORT_BUFFSIZE, 10),
+};
 
 // Invoked when received GET CONFIGURATION DESCRIPTOR
 // Application return pointer to descriptor

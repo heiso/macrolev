@@ -47,8 +47,6 @@ struct state {
   uint16_t distance;
   uint8_t distance_8bits;
   int8_t velocity;
-  int8_t acceleration;
-  int8_t jerk;
 };
 
 enum actuation_status {
@@ -98,19 +96,19 @@ enum {
   LAYERS_COUNT
 };
 
-struct hid_generic_inout_report {
+struct hid_generic_inout_report_key {
   uint8_t row;
   uint8_t column;
   uint16_t idle_value;
   uint16_t max_distance;
   uint16_t value;
-  uint16_t distance;
   uint8_t distance_8bits;
-  int8_t velocity;
-  int8_t acceleration;
-  int8_t jerk;
-  uint8_t trigger;
-  uint8_t reset;
+  enum actuation_status status;
+};
+
+struct hid_generic_inout_report {
+  struct hid_generic_inout_report_key keys[6];
+  uint8_t duration;
 };
 /* USER CODE END ET */
 

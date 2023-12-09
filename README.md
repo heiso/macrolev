@@ -46,6 +46,8 @@ Custom analog keyboard based on the Lekker Switch from Wooting.
 - [Fluxpad with lekker switches](https://github.com/sssata/fluxpad)
 - [STM32F411CEU6 documentation](https://www.st.com/en/microcontrollers-microprocessors/stm32f411ce.html#documentation)
 - [Wooting 60HE pcb](https://github.com/heiso/macrolev/tree/main/ref/Wooting-60HE)
+- [Connecting to uncommon HID devices](https://developer.chrome.com/articles/hid)
+- [HID Descriptor parser](https://eleccelerator.com/usbdescreqparser/)
 
 ## Tooling
 

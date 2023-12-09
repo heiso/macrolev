@@ -81,21 +81,17 @@ const uint16_t keymaps[LAYERS_COUNT][MATRIX_ROWS][MATRIX_COLS] = {
 const uint32_t adc_channels[ADC_CHANNEL_COUNT] = {ADC_CHANNEL_3, ADC_CHANNEL_4, ADC_CHANNEL_5, ADC_CHANNEL_6, ADC_CHANNEL_7};
 const uint32_t amux_select_pins[AMUX_SELECT_PINS_COUNT] = {GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14, GPIO_PIN_15};
 
-static uint8_t debug = 0;
-static struct key *debugging_key = 0;
-
 static struct key keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT] = {0};
 
 static uint8_t non_tap_key_triggered = 0;
 
-static uint8_t should_send_report = 0;
+static uint8_t should_send_consumer_report = 0;
 static uint8_t should_send_keyboard_report = 0;
 static uint8_t should_send_generic_inout_report = 0;
-static uint8_t can_send_report = 0;
 
 static uint8_t modifiers = 0;
 static uint8_t keycodes[6] = {0};
-static uint8_t report = 0;
+static uint8_t consumer_report = 0;
 static struct hid_generic_inout_report generic_inout_report = {0};
 /* USER CODE END PV */
 
@@ -152,13 +148,13 @@ int main(void) {
 
   tud_init(BOARD_TUD_RHPORT);
 
-  can_send_report = 1;
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
+    uint32_t start = HAL_GetTick();
+
     tud_task();
 
     non_tap_key_triggered = 0;
@@ -185,6 +181,7 @@ int main(void) {
       }
     }
 
+    // If a key might be tap and a non tap key has been triggered, then the might be tap key is a normal trigger
     for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
       for (uint8_t adc_channel = 0; adc_channel < ADC_CHANNEL_COUNT; adc_channel++) {
         if (keys[adc_channel][amux_channel].is_enabled == 0 || keys[adc_channel][amux_channel].actuation.status != STATUS_MIGHT_BE_TAP) {
@@ -206,93 +203,22 @@ int main(void) {
       }
     }
 
-    if (debug && should_send_generic_inout_report == 0) {
-      if (!debugging_key) {
-        for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
-          for (uint8_t adc_channel = 0; adc_channel < ADC_CHANNEL_COUNT; adc_channel++) {
-            if (keys[adc_channel][amux_channel].is_enabled == 0 || keys[adc_channel][amux_channel].is_idle) {
-              continue;
-            }
-            debugging_key = &keys[adc_channel][amux_channel];
-            break;
-          }
+    if ((should_send_consumer_report || should_send_keyboard_report) && tud_hid_n_ready(ITF_NUM_KEYBOARD)) {
+      if (tud_suspended()) {
+        tud_remote_wakeup();
+      } else {
+        if (should_send_consumer_report) {
+          should_send_consumer_report = 0;
+          tud_hid_n_report(ITF_NUM_KEYBOARD, REPORT_ID_CONSUMER_CONTROL, &consumer_report, 2);
+        } else if (should_send_keyboard_report) {
+          should_send_keyboard_report = 0;
+          tud_hid_n_keyboard_report(ITF_NUM_KEYBOARD, REPORT_ID_KEYBOARD, modifiers, keycodes);
         }
       }
-
-      if (debugging_key) {
-        generic_inout_report.row = debugging_key->row;
-        generic_inout_report.column = debugging_key->column;
-        generic_inout_report.idle_value = debugging_key->calibration.idle_value;
-        generic_inout_report.max_distance = debugging_key->calibration.max_distance;
-        generic_inout_report.value = debugging_key->state.value;
-        generic_inout_report.distance = debugging_key->state.distance;
-        generic_inout_report.distance_8bits = debugging_key->state.distance_8bits;
-        generic_inout_report.velocity = debugging_key->state.velocity;
-        generic_inout_report.acceleration = debugging_key->state.acceleration;
-        generic_inout_report.jerk = debugging_key->state.jerk;
-        generic_inout_report.trigger = debugging_key->actuation.status == STATUS_TRIGGERED || debugging_key->actuation.status == STATUS_TAP;
-        generic_inout_report.reset = debugging_key->actuation.status == STATUS_RESET;
-
-        should_send_generic_inout_report = 1;
-
-        if (debugging_key->is_idle) {
-          debugging_key = 0;
-        }
-      }
-    }
-
-    uint8_t debug_keys = 0;
-    if (!debug) {
-      for (uint8_t i = 0; i < 6; i++) {
-        if (keycodes[i] == HID_KEY_ESCAPE || keycodes[i] == HID_KEY_GRAVE || keycodes[i] == HID_KEY_1 || keycodes[i] == HID_KEY_2) {
-          debug_keys++;
-        }
-      }
-      if (debug_keys == 4) {
-        debug = !debug;
-        for (uint8_t i = 0; i < 6; i++) {
-          keycodes[i] = 0;
-        }
-        modifiers = 0;
-        can_send_report = 0;
-        tud_hid_n_keyboard_report(ITF_NUM_KEYBOARD, REPORT_ID_KEYBOARD, modifiers, keycodes);
-      }
-    } else {
-      for (uint8_t i = 0; i < 6; i++) {
-        if (keycodes[i] == HID_KEY_GRAVE || keycodes[i] == HID_KEY_1 || keycodes[i] == HID_KEY_2 || keycodes[i] == HID_KEY_3) {
-          debug_keys++;
-        }
-      }
-      if (debug_keys == 4) {
-        debug = !debug;
-      }
-    }
-
-    if (debug) {
-      if (should_send_generic_inout_report && can_send_report && tud_hid_n_ready(ITF_NUM_GENERIC_INOUT)) {
-        if (tud_suspended()) {
-          tud_remote_wakeup();
-        } else {
-          can_send_report = 0;
-          should_send_generic_inout_report = 0;
-          tud_hid_n_report(ITF_NUM_GENERIC_INOUT, 0, &generic_inout_report, 64);
-        }
-      }
-    } else {
-      if ((should_send_report || should_send_keyboard_report) && can_send_report && tud_hid_n_ready(ITF_NUM_KEYBOARD)) {
-        if (tud_suspended()) {
-          tud_remote_wakeup();
-        } else {
-          can_send_report = 0;
-          if (should_send_report) {
-            should_send_report = 0;
-            tud_hid_n_report(ITF_NUM_KEYBOARD, REPORT_ID_CONSUMER_CONTROL, &report, 2);
-          } else if (should_send_keyboard_report) {
-            should_send_keyboard_report = 0;
-            tud_hid_n_keyboard_report(ITF_NUM_KEYBOARD, REPORT_ID_KEYBOARD, modifiers, keycodes);
-          }
-        }
-      }
+    } else if (should_send_generic_inout_report && tud_hid_n_ready(ITF_NUM_GENERIC_INOUT)) {
+      should_send_generic_inout_report = 0;
+      generic_inout_report.duration = HAL_GetTick() - start;
+      tud_hid_n_report(ITF_NUM_GENERIC_INOUT, 0, &generic_inout_report, HID_GENERIC_INOUT_REPORT_BUFFSIZE);
     }
     /* USER CODE END WHILE */
 
@@ -537,6 +463,106 @@ void init_keys() {
   }
 }
 
+void add_to_hid_report(struct key *key, uint8_t layer) {
+  switch (key->layers[layer].type) {
+  case KEY_TYPE_MODIFIER:
+    modifiers |= key->layers[layer].value;
+    should_send_keyboard_report = 1;
+    break;
+
+  case KEY_TYPE_NORMAL:
+    for (uint8_t i = 0; i < 6; i++) {
+      if (keycodes[i] == 0) {
+        keycodes[i] = key->layers[layer].value;
+        should_send_keyboard_report = 1;
+        break;
+      }
+    }
+    break;
+
+  case KEY_TYPE_CONSUMER_CONTROL:
+    consumer_report = key->layers[layer].value;
+    should_send_consumer_report = 1;
+    break;
+  }
+}
+
+void remove_from_hid_report(struct key *key, uint8_t layer) {
+  switch (key->layers[layer].type) {
+  case KEY_TYPE_MODIFIER:
+    modifiers &= ~key->layers[layer].value;
+    should_send_keyboard_report = 1;
+    break;
+
+  case KEY_TYPE_NORMAL:
+    for (uint8_t i = 0; i < 6; i++) {
+      if (keycodes[i] == key->layers[layer].value) {
+        keycodes[i] = 0;
+        should_send_keyboard_report = 1;
+        break;
+      }
+    }
+    break;
+
+  case KEY_TYPE_CONSUMER_CONTROL:
+    consumer_report = 0;
+    should_send_consumer_report = 1;
+    break;
+  }
+}
+
+void add_to_hid_generic_inout_report(struct key *key) {
+  uint8_t added = 0;
+  for (uint8_t i = 0; i < 6; i++) {
+    if (generic_inout_report.keys[i].row == key->row && generic_inout_report.keys[i].column == key->column) {
+      generic_inout_report.keys[i].row = key->row;
+      generic_inout_report.keys[i].column = key->column;
+      generic_inout_report.keys[i].idle_value = key->calibration.idle_value;
+      generic_inout_report.keys[i].max_distance = key->calibration.max_distance;
+      generic_inout_report.keys[i].value = key->state.value;
+      generic_inout_report.keys[i].distance_8bits = key->state.distance_8bits;
+      generic_inout_report.keys[i].status = key->actuation.status;
+
+      added = 1;
+      should_send_generic_inout_report = 1;
+      break;
+    }
+  }
+
+  if (!added) {
+    for (uint8_t i = 0; i < 6; i++) {
+      // check if value is 0, 0 means the report is empty
+      if (generic_inout_report.keys[i].value == 0) {
+        generic_inout_report.keys[i].row = key->row;
+        generic_inout_report.keys[i].column = key->column;
+        generic_inout_report.keys[i].idle_value = key->calibration.idle_value;
+        generic_inout_report.keys[i].max_distance = key->calibration.max_distance;
+        generic_inout_report.keys[i].value = key->state.value;
+        generic_inout_report.keys[i].distance_8bits = key->state.distance_8bits;
+        generic_inout_report.keys[i].status = key->actuation.status;
+
+        should_send_generic_inout_report = 1;
+        break;
+      }
+    }
+  }
+}
+
+void remove_from_hid_generic_inout_report(struct key *key) {
+  for (uint8_t i = 0; i < 6; i++) {
+    if (generic_inout_report.keys[i].row == key->row && generic_inout_report.keys[i].column == key->column) {
+      generic_inout_report.keys[i].row = 0;
+      generic_inout_report.keys[i].column = 0;
+      generic_inout_report.keys[i].idle_value = 0;
+      generic_inout_report.keys[i].max_distance = 0;
+      generic_inout_report.keys[i].value = 0;
+      generic_inout_report.keys[i].distance_8bits = 0;
+      generic_inout_report.keys[i].status = 0;
+      break;
+    }
+  }
+}
+
 uint8_t update_key_state(struct key *key) {
   struct state state;
 
@@ -562,6 +588,7 @@ uint8_t update_key_state(struct key *key) {
   if (key->state.distance == 0 && state.value >= key->calibration.idle_value - IDLE_VALUE_OFFSET) {
     if (key->idle_counter >= IDLE_CYCLES_UNTIL_SLEEP) {
       key->is_idle = 1;
+      remove_from_hid_generic_inout_report(key);
       return 0;
     }
     key->idle_counter++;
@@ -587,67 +614,13 @@ uint8_t update_key_state(struct key *key) {
   }
 
   // Map distance in percentages
-  state.distance_8bits = (state.distance * 255) / key->calibration.max_distance;
+  state.distance_8bits = (state.distance * 0xff) / key->calibration.max_distance;
 
   // Update velocity
   state.velocity = state.distance_8bits - key->state.distance_8bits;
 
-  // Update Acceleration
-  state.acceleration = (state.velocity - key->state.velocity) / 2;
-
-  // Update jerk
-  state.jerk = (state.acceleration - key->state.acceleration) / 3;
-
   key->state = state;
   return 1;
-}
-
-void add_to_hid_report(struct key *key, uint8_t layer) {
-  switch (key->layers[layer].type) {
-  case KEY_TYPE_MODIFIER:
-    modifiers |= key->layers[layer].value;
-    should_send_keyboard_report = 1;
-    break;
-
-  case KEY_TYPE_NORMAL:
-    for (uint8_t i = 0; i < 6; i++) {
-      if (keycodes[i] == 0) {
-        keycodes[i] = key->layers[layer].value;
-        should_send_keyboard_report = 1;
-        break;
-      }
-    }
-    break;
-
-  case KEY_TYPE_CONSUMER_CONTROL:
-    report = key->layers[layer].value;
-    should_send_report = 1;
-    break;
-  }
-}
-
-void remove_from_hid_report(struct key *key, uint8_t layer) {
-  switch (key->layers[layer].type) {
-  case KEY_TYPE_MODIFIER:
-    modifiers &= ~key->layers[layer].value;
-    should_send_keyboard_report = 1;
-    break;
-
-  case KEY_TYPE_NORMAL:
-    for (uint8_t i = 0; i < 6; i++) {
-      if (keycodes[i] == key->layers[layer].value) {
-        keycodes[i] = 0;
-        should_send_keyboard_report = 1;
-        break;
-      }
-    }
-    break;
-
-  case KEY_TYPE_CONSUMER_CONTROL:
-    report = 0;
-    should_send_report = 1;
-    break;
-  }
 }
 
 void update_key_actuation(struct key *key) {
@@ -704,6 +677,8 @@ void update_key_actuation(struct key *key) {
     }
     break;
   }
+
+  add_to_hid_generic_inout_report(key);
 }
 
 void update_key(struct key *key) {
@@ -731,8 +706,6 @@ void tud_hid_report_complete_cb(uint8_t instance, uint8_t const *report, uint16_
   (void)instance;
   (void)report;
   (void)len;
-
-  can_send_report = 1;
 }
 
 // Invoked when received GET_REPORT control request
