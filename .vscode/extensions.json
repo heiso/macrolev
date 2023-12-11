@@ -1,5 +1,6 @@
 {
   "recommendations": [
+    "bradlc.vscode-tailwindcss",
     "leathong.openscad-language-support",
     "esbenp.prettier-vscode",
     "ms-vscode.cpptools",

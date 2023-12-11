@@ -1,44 +1,57 @@
-import {
-  CategoryScale,
-  Chart,
-  Legend,
-  LineElement,
-  LinearScale,
-  PointElement,
-  Title,
-  Tooltip,
-} from 'chart.js'
-import { useEffect, useState } from 'react'
+import { CategoryScale, Chart, LineElement, LinearScale, PointElement } from 'chart.js'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Line } from 'react-chartjs-2'
-import { getKeysWithScadCoordinates, getNormalizedKLEKeys } from '../kle-parser.ts'
-import layout from '../layout.json'
+import layout from '../parsed-layout.json'
 import { Button } from '../ui/button.tsx'
+import { Icon } from '../ui/icon.tsx'
+import { Link } from '../ui/link.tsx'
 
+const MAX_VALUES = 100
 const status = ['STATUS_MIGHT_BE_TAP', 'STATUS_TAP', 'STATUS_TRIGGERED', 'STATUS_RESET'] as const
+type Status = (typeof status)[number]
+const visualizationModes = ['NORMAL', 'DISTANCE_HEATMAP', 'IDLE_HEATMAP'] as const
+type VisualizationMode = (typeof visualizationModes)[number]
 
-/**
- * scan
- * get devices
- * store correct device
- */
-
-type key = {
-  row: number
-  col: number
+type Calibration = {
   idleValue: number
   maxDistance: number
-  value: number
-  distance8bits: number
-  status: (typeof status)[number]
 }
 
-const MAX_REPORTS = 1000
+type CalibrationRange = {
+  idleValue: {
+    min: number
+    max: number
+  }
+  maxDistance: {
+    min: number
+    max: number
+  }
+}
+
+type State = {
+  value: number
+  distance8bits: number
+  status: Status
+}
+
+type Key = {
+  row: number
+  col: number
+
+  calibration: Calibration
+  state: State
+
+  calibrations: (Calibration & { time: Date })[]
+  states: (State & { time: Date })[]
+}
+
+type KeysByRowCol = Record<string, Key | undefined>
 
 function dataViewToHexs(data: DataView) {
-  let hexs = data.byteLength.toString()
+  let hexs = ''
 
   for (let i = 0; i < data.byteLength; i++) {
-    if (i % 10 == 0) {
+    if (i % 10 == 0 && i !== 0) {
       hexs += '\n'
     }
     hexs += data.getUint8(i).toString(16).padStart(2, '0').toUpperCase() + ' '
@@ -47,62 +60,76 @@ function dataViewToHexs(data: DataView) {
   return hexs
 }
 
-const colors = [
-  '#0000ff',
-  '#ffff00',
-  '#ff00ff',
-  '#00ffff',
-  '#ff0000',
-  '#00ff00',
-  '#ffffff',
-  '#000000',
-]
-const triggered = (ctx: any, value: string) => (ctx.p1.raw.trigger ? value : undefined)
-const reset = (ctx: any, value: string) => (ctx.p1.raw.reset ? value : undefined)
-
-function parseReport(data: DataView) {
-  const keys = new Array(6).fill(0).map((_, index) => {
-    const offset = index * 10
-    return {
-      // uint8_t row;
-      // uint8_t column;
-      // uint16_t idle_value;
-      // uint16_t max_distance;
-      // uint16_t value;
-      // uint8_t distance_8bits;
-      // enum actuation_status status;
-      row: data.getUint8(offset),
-      col: data.getUint8(offset + 1),
-      idleValue: data.getUint16(offset + 2, true),
-      maxDistance: data.getUint16(offset + 4, true),
-      value: data.getUint16(offset + 6, true),
-      distance8bits: data.getUint8(offset + 8),
-      status: status[data.getUint8(offset + 9)],
+function isBufferEmpty(data: DataView, offset: number, length: number) {
+  for (let i = offset; i < offset + length; i++) {
+    if (data.getUint8(i) !== 0) {
+      return false
     }
-  })
-
-  return {
-    time: Date.now(),
-    keys,
-    // row: data.getUint8(0),
-    // col: data.getUint8(1),
-    // idleValue: data.getUint16(2, true),
-    // maxDistance: data.getUint16(4, true),
-    // value: data.getUint16(6, true),
-    // distance8bits: data.getUint8(8),
-    // status: status[data.getUint8(9)],
-    duration: data.getUint8(59),
-    hex: dataViewToHexs(data),
   }
+  return true
 }
-
-type Report = ReturnType<typeof parseReport>
-
-Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 export default function Index() {
   const [devices, setDevices] = useState<HIDDevice[]>([])
-  const [reports, setReports] = useState<Report[]>([])
+  const [rawReports, setRawReports] = useState<string[]>([
+    '00 00 00 00 00 00 00 00 00 00 \n00 00 00 00 00 00 00 00 00 00 \n00 00 00 00 00 00 00 00 00 00 \n00 00 00 00 00 00 00 00 00 00 \n00 00 00 00 00 00 00 00 00 00 \n00 00 00 00 00 00 00 00 00 00 \n00 00 00 00',
+  ])
+  const [duration, setDuration] = useState(0)
+  const [keys, setKeys] = useState<KeysByRowCol>({})
+  const [keyIndex, setKeyIndex] = useState<string | null>(null)
+  const [mode, setMode] = useState<VisualizationMode>('NORMAL')
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    event.preventDefault()
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
+  const parseReport = useCallback((data: DataView) => {
+    const time = new Date()
+    new Array(6).fill(null).forEach((_, index) => {
+      if (isBufferEmpty(data, index * 10, 10)) return null
+
+      const offset = index * 10
+
+      const row = data.getUint8(offset)
+      const col = data.getUint8(offset + 1)
+
+      const state: State = {
+        value: data.getUint16(offset + 6, true),
+        distance8bits: data.getUint8(offset + 8),
+        status: status[data.getUint8(offset + 9)],
+      }
+
+      const calibration: Calibration = {
+        idleValue: data.getUint16(offset + 2, true),
+        maxDistance: data.getUint16(offset + 4, true),
+      }
+
+      setKeys((keys) => ({
+        ...keys,
+        [`${row}-${col}`]: {
+          row,
+          col,
+          calibration,
+          state,
+          calibrations: [
+            ...(keys[`${row}-${col}`]?.calibrations || []),
+            { ...calibration, time },
+          ].slice(-MAX_VALUES),
+          states: [...(keys[`${row}-${col}`]?.states || []), { ...state, time }].slice(-MAX_VALUES),
+        },
+      }))
+    })
+    setDuration((duration) => data.getUint8(60) * (1 - 0.8) + duration * 0.8)
+    setRawReports((rawReports) => [dataViewToHexs(data), ...rawReports].slice(0, MAX_VALUES))
+  }, [])
 
   useEffect(() => {
     if (devices.length == 0) {
@@ -114,102 +141,264 @@ export default function Index() {
         .filter((device) => device.collections.length == 1)
         .forEach((device) => {
           if (!device.opened) {
-            device.open().then(() => {
-              device.oninputreport = (event) => {
-                setReports((reports) => [
-                  ...(reports.length >= MAX_REPORTS
-                    ? reports.slice(reports.length - MAX_REPORTS)
-                    : reports),
-                  parseReport(event.data),
-                ])
-              }
-            })
+            device.open().then(() => (device.oninputreport = (event) => parseReport(event.data)))
+          } else {
+            device.oninputreport = (event) => parseReport(event.data)
           }
         })
     }
   }, [devices])
 
   return (
-    <>
-      {devices.length == 0 ? (
-        <Button
-          primary
-          onClick={async () => {
-            const devices = await navigator.hid.requestDevice({
-              filters: [
-                {
-                  vendorId: 0xcafe,
-                },
-              ],
-            })
-            setDevices(devices)
-          }}
-        >
-          Scan
-        </Button>
-      ) : (
-        <>
-          <Button
-            primary
-            onClick={() => {
-              devices.forEach((device) => device.forget())
-              setDevices([])
-            }}
-          >
-            Disconnect
-          </Button>
-          <Button
-            onClick={() => {
-              setReports([])
-              setDevices([])
-            }}
-          >
-            Refresh
-          </Button>
-        </>
-      )}
-
-      <Keyboard />
-
-      <Reports reports={reports} />
-    </>
-  )
-}
-
-function Keyboard() {
-  const keys = getKeysWithScadCoordinates(getNormalizedKLEKeys(layout))
-  return (
-    <div className={`relative w-full aspect-[17/6] text-sm`}>
-      {keys.map((key, index) => (
-        <div
-          className={`absolute overflow-hidden p-0.5`}
-          style={{
-            bottom: `${key.y * 3}rem`,
-            left: `${key.x * 3}rem`,
-            width: `${key.w * 3}rem`,
-            height: `${key.h * 3}rem`,
-          }}
-          key={index}
-        >
-          <div className="w-full h-full rounded-md bg-slate-500 flex flex-col justify-center items-center">
-            {key.ref.split(' ').map((legend, index) => (
-              <span key={index}>{legend}</span>
-            ))}
+    <div className="space-y-8">
+      <div className="relative space-y-2">
+        {devices.length === 0 && (
+          <div className="absolute z-10 top-0 bottom-0 left-0 right-0 flex justify-center items-center">
+            <Button
+              primary
+              onClick={async () => {
+                const devices = await navigator.hid.requestDevice({
+                  filters: [
+                    {
+                      vendorId: 0xcafe,
+                    },
+                  ],
+                })
+                setDevices(devices)
+              }}
+            >
+              Connect your macrolev
+            </Button>
+          </div>
+        )}
+        <div className={devices.length == 0 ? 'blur-sm opacity-80' : ''}>
+          <Keyboard keys={keys} mode={mode} onClick={setKeyIndex} />
+        </div>
+        <div className={`w-full flex justify-between ${devices.length == 0 ? 'hidden' : ''}`}>
+          <div className="space-x-4">
+            <Link to="" onClick={() => setMode('IDLE_HEATMAP')}>
+              Show idle value heatmap
+            </Link>
+            <Link to="" onClick={() => setMode('DISTANCE_HEATMAP')}>
+              Show max distance heatmap
+            </Link>
+            <Link to="" onClick={() => setMode('NORMAL')}>
+              Show analog values
+            </Link>
+          </div>
+          <div className="text-right text-slate-400">
+            <span>Avg cycle duration </span>
+            <span className="text-pink-500">{duration.toFixed(0)} ms</span>
           </div>
         </div>
-      ))}
+      </div>
+
+      {devices.length !== 0 && (
+        <>
+          <div className="flex gap-4 justify-start">
+            <div className="space-y-4 bg-slate-700 rounded-md p-4">
+              <div className="text-xl text-slate-50">Raw HID reports</div>
+              <pre className="overflow-y-auto h-96">
+                {rawReports.map((report) => report + '\n\n')}
+              </pre>
+            </div>
+
+            <div className="w-full h-full bg-slate-700 rounded-md p-4">
+              {keyIndex ? (
+                <Graph keyItem={keys[keyIndex]} />
+              ) : (
+                <div className="h-full">Click on a key to show some charts</div>
+              )}
+            </div>
+          </div>
+
+          <div className="space-x-4">
+            <Button
+              className="inline-flex gap-2"
+              onClick={() => {
+                const json = JSON.stringify(keys, null, 2)
+                navigator.clipboard.writeText(json)
+              }}
+            >
+              Copy dataset to clipboard{' '}
+              <Icon id="clipboard" className="self-center fill-gray-200" />
+            </Button>
+            <Button
+              primary
+              onClick={() => {
+                devices.forEach((device) => device.forget())
+                setDevices([])
+              }}
+            >
+              Disconnect
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   )
 }
 
-type GraphProps = {
-  reports: ReturnType<typeof parseReport>[]
+const heatmapColorsStyles = [
+  'bg-slate-300',
+  'bg-slate-400',
+  'bg-slate-500',
+  'bg-slate-600',
+  'bg-slate-700',
+]
+function getColor(min: number, max: number, value?: number) {
+  if (!value) return 'bg-slate-500'
+
+  const index = Math.floor(((value - min) * (heatmapColorsStyles.length - 1)) / (max - min))
+  return heatmapColorsStyles[index] || 'bg-slate-500'
 }
-function Graph({ reports }: GraphProps) {
+
+type KeyProps = {
+  keyItem?: Key
+  mode: VisualizationMode
+  calibrationRange: CalibrationRange
+  legends: string[]
+  onClick: (index: string) => void
+}
+function Key({ mode, calibrationRange, legends, keyItem: key, onClick }: KeyProps) {
+  const color = useMemo(() => {
+    switch (mode) {
+      case 'NORMAL':
+        return 'bg-slate-500'
+
+      case 'IDLE_HEATMAP':
+        return getColor(
+          calibrationRange.idleValue.min,
+          calibrationRange.idleValue.max,
+          key?.calibration.idleValue,
+        )
+
+      case 'DISTANCE_HEATMAP':
+        return getColor(
+          calibrationRange.maxDistance.min,
+          calibrationRange.maxDistance.max,
+          key?.calibration.maxDistance,
+        )
+    }
+  }, [key, calibrationRange, mode])
+
   return (
-    <>
-      <div>
-        <div className="text-center">Calibration values</div>
+    <div
+      className={`relative w-full h-full rounded-md ${color} flex flex-col justify-center overflow-hidden items-center [text-shadow:0_0_3px_rgba(0,0,0,0.9)] transition-transform cursor-pointer`}
+      onClick={() => onClick(`${key?.row}-${key?.col}`)}
+    >
+      {key && (
+        <div
+          className={`absolute bottom-0 left-0 right-0 ${
+            key.state.status !== 'STATUS_RESET' ? 'bg-pink-700' : 'bg-pink-300'
+          }`}
+          style={{ height: `${(key.state.distance8bits * 100) / 255}%` }}
+        ></div>
+      )}
+      {legends.map((legend, index) => (
+        <span className="z-10" key={index}>
+          {legend}
+        </span>
+      ))}
+      {key && (
+        <span className="z-10">
+          {mode === 'IDLE_HEATMAP'
+            ? key.calibration.idleValue.toString()
+            : mode === 'DISTANCE_HEATMAP'
+            ? key.calibration.maxDistance.toString()
+            : key.state.distance8bits.toString()}
+        </span>
+      )}
+    </div>
+  )
+}
+
+type KeyboardProps = {
+  keys: KeysByRowCol
+  mode: VisualizationMode
+  onClick: KeyProps['onClick']
+}
+function Keyboard({ keys, mode, onClick }: KeyboardProps) {
+  const width = useMemo(() => layout.reduce((acc, key) => Math.max(acc, key.x + key.w), 0), [])
+  const height = useMemo(() => layout.reduce((acc, key) => Math.max(acc, key.y + key.h), 0), [])
+  const [calibrationRange, setCalibrationRange] = useState<CalibrationRange>({
+    idleValue: { min: Infinity, max: 0 },
+    maxDistance: { min: Infinity, max: 0 },
+  })
+
+  useEffect(() => {
+    const calibrations = Object.values(keys).map((key) => key!.calibration)
+    if (calibrations.length) {
+      setCalibrationRange({
+        idleValue: {
+          min: calibrations.reduce(
+            (acc, calibration) =>
+              calibration.idleValue !== 0 ? Math.min(acc, calibration.idleValue) : acc,
+            Infinity,
+          ),
+          max: calibrations.reduce((acc, calibration) => Math.max(acc, calibration.idleValue), 0),
+        },
+        maxDistance: {
+          min: calibrations.reduce(
+            (acc, calibration) =>
+              calibration.maxDistance !== 0 ? Math.min(acc, calibration.maxDistance) : acc,
+            Infinity,
+          ),
+          max: calibrations.reduce((acc, calibration) => Math.max(acc, calibration.maxDistance), 0),
+        },
+      })
+    }
+  }, [keys])
+
+  return (
+    <div>
+      <div className={`relative w-full text-sm`} style={{ aspectRatio: `${width}/${height}` }}>
+        {layout.map((keyCoord) => {
+          const index = `${keyCoord.row}-${keyCoord.col}`
+          const key = keys[index]
+          return (
+            <div
+              key={index}
+              className={`absolute p-0.5`}
+              style={{
+                top: `${keyCoord.y * (100 / height)}%`,
+                left: `${keyCoord.x * (100 / width)}%`,
+                width: `${keyCoord.w * (100 / width)}%`,
+                height: `${keyCoord.h * (100 / height)}%`,
+              }}
+            >
+              <Key
+                onClick={onClick}
+                keyItem={key}
+                legends={keyCoord.ref.split(' ')}
+                mode={mode}
+                calibrationRange={calibrationRange}
+              />
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+const triggered = (ctx: any, value: string) =>
+  ctx.p1.raw.status !== 'STATUS_RESET' ? value : undefined
+const reset = (ctx: any, value: string) =>
+  ctx.p1.raw.status === 'STATUS_RESET' ? value : undefined
+
+Chart.register(CategoryScale, LinearScale, PointElement, LineElement)
+
+type GraphProps = {
+  keyItem?: Key
+}
+function Graph({ keyItem }: GraphProps) {
+  const [isStateMode, setIsStateMode] = useState(true)
+  if (!keyItem) return null
+
+  return (
+    <div className="w-full h-full">
+      {!isStateMode ? (
         <Line
           options={{
             color: '#fff',
@@ -227,46 +416,48 @@ function Graph({ reports }: GraphProps) {
             },
           }}
           data={{
-            labels: reports.map((report) => report.time),
+            labels: keyItem.calibrations.map((calibration) => calibration.time),
             datasets: [
               {
                 label: 'Idle',
-                data: reports.map((report) => report.idleValue),
-                backgroundColor: colors[0],
-                borderColor: colors[0],
+                data: keyItem.calibrations.map((calibration) => calibration.idleValue),
+                backgroundColor: '#be185d',
+                borderColor: '#be185d',
                 pointRadius: 0,
               },
               {
                 label: 'Value',
-                data: reports.map((report) => report.value),
-                backgroundColor: colors[1],
-                borderColor: colors[1],
+                data: keyItem.states.map((state) => state.value),
+                backgroundColor: '#f472b6',
+                borderColor: '#f472b6',
                 pointRadius: 0,
               },
               {
                 label: 'Max Distance',
-                data: reports.map((report) => report.idleValue - report.maxDistance),
-                backgroundColor: colors[2],
-                borderColor: colors[2],
+                data: keyItem.calibrations.map((calibration) => calibration.maxDistance),
+                backgroundColor: '#fbcfe8',
+                borderColor: '#fbcfe8',
                 pointRadius: 0,
               },
             ],
           }}
         />
-      </div>
-      <div>
-        <div className="text-center">Values</div>
+      ) : (
         <Line
           options={{
-            color: '#fff',
             animation: false,
             responsive: true,
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
             scales: {
               x: {
                 display: false,
               },
               y: {
-                min: -255,
+                min: 0,
                 max: 255,
                 ticks: {
                   color: '#fff',
@@ -275,34 +466,28 @@ function Graph({ reports }: GraphProps) {
             },
           }}
           data={{
-            labels: reports,
+            labels: keyItem.states,
             datasets: [
               {
                 label: 'Distance',
-                data: reports,
+                data: keyItem.states,
                 parsing: {
                   yAxisKey: 'distance8bits',
                   xAxisKey: 'time',
                 },
                 segment: {
-                  backgroundColor: (ctx) => triggered(ctx, colors[5]) || reset(ctx, colors[6]),
-                  borderColor: (ctx) => triggered(ctx, colors[5]) || reset(ctx, colors[6]),
+                  backgroundColor: (ctx) => triggered(ctx, '#be185d') || reset(ctx, '#f9a8d4'),
+                  borderColor: (ctx) => triggered(ctx, '#be185d') || reset(ctx, '#f9a8d4'),
                 },
-                backgroundColor: colors[2],
-                borderColor: colors[2],
                 pointRadius: 0,
               },
             ],
           }}
         />
-      </div>
-    </>
+      )}
+      <Link className="text-right w-full block" to="" onClick={() => setIsStateMode(!isStateMode)}>
+        Change mode
+      </Link>
+    </div>
   )
-}
-
-type ReportsProps = {
-  reports: Report[]
-}
-function Reports({ reports }: ReportsProps) {
-  return <pre>{reports.sort((a, b) => b.time - a.time).map((report) => report.hex + '\n\n')}</pre>
 }
