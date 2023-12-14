@@ -1,5 +1,5 @@
 import { json } from '@remix-run/node'
-import { NavLink, Outlet, Link as RemixLink, useLoaderData } from '@remix-run/react'
+import { Outlet, Link as RemixLink, useLoaderData } from '@remix-run/react'
 import { version } from '../../package.json'
 import { routerPaths } from '../../routes.ts'
 import { Icon } from '../ui/icon.tsx'
@@ -27,7 +27,7 @@ export default function Index() {
         </RemixLink>
 
         <div className="flex flex-row items-center gap-6">
-          <NavLink
+          {/* <NavLink
             to={routerPaths['/hid']}
             className={({ isActive }) =>
               `transition hover:text-gray-100 active:text-pink-200 ${
@@ -36,8 +36,8 @@ export default function Index() {
             }
           >
             Keyboard
-          </NavLink>
-          <div className="h-6 w-0.5 bg-slate-700"></div>
+          </NavLink> */}
+          {/* <div className="h-6 w-0.5 bg-slate-700"></div> */}
           <RemixLink
             to="https://github.com/heiso/macrolev"
             target="_blank"

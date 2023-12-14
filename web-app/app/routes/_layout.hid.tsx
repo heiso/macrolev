@@ -78,6 +78,7 @@ export default function Index() {
   const [keys, setKeys] = useState<KeysByRowCol>({})
   const [keyIndex, setKeyIndex] = useState<string | null>(null)
   const [mode, setMode] = useState<VisualizationMode>('NORMAL')
+  const [offset, setOffset] = useState(1)
 
   const handleKeyDown = (event: KeyboardEvent) => {
     event.preventDefault()
@@ -128,6 +129,7 @@ export default function Index() {
       }))
     })
     setDuration((duration) => data.getUint8(60) * (1 - 0.8) + duration * 0.8)
+    setOffset(() => Number(((Number(data.getUint8(61)) * 4) / 255).toFixed(1)))
     setRawReports((rawReports) => [dataViewToHexs(data), ...rawReports].slice(0, MAX_VALUES))
   }, [])
 
@@ -171,20 +173,45 @@ export default function Index() {
             </Button>
           </div>
         )}
-        <div className={devices.length == 0 ? 'blur-sm opacity-80' : ''}>
+        <div className={devices.length == 0 ? 'opacity-80' : ''}>
           <Keyboard keys={keys} mode={mode} onClick={setKeyIndex} />
         </div>
         <div className={`w-full flex justify-between ${devices.length == 0 ? 'hidden' : ''}`}>
-          <div className="space-x-4">
-            <Link to="" onClick={() => setMode('IDLE_HEATMAP')}>
+          <div className="flex gap-4">
+            <Link preventScrollReset to="" onClick={() => setMode('IDLE_HEATMAP')}>
               Show idle value heatmap
             </Link>
-            <Link to="" onClick={() => setMode('DISTANCE_HEATMAP')}>
+            <Link preventScrollReset to="" onClick={() => setMode('DISTANCE_HEATMAP')}>
               Show max distance heatmap
             </Link>
-            <Link to="" onClick={() => setMode('NORMAL')}>
+            <Link preventScrollReset to="" onClick={() => setMode('NORMAL')}>
               Show analog values
             </Link>
+            <div className="flex gap-2 items-center">
+              <input
+                className="cursor-pointer"
+                min={0.1}
+                max={4}
+                step={0.1}
+                type="range"
+                onChange={(event) => {
+                  setOffset(Number(event.target.value))
+                }}
+                value={offset}
+              />
+              {offset}mm
+              <Link
+                preventScrollReset
+                to=""
+                onClick={() =>
+                  devices
+                    .filter((device) => device.collections.length == 1)
+                    .forEach((device) => device.sendReport(0, new Uint8Array([(offset * 255) / 4])))
+                }
+              >
+                Send
+              </Link>
+            </div>
           </div>
           <div className="text-right text-slate-400">
             <span>Avg cycle duration </span>
@@ -485,7 +512,12 @@ function Graph({ keyItem }: GraphProps) {
           }}
         />
       )}
-      <Link className="text-right w-full block" to="" onClick={() => setIsStateMode(!isStateMode)}>
+      <Link
+        preventScrollReset
+        className="text-right w-full block"
+        to=""
+        onClick={() => setIsStateMode(!isStateMode)}
+      >
         Change mode
       </Link>
     </div>

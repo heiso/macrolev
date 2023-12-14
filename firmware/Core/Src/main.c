@@ -50,6 +50,8 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE BEGIN PV */
 ADC_ChannelConfTypeDef ADC_channel_Config = {0};
 
+__attribute__((__section__(".user_data"))) struct user_config user_config;
+
 // {adc_channel, amux_channel}
 const uint8_t channels_by_row_col[MATRIX_ROWS][MATRIX_COLS][2] = {
     {{0, 10}, {0, 8}, {0, 7}, {0, 5}, {1, 9}, {1, 8}, {1, 6}, {2, 10}, {2, 9}, {2, 7}, {2, 6}, {3, 9}, {3, 8}, {3, 6}, {4, 2}},
@@ -218,6 +220,7 @@ int main(void) {
     } else if (should_send_generic_inout_report && tud_hid_n_ready(ITF_NUM_GENERIC_INOUT)) {
       should_send_generic_inout_report = 0;
       generic_inout_report.duration = HAL_GetTick() - start;
+      generic_inout_report.offset = user_config.offset;
       tud_hid_n_report(ITF_NUM_GENERIC_INOUT, 0, &generic_inout_report, HID_GENERIC_INOUT_REPORT_BUFFSIZE);
     }
     /* USER CODE END WHILE */
@@ -411,7 +414,7 @@ uint16_t get_usage_consumer_control(uint16_t value) {
   }
 }
 
-void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t column, uint16_t trigger_offset, uint16_t rapid_trigger_offset, uint8_t is_continuous_rapid_trigger_enabled) {
+void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t column) {
   struct key *key = &keys[adc_channel][amux_channel];
 
   key->is_enabled = 1;
@@ -425,10 +428,10 @@ void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t co
 
   key->actuation.status = STATUS_RESET;
   key->actuation.changed_at = 0;
-  key->actuation.trigger_offset = trigger_offset;
-  key->actuation.reset_offset = trigger_offset - MIN_DISTANCE_BETWEEN_TRIGGER_AND_RESET;
-  key->actuation.rapid_trigger_offset = rapid_trigger_offset;
-  key->actuation.is_continuous_rapid_trigger_enabled = is_continuous_rapid_trigger_enabled;
+  key->actuation.trigger_offset = user_config.offset;
+  key->actuation.reset_offset = key->actuation.trigger_offset - MIN_DISTANCE_BETWEEN_TRIGGER_AND_RESET;
+  key->actuation.rapid_trigger_offset = 0;
+  key->actuation.is_continuous_rapid_trigger_enabled = 0;
 
   for (uint8_t i = 0; i < LAYERS_COUNT; i++) {
     if (keymaps[i][row][column] != ____) {
@@ -457,7 +460,7 @@ void init_keys() {
   for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
     for (uint8_t col = 0; col < MATRIX_COLS; col++) {
       if (channels_by_row_col[row][col][0] != XXXX) {
-        init_key(channels_by_row_col[row][col][0], channels_by_row_col[row][col][1], row, col, TRIGGER_OFFSET, 0, 0);
+        init_key(channels_by_row_col[row][col][0], channels_by_row_col[row][col][1], row, col);
       }
     }
   }
@@ -726,6 +729,18 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_t
 // received data on OUT endpoint ( Report ID = 0, Type = 0 )
 void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
   (void)report_id;
+
+  HAL_FLASH_Unlock();
+  __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGSERR);
+  FLASH_Erase_Sector(FLASH_SECTOR_6, VOLTAGE_RANGE_3);
+  for (uint8_t i = 0; i < sizeof(user_config); i++) {
+    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uint32_t)&user_config + i, buffer[i]) != HAL_OK) {
+      HAL_FLASH_Lock();
+    };
+  }
+  HAL_FLASH_Lock();
+
+  init_keys();
 }
 
 /* USER CODE END 4 */

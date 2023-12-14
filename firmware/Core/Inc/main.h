@@ -109,6 +109,11 @@ struct hid_generic_inout_report_key {
 struct hid_generic_inout_report {
   struct hid_generic_inout_report_key keys[6];
   uint8_t duration;
+  uint8_t offset;
+};
+
+struct user_config {
+  uint8_t offset;
 };
 /* USER CODE END ET */
 
