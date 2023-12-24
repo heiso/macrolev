@@ -624,10 +624,6 @@ uint8_t update_key_state(struct key *key) {
     state.value = key->calibration.idle_value;
   }
 
-  // if (state.value > key->calibration.idle_value) {
-  //   state.value = key->calibration.idle_value;
-  // }
-
   // Do nothing if key is idle
   if (key->state.distance == 0 && state.value >= key->calibration.idle_value - IDLE_VALUE_OFFSET) {
     if (key->idle_counter >= IDLE_CYCLES_UNTIL_SLEEP) {
@@ -721,7 +717,7 @@ void update_key_actuation(struct key *key) {
     if (is_after_trigger_offset) {
       if (key->layers[_TAP_LAYER].value) {
         key->actuation.status = STATUS_MIGHT_BE_TAP;
-        key_triggered = 1;
+        // key_triggered = 1;
       } else {
         key->actuation.status = STATUS_TRIGGERED;
         key_triggered = 1;
