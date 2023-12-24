@@ -21,6 +21,7 @@
     "@remix-run/react": "^2.0.1",
     "@remix-run/serve": "^2.0.1",
     "chart.js": "^4.4.0",
+    "chartjs-plugin-annotation": "^3.0.1",
     "date-fns": "^2.30.0",
     "isbot": "^3.7.0",
     "koa": "^2.14.2",

@@ -31,7 +31,32 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#define CONFIG_ADDRESS 0x08040000
 
+#define CALIBRATION_CYCLES 20
+
+#define DEFAULT_TRIGGER_OFFSET 64
+#define DEFAULT_RESET_THRESHOLD 3
+#define DEFAULT_RAPID_TRIGGER_OFFSET 40
+
+#define IDLE_VALUE_APPROX 1800
+#define MAX_DISTANCE_APPROX 500
+#define IDLE_VALUE_OFFSET 10
+#define MAX_DISTANCE_OFFSET 60
+#define TAP_TIMEOUT 200
+#define IDLE_CYCLES_UNTIL_SLEEP 15
+
+#define ADC_CHANNEL_COUNT 5
+#define AMUX_SELECT_PINS_COUNT 4
+#define AMUX_CHANNEL_COUNT 16
+
+#define MATRIX_ROWS 5
+#define MATRIX_COLS 15
+
+#define XXXX 0xff
+#define ____ 0x00
+
+#define SPECIAL(X) (0b1000000000000000 | X)
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -42,11 +67,18 @@ struct calibration {
   uint16_t max_distance;
 };
 
+enum direction {
+  GOING_UP,
+  GOING_DOWN,
+};
+
 struct state {
   uint16_t value;
   uint16_t distance;
   uint8_t distance_8bits;
+  float filtered_distance;
   int8_t velocity;
+  uint8_t filtered_distance_8bits;
 };
 
 enum actuation_status {
@@ -54,11 +86,13 @@ enum actuation_status {
   STATUS_TAP,
   STATUS_TRIGGERED,
   STATUS_RESET,
+  STATUS_RAPID_TRIGGER_RESET
 };
 
 struct actuation {
+  enum direction direction;
+  uint8_t direction_changed_point;
   enum actuation_status status;
-  uint8_t changed_at;
   uint8_t reset_offset;
   uint8_t trigger_offset;
   uint8_t rapid_trigger_offset;
@@ -78,22 +112,22 @@ struct layer {
   uint16_t value;
 };
 
+enum {
+  _BASE_LAYER,
+  _TAP_LAYER,
+  LAYERS_COUNT
+};
+
 struct key {
   uint8_t is_enabled;
   uint8_t row;
   uint8_t column;
   uint8_t idle_counter;
   uint8_t is_idle;
-  struct layer layers[2];
+  struct layer layers[LAYERS_COUNT];
   struct calibration calibration;
   struct state state;
   struct actuation actuation;
-};
-
-enum {
-  _BASE_LAYER,
-  _TAP_LAYER,
-  LAYERS_COUNT
 };
 
 struct hid_generic_inout_report_key {
@@ -109,11 +143,16 @@ struct hid_generic_inout_report_key {
 struct hid_generic_inout_report {
   struct hid_generic_inout_report_key keys[6];
   uint8_t duration;
-  uint8_t offset;
+  uint8_t trigger_offset;
+  uint8_t reset_threshold;
+  uint8_t rapid_trigger_offset;
 };
 
 struct user_config {
-  uint8_t offset;
+  uint8_t trigger_offset;
+  uint8_t reset_threshold;
+  uint8_t rapid_trigger_offset;
+  uint16_t keymaps[LAYERS_COUNT][MATRIX_ROWS][MATRIX_COLS];
 };
 /* USER CODE END ET */
 
@@ -137,29 +176,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
-#define CALIBRATION_CYCLES 20
-
-#define TRIGGER_OFFSET 64
-#define MIN_DISTANCE_BETWEEN_TRIGGER_AND_RESET 3
-
-#define IDLE_VALUE_APPROX 1800
-#define MAX_DISTANCE_APPROX 500
-#define IDLE_VALUE_OFFSET 10
-#define MAX_DISTANCE_OFFSET 40
-#define TAP_TIMEOUT 200
-#define IDLE_CYCLES_UNTIL_SLEEP 15
-
-#define ADC_CHANNEL_COUNT 5
-#define AMUX_SELECT_PINS_COUNT 4
-#define AMUX_CHANNEL_COUNT 16
-
-#define MATRIX_ROWS 5
-#define MATRIX_COLS 15
-
-#define XXXX 0xff
-#define ____ 0x00
-
-#define SPECIAL(X) (0b1000000000000000 | X)
 
 /* USER CODE END Private defines */
 

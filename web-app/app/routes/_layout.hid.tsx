@@ -1,4 +1,5 @@
 import { CategoryScale, Chart, LineElement, LinearScale, PointElement } from 'chart.js'
+import Annotation from 'chartjs-plugin-annotation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import layout from '../parsed-layout.json'
@@ -7,7 +8,13 @@ import { Icon } from '../ui/icon.tsx'
 import { Link } from '../ui/link.tsx'
 
 const MAX_VALUES = 100
-const status = ['STATUS_MIGHT_BE_TAP', 'STATUS_TAP', 'STATUS_TRIGGERED', 'STATUS_RESET'] as const
+const status = [
+  'STATUS_MIGHT_BE_TAP',
+  'STATUS_TAP',
+  'STATUS_TRIGGERED',
+  'STATUS_RESET',
+  'STATUS_RAPID_TRIGGER_RESET',
+] as const
 type Status = (typeof status)[number]
 const visualizationModes = ['NORMAL', 'DISTANCE_HEATMAP', 'IDLE_HEATMAP'] as const
 type VisualizationMode = (typeof visualizationModes)[number]
@@ -69,6 +76,14 @@ function isBufferEmpty(data: DataView, offset: number, length: number) {
   return true
 }
 
+function parseRawOffset(value: number) {
+  return Number(((value * 4) / 255).toFixed(1))
+}
+
+function formatRawOffset(value: number) {
+  return (value * 255) / 4
+}
+
 export default function Index() {
   const [devices, setDevices] = useState<HIDDevice[]>([])
   const [rawReports, setRawReports] = useState<string[]>([
@@ -78,7 +93,9 @@ export default function Index() {
   const [keys, setKeys] = useState<KeysByRowCol>({})
   const [keyIndex, setKeyIndex] = useState<string | null>(null)
   const [mode, setMode] = useState<VisualizationMode>('NORMAL')
-  const [offset, setOffset] = useState(1)
+  const [triggerOffset, setTriggerOffset] = useState(0)
+  const [rapidTriggerOffset, setRapidTriggerOffset] = useState(0)
+  const [resetOffset, setResetOffset] = useState(0)
 
   const handleKeyDown = (event: KeyboardEvent) => {
     event.preventDefault()
@@ -129,7 +146,9 @@ export default function Index() {
       }))
     })
     setDuration((duration) => data.getUint8(60) * (1 - 0.8) + duration * 0.8)
-    setOffset(() => Number(((Number(data.getUint8(61)) * 4) / 255).toFixed(1)))
+    setTriggerOffset(() => parseRawOffset(Number(data.getUint8(61))))
+    setResetOffset(() => Number(data.getUint8(62)))
+    setRapidTriggerOffset(() => parseRawOffset(Number(data.getUint8(63))))
     setRawReports((rawReports) => [dataViewToHexs(data), ...rawReports].slice(0, MAX_VALUES))
   }, [])
 
@@ -187,6 +206,17 @@ export default function Index() {
             <Link preventScrollReset to="" onClick={() => setMode('NORMAL')}>
               Show analog values
             </Link>
+            <Link
+              className="inline-flex gap-2"
+              to=""
+              onClick={() => {
+                const json = JSON.stringify(keys, null, 2)
+                navigator.clipboard.writeText(json)
+              }}
+              title="Copy dataset to clipboard"
+            >
+              <Icon id="clipboard" className="self-center fill-pink-500" />
+            </Link>
             <div className="flex gap-2 items-center">
               <input
                 className="cursor-pointer"
@@ -195,21 +225,42 @@ export default function Index() {
                 step={0.1}
                 type="range"
                 onChange={(event) => {
-                  setOffset(Number(event.target.value))
+                  setTriggerOffset(Number(event.target.value))
                 }}
-                value={offset}
+                value={triggerOffset}
               />
-              {offset}mm
+              <span className="text-slate-400">{triggerOffset} mm</span>
+              <input
+                className="cursor-pointer"
+                min={0.1}
+                max={4}
+                step={0.1}
+                type="range"
+                onChange={(event) => {
+                  setRapidTriggerOffset(Number(event.target.value))
+                }}
+                value={rapidTriggerOffset}
+              />
+              <span className="text-slate-400">{rapidTriggerOffset} mm</span>
               <Link
                 preventScrollReset
                 to=""
                 onClick={() =>
                   devices
                     .filter((device) => device.collections.length == 1)
-                    .forEach((device) => device.sendReport(0, new Uint8Array([(offset * 255) / 4])))
+                    .forEach((device) =>
+                      device.sendReport(
+                        0,
+                        new Uint8Array([
+                          formatRawOffset(triggerOffset),
+                          resetOffset,
+                          formatRawOffset(rapidTriggerOffset),
+                        ]),
+                      ),
+                    )
                 }
               >
-                Send
+                Save
               </Link>
             </div>
           </div>
@@ -232,7 +283,11 @@ export default function Index() {
 
             <div className="w-full h-full bg-slate-700 rounded-md p-4">
               {keyIndex ? (
-                <Graph keyItem={keys[keyIndex]} />
+                <Graph
+                  keyItem={keys[keyIndex]}
+                  triggerOffset={triggerOffset}
+                  resetOffset={resetOffset}
+                />
               ) : (
                 <div className="h-full">Click on a key to show some charts</div>
               )}
@@ -240,16 +295,6 @@ export default function Index() {
           </div>
 
           <div className="space-x-4">
-            <Button
-              className="inline-flex gap-2"
-              onClick={() => {
-                const json = JSON.stringify(keys, null, 2)
-                navigator.clipboard.writeText(json)
-              }}
-            >
-              Copy dataset to clipboard{' '}
-              <Icon id="clipboard" className="self-center fill-gray-200" />
-            </Button>
             <Button
               primary
               onClick={() => {
@@ -317,7 +362,9 @@ function Key({ mode, calibrationRange, legends, keyItem: key, onClick }: KeyProp
       {key && (
         <div
           className={`absolute bottom-0 left-0 right-0 ${
-            key.state.status !== 'STATUS_RESET' ? 'bg-pink-700' : 'bg-pink-300'
+            key.state.status !== 'STATUS_RESET' && key.state.status !== 'STATUS_RAPID_TRIGGER_RESET'
+              ? 'bg-pink-700'
+              : 'bg-pink-300'
           }`}
           style={{ height: `${(key.state.distance8bits * 100) / 255}%` }}
         ></div>
@@ -378,48 +425,52 @@ function Keyboard({ keys, mode, onClick }: KeyboardProps) {
   }, [keys])
 
   return (
-    <div>
-      <div className={`relative w-full text-sm`} style={{ aspectRatio: `${width}/${height}` }}>
-        {layout.map((keyCoord) => {
-          const index = `${keyCoord.row}-${keyCoord.col}`
-          const key = keys[index]
-          return (
-            <div
-              key={index}
-              className={`absolute p-0.5`}
-              style={{
-                top: `${keyCoord.y * (100 / height)}%`,
-                left: `${keyCoord.x * (100 / width)}%`,
-                width: `${keyCoord.w * (100 / width)}%`,
-                height: `${keyCoord.h * (100 / height)}%`,
-              }}
-            >
-              <Key
-                onClick={onClick}
-                keyItem={key}
-                legends={keyCoord.ref.split(' ')}
-                mode={mode}
-                calibrationRange={calibrationRange}
-              />
-            </div>
-          )
-        })}
-      </div>
+    <div className={`relative w-full text-sm`} style={{ aspectRatio: `${width}/${height}` }}>
+      {layout.map((keyCoord) => {
+        const index = `${keyCoord.row}-${keyCoord.col}`
+        const key = keys[index]
+        return (
+          <div
+            key={index}
+            className={`absolute p-0.5`}
+            style={{
+              top: `${keyCoord.y * (100 / height)}%`,
+              left: `${keyCoord.x * (100 / width)}%`,
+              width: `${keyCoord.w * (100 / width)}%`,
+              height: `${keyCoord.h * (100 / height)}%`,
+            }}
+          >
+            <Key
+              onClick={onClick}
+              keyItem={key}
+              legends={keyCoord.ref.split(' ')}
+              mode={mode}
+              calibrationRange={calibrationRange}
+            />
+          </div>
+        )
+      })}
     </div>
   )
 }
 
 const triggered = (ctx: any, value: string) =>
-  ctx.p1.raw.status !== 'STATUS_RESET' ? value : undefined
+  ctx.p1.raw.status !== 'STATUS_RESET' && ctx.p1.raw.status !== 'STATUS_RAPID_TRIGGER_RESET'
+    ? value
+    : undefined
 const reset = (ctx: any, value: string) =>
-  ctx.p1.raw.status === 'STATUS_RESET' ? value : undefined
+  ctx.p1.raw.status === 'STATUS_RESET' || ctx.p1.raw.status === 'STATUS_RAPID_TRIGGER_RESET'
+    ? value
+    : undefined
 
-Chart.register(CategoryScale, LinearScale, PointElement, LineElement)
+Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Annotation)
 
 type GraphProps = {
   keyItem?: Key
+  triggerOffset: number
+  resetOffset: number
 }
-function Graph({ keyItem }: GraphProps) {
+function Graph({ keyItem, triggerOffset, resetOffset }: GraphProps) {
   const [isStateMode, setIsStateMode] = useState(true)
   if (!keyItem) return null
 
@@ -478,6 +529,24 @@ function Graph({ keyItem }: GraphProps) {
               legend: {
                 display: false,
               },
+              annotation: {
+                annotations: [
+                  {
+                    type: 'line',
+                    borderColor: '#be185d',
+                    borderWidth: 2,
+                    scaleID: 'y',
+                    value: formatRawOffset(triggerOffset),
+                  },
+                  {
+                    type: 'line',
+                    borderColor: '#f9a8d4',
+                    borderWidth: 2,
+                    scaleID: 'y',
+                    value: formatRawOffset(triggerOffset) - resetOffset,
+                  },
+                ],
+              },
             },
             scales: {
               x: {
@@ -508,18 +577,26 @@ function Graph({ keyItem }: GraphProps) {
                 },
                 pointRadius: 0,
               },
+              {
+                label: 'Changing point',
+                data: keyItem.states,
+                parsing: {
+                  yAxisKey: 'directionChangingPoint',
+                  xAxisKey: 'time',
+                },
+                pointRadius: 3,
+                pointBackgroundColor: 'red',
+                showLine: false,
+              },
             ],
           }}
         />
       )}
-      <Link
-        preventScrollReset
-        className="text-right w-full block"
-        to=""
-        onClick={() => setIsStateMode(!isStateMode)}
-      >
-        Change mode
-      </Link>
+      <div className="flex justify-end gap-4 w-full">
+        <Link preventScrollReset to="" onClick={() => setIsStateMode(!isStateMode)}>
+          Change mode
+        </Link>
+      </div>
     </div>
   )
 }

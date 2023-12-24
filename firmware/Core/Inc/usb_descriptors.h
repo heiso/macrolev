@@ -33,6 +33,11 @@ enum {
 };
 
 enum {
+  REPORT_ID_ANALOG = 1,
+  REPORT_ID_CONFIG,
+};
+
+enum {
   ITF_NUM_KEYBOARD,
   ITF_NUM_GENERIC_INOUT,
   ITF_NUM_TOTAL

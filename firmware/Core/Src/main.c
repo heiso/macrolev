@@ -50,7 +50,7 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE BEGIN PV */
 ADC_ChannelConfTypeDef ADC_channel_Config = {0};
 
-__attribute__((__section__(".user_data"))) struct user_config user_config;
+struct user_config user_config = {0};
 
 // {adc_channel, amux_channel}
 const uint8_t channels_by_row_col[MATRIX_ROWS][MATRIX_COLS][2] = {
@@ -85,7 +85,7 @@ const uint32_t amux_select_pins[AMUX_SELECT_PINS_COUNT] = {GPIO_PIN_12, GPIO_PIN
 
 static struct key keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT] = {0};
 
-static uint8_t non_tap_key_triggered = 0;
+static uint8_t key_triggered = 0;
 
 static uint8_t should_send_consumer_report = 0;
 static uint8_t should_send_keyboard_report = 0;
@@ -112,7 +112,39 @@ static void remove_from_hid_report(struct key *key, uint8_t layer);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void readConfig() {
+  memcpy(&user_config, (uint32_t *)CONFIG_ADDRESS, sizeof(user_config));
+  if (!user_config.trigger_offset || user_config.trigger_offset == 0xff) {
+    user_config.trigger_offset = DEFAULT_TRIGGER_OFFSET;
+  }
+  if (!user_config.reset_threshold || user_config.reset_threshold == 0xff) {
+    user_config.reset_threshold = DEFAULT_RESET_THRESHOLD;
+  }
+  if (!user_config.rapid_trigger_offset || user_config.rapid_trigger_offset == 0xff) {
+    user_config.rapid_trigger_offset = DEFAULT_RAPID_TRIGGER_OFFSET;
+  }
+  if (!user_config.keymaps) {
+    for (uint8_t layer; layer < LAYERS_COUNT; layer++) {
+      for (uint8_t row; row < MATRIX_ROWS; row++) {
+        for (uint8_t col; col < MATRIX_COLS; col++) {
+          user_config.keymaps[layer][row][col] = keymaps[layer][row][col];
+        }
+      }
+    }
+  }
+}
 
+void writeConfig(uint8_t *buffer, uint16_t size) {
+  HAL_FLASH_Unlock();
+  __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGSERR);
+  FLASH_Erase_Sector(FLASH_SECTOR_6, VOLTAGE_RANGE_3);
+  for (uint16_t i = 0; i < size; i++) {
+    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, CONFIG_ADDRESS + i, buffer[i]) != HAL_OK) {
+      HAL_FLASH_Lock();
+    };
+  }
+  HAL_FLASH_Lock();
+}
 /* USER CODE END 0 */
 
 /**
@@ -159,7 +191,7 @@ int main(void) {
 
     tud_task();
 
-    non_tap_key_triggered = 0;
+    key_triggered = 0;
 
     for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
       // TODO: set GPIOs at the same time using bitmap on register
@@ -198,7 +230,7 @@ int main(void) {
         if (is_before_reset_offset && is_before_timeout) {
           key->actuation.status = STATUS_TAP;
           add_to_hid_report(key, _TAP_LAYER);
-        } else if (!is_before_timeout || non_tap_key_triggered) {
+        } else if (!is_before_timeout || key_triggered) {
           key->actuation.status = STATUS_TRIGGERED;
           add_to_hid_report(key, _BASE_LAYER);
         }
@@ -220,7 +252,9 @@ int main(void) {
     } else if (should_send_generic_inout_report && tud_hid_n_ready(ITF_NUM_GENERIC_INOUT)) {
       should_send_generic_inout_report = 0;
       generic_inout_report.duration = HAL_GetTick() - start;
-      generic_inout_report.offset = user_config.offset;
+      generic_inout_report.trigger_offset = user_config.trigger_offset;
+      generic_inout_report.reset_threshold = user_config.reset_threshold;
+      generic_inout_report.rapid_trigger_offset = user_config.rapid_trigger_offset;
       tud_hid_n_report(ITF_NUM_GENERIC_INOUT, 0, &generic_inout_report, HID_GENERIC_INOUT_REPORT_BUFFSIZE);
     }
     /* USER CODE END WHILE */
@@ -427,10 +461,9 @@ void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t co
   key->calibration.max_distance = MAX_DISTANCE_APPROX;
 
   key->actuation.status = STATUS_RESET;
-  key->actuation.changed_at = 0;
-  key->actuation.trigger_offset = user_config.offset;
-  key->actuation.reset_offset = key->actuation.trigger_offset - MIN_DISTANCE_BETWEEN_TRIGGER_AND_RESET;
-  key->actuation.rapid_trigger_offset = 0;
+  key->actuation.trigger_offset = user_config.trigger_offset;
+  key->actuation.reset_offset = user_config.trigger_offset - user_config.reset_threshold;
+  key->actuation.rapid_trigger_offset = user_config.rapid_trigger_offset;
   key->actuation.is_continuous_rapid_trigger_enabled = 0;
 
   for (uint8_t i = 0; i < LAYERS_COUNT; i++) {
@@ -454,6 +487,8 @@ void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t co
 }
 
 void init_keys() {
+  readConfig();
+
   ADC_channel_Config.Rank = 1;
   ADC_channel_Config.SamplingTime = ADC_SAMPLETIME_3CYCLES;
 
@@ -574,7 +609,8 @@ uint8_t update_key_state(struct key *key) {
 
   if (key->calibration.cycles_count < CALIBRATION_CYCLES) {
     // Calibrate idle value
-    key->calibration.idle_value = (1 - 0.6) * state.value + 0.6 * key->calibration.idle_value;
+    float delta = 0.6;
+    key->calibration.idle_value = (1 - delta) * state.value + delta * key->calibration.idle_value;
     key->calibration.cycles_count++;
 
     return 0;
@@ -583,9 +619,14 @@ uint8_t update_key_state(struct key *key) {
   // Calibrate idle value
   if (state.value > key->calibration.idle_value) {
     // opti possible sur float
-    key->calibration.idle_value = (1 - 0.8) * state.value + 0.8 * key->calibration.idle_value;
+    float delta = 0.8;
+    key->calibration.idle_value = (1 - delta) * state.value + delta * key->calibration.idle_value;
     state.value = key->calibration.idle_value;
   }
+
+  // if (state.value > key->calibration.idle_value) {
+  //   state.value = key->calibration.idle_value;
+  // }
 
   // Do nothing if key is idle
   if (key->state.distance == 0 && state.value >= key->calibration.idle_value - IDLE_VALUE_OFFSET) {
@@ -600,8 +641,9 @@ uint8_t update_key_state(struct key *key) {
   // Get distance from top
   if (state.value >= key->calibration.idle_value - IDLE_VALUE_OFFSET) {
     state.distance = 0;
+    key->actuation.direction_changed_point = 0;
   } else {
-    state.distance = key->calibration.idle_value - state.value;
+    state.distance = key->calibration.idle_value - IDLE_VALUE_OFFSET - state.value;
     key->is_idle = 0;
     key->idle_counter = 0;
   }
@@ -619,8 +661,25 @@ uint8_t update_key_state(struct key *key) {
   // Map distance in percentages
   state.distance_8bits = (state.distance * 0xff) / key->calibration.max_distance;
 
+  float delta = 0.8;
+  state.filtered_distance = (1 - delta) * state.distance_8bits + delta * key->state.filtered_distance;
+  state.filtered_distance_8bits = state.filtered_distance;
+
   // Update velocity
-  state.velocity = state.distance_8bits - key->state.distance_8bits;
+  state.velocity = state.filtered_distance_8bits - key->state.filtered_distance_8bits;
+
+  // Update direction
+  if (key->state.velocity > 0 && state.velocity > 0 && key->actuation.direction != GOING_DOWN) {
+    key->actuation.direction = GOING_DOWN;
+    if (key->actuation.direction_changed_point != 0) {
+      key->actuation.direction_changed_point = key->state.filtered_distance_8bits;
+    }
+  } else if (key->state.velocity < 0 && state.velocity < 0 && key->actuation.direction != GOING_UP) {
+    key->actuation.direction = GOING_UP;
+    if (key->actuation.direction_changed_point != 255) {
+      key->actuation.direction_changed_point = key->state.filtered_distance_8bits;
+    }
+  }
 
   key->state = state;
   return 1;
@@ -630,13 +689,19 @@ void update_key_actuation(struct key *key) {
   /**
    * https://www.youtube.com/watch?v=_Sl-T6iQr8U&t
    *
-   * |-----| <- FULL RESET      -
-   * |     |                    | Continuous rapid trigger domain (deactivated when full_reset)
-   * |  -  | <- reset_offset    |
-   * |  -  | <- trigger_offset  -
-   * |     |                    | Rapid trigger domain
-   * |     |                    |
-   * |-----|                    -
+   *                          -----   |--------|                           -
+   *                            |     |        |                           |
+   *    is_before_reset_offset  |     |        |                           |
+   *                            |     |        |                           | Continuous rapid trigger domain (deactivated when full_reset)
+   *                          -----   | ------ | <- reset_offset           |
+   *                            |     |        |                           |
+   *                          -----   | ------ | <- trigger_offset         -
+   *                            |     |        |                           |
+   *                            |     |        |                           |
+   *   is_after_trigger_offset  |     |        |                           | Rapid trigger domain
+   *                            |     |        |                           |
+   *                            |     |        |                           |
+   *                          -----   |--------|                           -
    *
    */
 
@@ -645,6 +710,9 @@ void update_key_actuation(struct key *key) {
   uint32_t now = HAL_GetTick();
   uint8_t is_after_trigger_offset = key->state.distance_8bits > key->actuation.trigger_offset;
   uint8_t is_before_reset_offset = key->state.distance_8bits < key->actuation.reset_offset;
+  uint8_t has_rapid_trigger = key->actuation.rapid_trigger_offset != 0;
+  uint8_t is_after_rapid_trigger_offset = key->state.distance_8bits > key->actuation.direction_changed_point - key->actuation.rapid_trigger_offset + user_config.reset_threshold;
+  uint8_t is_before_rapid_reset_offset = key->state.distance_8bits < key->actuation.direction_changed_point - key->actuation.rapid_trigger_offset;
 
   switch (key->actuation.status) {
 
@@ -653,21 +721,40 @@ void update_key_actuation(struct key *key) {
     if (is_after_trigger_offset) {
       if (key->layers[_TAP_LAYER].value) {
         key->actuation.status = STATUS_MIGHT_BE_TAP;
-        non_tap_key_triggered = 0;
+        key_triggered = 1;
       } else {
         key->actuation.status = STATUS_TRIGGERED;
-        non_tap_key_triggered = 1;
+        key_triggered = 1;
         add_to_hid_report(key, _BASE_LAYER);
       }
-      key->actuation.changed_at = key->state.distance_8bits;
       key->actuation.triggered_at = now;
+    }
+    break;
+
+  case STATUS_RAPID_TRIGGER_RESET:
+    if (!has_rapid_trigger) {
+      key->actuation.status = STATUS_RESET;
+      break;
+    }
+    // if reset, can be triggered or tap
+    if (is_after_trigger_offset && key->actuation.direction == GOING_DOWN && is_after_rapid_trigger_offset) {
+      if (key->layers[_TAP_LAYER].value) {
+        key->actuation.status = STATUS_MIGHT_BE_TAP;
+        key_triggered = 1;
+      } else {
+        key->actuation.status = STATUS_TRIGGERED;
+        key_triggered = 1;
+        add_to_hid_report(key, _BASE_LAYER);
+      }
+      key->actuation.triggered_at = now;
+    } else if (is_before_reset_offset) {
+      key->actuation.status = STATUS_RESET;
     }
     break;
 
   case STATUS_TAP:
     // if tap, can be reset
     key->actuation.status = STATUS_RESET;
-    key->actuation.changed_at = key->state.distance_8bits;
     remove_from_hid_report(key, _TAP_LAYER);
     break;
 
@@ -675,7 +762,9 @@ void update_key_actuation(struct key *key) {
     // if triggered, can be reset
     if (is_before_reset_offset) {
       key->actuation.status = STATUS_RESET;
-      key->actuation.changed_at = key->state.distance_8bits;
+      remove_from_hid_report(key, _BASE_LAYER);
+    } else if (has_rapid_trigger && key->actuation.direction == GOING_UP && is_before_rapid_reset_offset) {
+      key->actuation.status = STATUS_RAPID_TRIGGER_RESET;
       remove_from_hid_report(key, _BASE_LAYER);
     }
     break;
@@ -729,18 +818,12 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_t
 // received data on OUT endpoint ( Report ID = 0, Type = 0 )
 void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
   (void)report_id;
+  if (instance == 1 && report_id == 0) {
+    writeConfig(buffer, bufsize);
+    // tud_hid_n_report(ITF_NUM_GENERIC_INOUT, 0, &user_config, HID_GENERIC_INOUT_REPORT_BUFFSIZE);
 
-  HAL_FLASH_Unlock();
-  __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGSERR);
-  FLASH_Erase_Sector(FLASH_SECTOR_6, VOLTAGE_RANGE_3);
-  for (uint8_t i = 0; i < sizeof(user_config); i++) {
-    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uint32_t)&user_config + i, buffer[i]) != HAL_OK) {
-      HAL_FLASH_Lock();
-    };
+    init_keys();
   }
-  HAL_FLASH_Lock();
-
-  init_keys();
 }
 
 /* USER CODE END 4 */
