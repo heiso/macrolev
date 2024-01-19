@@ -30,9 +30,9 @@ const config = {
 
     {
       ...common,
-      name: 'server',
-      watch: ['server/**/*', '.env'],
-      script: 'node --env-file=.env --inspect --loader tsx server',
+      name: 'app',
+      watch: ['.env'],
+      script: 'remix vite:dev',
     },
   ],
 }

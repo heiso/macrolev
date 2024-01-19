@@ -1,57 +1,28 @@
-import { json, type LinksFunction, type MetaFunction } from '@remix-run/node'
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useLoaderData,
-} from '@remix-run/react'
+// import { type LinksFunction, type MetaFunction } from '@remix-run/node'
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react'
 import type { PropsWithChildren } from 'react'
 import './font.css'
 import './tailwind.css'
 
-type ENV = {
-  ENV: string
-  BUILD_VERSION: string
-}
+// export const meta: MetaFunction = () => {
+//   return [{ title: 'Macrolev' }]
+// }
 
-declare global {
-  var ENV: ENV
-  interface Window {
-    ENV: ENV
-  }
-}
-
-export function loader() {
-  return json({
-    ENV: {
-      ENV: process.env.ENV,
-      BUILD_VERSION: process.env.BUILD_VERSION,
-    },
-  })
-}
-
-export const meta: MetaFunction = () => {
-  return [{ title: 'Macrolev' }]
-}
-
-export const links: LinksFunction = () => {
-  return [
-    {
-      rel: 'alternate icon',
-      type: 'image/png',
-      href: '/favicon-32x32.png',
-    },
-    { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
-    {
-      rel: 'manifest',
-      href: '/site.webmanifest',
-      crossOrigin: 'use-credentials',
-    } as const, // necessary to make typescript happy
-  ]
-}
+// export const links: LinksFunction = () => {
+//   return [
+//     {
+//       rel: 'alternate icon',
+//       type: 'image/png',
+//       href: '/favicon-32x32.png',
+//     },
+//     { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+//     {
+//       rel: 'manifest',
+//       href: '/site.webmanifest',
+//       crossOrigin: 'use-credentials',
+//     } as const, // necessary to make typescript happy
+//   ]
+// }
 
 type DocumentProps = PropsWithChildren
 function Document({ children }: DocumentProps) {
@@ -77,16 +48,9 @@ function Document({ children }: DocumentProps) {
 }
 
 export default function App() {
-  const { ENV } = useLoaderData<typeof loader>()
-
   return (
     <Document>
       <Outlet />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `window.ENV = ${JSON.stringify(ENV)}`,
-        }}
-      />
     </Document>
   )
 }

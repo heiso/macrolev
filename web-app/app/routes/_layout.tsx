@@ -1,18 +1,9 @@
-import { json } from '@remix-run/node'
-import { Outlet, Link as RemixLink, useLoaderData } from '@remix-run/react'
+import { Outlet, Link as RemixLink } from '@remix-run/react'
 import { version } from '../../package.json'
 import { routerPaths } from '../../routes.ts'
 import { Icon } from '../ui/icon.tsx'
 
-export async function loader() {
-  return json({
-    version,
-  })
-}
-
 export default function Index() {
-  const { version } = useLoaderData<typeof loader>()
-
   return (
     <div className="h-full w-full flex flex-col">
       <header className="w-full px-6 py-4 flex flex-row items-center justify-between mb-10">

@@ -14,6 +14,7 @@ export default defineConfig({
       ignoredRouteFiles: ['**/.*'],
       serverModuleFormat: 'esm',
       serverBuildDirectory: 'build/vite-server',
+      unstable_ssr: false,
     }),
   ],
 })

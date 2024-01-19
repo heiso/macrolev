@@ -5,8 +5,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "npx tsc -p tsconfig.build.json && remix vite:build",
-    "old-build": "npx tsc -p tsconfig.build.json && remix build",
+    "build": "remix vite:build",
     "check-dependencies": "npx npm-check-updates --peer --format group -i",
     "down": "pm2 delete ecosystem.config.cjs",
     "lint": "tsc --noEmit && eslint . && prettier --check .",
