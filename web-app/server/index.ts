@@ -1,20 +1,28 @@
-import { broadcastDevReady, type ServerBuild } from '@remix-run/node'
+import { installGlobals, type ServerBuild } from '@remix-run/node'
 import { secondsInHour, secondsInYear, secondsToMilliseconds } from 'date-fns'
 import Koa, { type Context } from 'koa'
+import connect from 'koa-connect'
 import serve from 'koa-static'
 import { createRequestHandler } from './adapter.js'
 import './process.js'
+
+installGlobals()
 
 declare module '@remix-run/server-runtime' {
   export interface AppLoadContext extends Context {}
 }
 
 ;(async () => {
-  const build = (await import(
-    `${process.env.NODE_ENV === 'development' ? 'build' : '..'}/app/index.js`
-  )) as ServerBuild
-
   const app = new Koa()
+
+  const viteDevServer =
+    process.env.NODE_ENV === 'development'
+      ? await import('vite').then((vite) =>
+          vite.createServer({
+            server: { middlewareMode: true },
+          }),
+        )
+      : undefined
 
   app.use(function setClientIP(ctx, next) {
     if (ctx.request.headers['fly-client-ip']) {
@@ -38,33 +46,42 @@ declare module '@remix-run/server-runtime' {
     }
   })
 
-  app.use(
-    serve('public/build', {
-      immutable: true,
-      maxAge: secondsToMilliseconds(secondsInYear),
-    }),
-  )
+  // handle asset requests
+  if (viteDevServer) {
+    app.use(connect(viteDevServer.middlewares))
+  } else {
+    app.use(
+      serve('build/client/assets', {
+        immutable: true,
+        maxAge: secondsToMilliseconds(secondsInYear),
+      }),
+    )
 
-  app.use(
-    serve('public/fonts', {
-      immutable: true,
-      maxAge: secondsToMilliseconds(secondsInYear),
-    }),
-  )
+    app.use(
+      serve('build/client/fonts', {
+        immutable: true,
+        maxAge: secondsToMilliseconds(secondsInYear),
+      }),
+    )
 
-  app.use(
-    serve('public', {
-      immutable: false,
-      maxAge: secondsToMilliseconds(secondsInHour),
-    }),
-  )
+    app.use(
+      serve('build/client', {
+        immutable: false,
+        maxAge: secondsToMilliseconds(secondsInHour),
+      }),
+    )
+  }
+
+  const build = (
+    viteDevServer
+      ? () => viteDevServer.ssrLoadModule('virtual:remix/server-build')
+      : // @ts-expect-error
+        await import('../vite-server/index.js')
+  ) as ServerBuild | (() => Promise<ServerBuild>)
 
   app.use(createRequestHandler({ build, mode: process.env.NODE_ENV, getLoadContext: (ctx) => ctx }))
 
   app.listen({ port: Number(process.env.PORT) }, () => {
     console.log(`🚀 To infinity...and beyond!`)
-    if (process.env.NODE_ENV === 'development') {
-      broadcastDevReady(build)
-    }
   })
 })()

@@ -32,7 +32,7 @@ const config = {
       ...common,
       name: 'server',
       watch: ['server/**/*', '.env'],
-      script: 'remix dev -c "node --env-file=.env --inspect --loader tsx server" --sourcemap',
+      script: 'node --env-file=.env --inspect --loader tsx server',
     },
   ],
 }
