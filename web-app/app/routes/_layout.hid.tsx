@@ -180,9 +180,9 @@ export default function Index() {
               onClick={async () => {
                 const devices = await navigator.hid.requestDevice({
                   filters: [
-                    {
-                      vendorId: 0xcafe,
-                    },
+                    // {
+                    //   vendorId: 0xcafe,
+                    // },
                   ],
                 })
                 setDevices(devices)
