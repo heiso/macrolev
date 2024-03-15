@@ -126,7 +126,7 @@ type LogoSVGProps = SVGProps<SVGSVGElement> & { id: LogoSvg }
 function LogoSVG({ id, ...props }: LogoSVGProps) {
   return (
     <svg width="170" height="120" viewBox="0 0 170 120" {...props}>
-      <use href={`/logo.svg#${id}`} />
+      <use href={`logo.svg#${id}`} />
     </svg>
   )
 }
