@@ -34,7 +34,7 @@ export default function Index() {
           GitHub
         </Button>
         <Button primary as="link" to={routerPaths['/hid']}>
-          Test your macrolev
+          Configure your macrolev
         </Button>
       </div>
     </div>
