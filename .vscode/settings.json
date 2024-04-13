@@ -6,5 +6,8 @@
   "editor.quickSuggestions": {
     "strings": "on"
   },
-  "tailwindCSS.classAttributes": ["class", "className", ".*Styles", ".*Class"]
+  "tailwindCSS.classAttributes": ["class", "className", ".*Styles", ".*Class"],
+  "files.associations": {
+    "main.h": "c"
+  }
 }

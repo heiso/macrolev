@@ -33,7 +33,7 @@ export default function Index() {
           <Icon id="github-logo" className="self-center fill-gray-200" />
           GitHub
         </Button>
-        <Button primary as="link" to={routerPaths['/hid']}>
+        <Button primary as="link" to={routerPaths['/configurator']}>
           Configure your macrolev
         </Button>
       </div>

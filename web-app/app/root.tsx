@@ -1,28 +1,35 @@
-// import { type LinksFunction, type MetaFunction } from '@remix-run/node'
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react'
+import type { LinksFunction } from '@remix-run/node'
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  type MetaFunction,
+} from '@remix-run/react'
 import type { PropsWithChildren } from 'react'
 import './font.css'
 import './tailwind.css'
 
-// export const meta: MetaFunction = () => {
-//   return [{ title: 'Macrolev' }]
-// }
+export const meta: MetaFunction = () => {
+  return [{ title: 'Macrolev' }]
+}
 
-// export const links: LinksFunction = () => {
-//   return [
-//     {
-//       rel: 'alternate icon',
-//       type: 'image/png',
-//       href: '/favicon-32x32.png',
-//     },
-//     { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
-//     {
-//       rel: 'manifest',
-//       href: '/site.webmanifest',
-//       crossOrigin: 'use-credentials',
-//     } as const, // necessary to make typescript happy
-//   ]
-// }
+export const links: LinksFunction = () => {
+  return [
+    {
+      rel: 'alternate icon',
+      type: 'image/png',
+      href: 'favicon-32x32.png',
+    },
+    { rel: 'apple-touch-icon', href: 'apple-touch-icon.png' },
+    {
+      rel: 'manifest',
+      href: 'site.webmanifest',
+      crossOrigin: 'use-credentials',
+    } as const, // necessary to make typescript happy
+  ]
+}
 
 type DocumentProps = PropsWithChildren
 function Document({ children }: DocumentProps) {
@@ -41,7 +48,6 @@ function Document({ children }: DocumentProps) {
         {children}
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   )

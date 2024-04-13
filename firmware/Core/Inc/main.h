@@ -130,7 +130,7 @@ struct key {
   struct actuation actuation;
 };
 
-struct hid_generic_inout_report_key {
+struct serial_key {
   uint8_t row;
   uint8_t column;
   uint16_t idle_value;
@@ -138,14 +138,6 @@ struct hid_generic_inout_report_key {
   uint16_t value;
   uint8_t distance_8bits;
   enum actuation_status status;
-};
-
-struct hid_generic_inout_report {
-  struct hid_generic_inout_report_key keys[6];
-  uint8_t duration;
-  uint8_t trigger_offset;
-  uint8_t reset_threshold;
-  uint8_t rapid_trigger_offset;
 };
 
 struct user_config {

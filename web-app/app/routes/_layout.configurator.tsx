@@ -3,6 +3,7 @@ import Annotation from 'chartjs-plugin-annotation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import layout from '../parsed-layout.json'
+import { Port } from '../serial.ts'
 import { Button } from '../ui/button.tsx'
 import { Icon } from '../ui/icon.tsx'
 import { Link } from '../ui/link.tsx'
@@ -85,10 +86,8 @@ function formatRawOffset(value: number) {
 }
 
 export default function Index() {
-  const [devices, setDevices] = useState<HIDDevice[]>([])
-  const [rawReports, setRawReports] = useState<string[]>([
-    '00 00 00 00 00 00 00 00 00 00 \n00 00 00 00 00 00 00 00 00 00 \n00 00 00 00 00 00 00 00 00 00 \n00 00 00 00 00 00 00 00 00 00 \n00 00 00 00 00 00 00 00 00 00 \n00 00 00 00 00 00 00 00 00 00 \n00 00 00 00',
-  ])
+  const [port, setPort] = useState<Port | null>(null)
+  const [device, setDevice] = useState<USBDevice | null>(null)
   const [duration, setDuration] = useState(0)
   const [keys, setKeys] = useState<KeysByRowCol>({})
   const [keyIndex, setKeyIndex] = useState<string | null>(null)
@@ -97,105 +96,103 @@ export default function Index() {
   const [rapidTriggerOffset, setRapidTriggerOffset] = useState(0)
   const [resetOffset, setResetOffset] = useState(0)
 
-  const handleKeyDown = (event: KeyboardEvent) => {
-    event.preventDefault()
-  }
+  const connect = useCallback(async () => {
+    const port = await Port.requestPort()
+    setPort(port)
+    await port.connect()
 
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
+    port.onReceive = (data) => {
+      let textDecoder = new TextDecoder()
+      console.log(data, textDecoder.decode(data))
+      if (data) {
+        setTriggerOffset(() => parseRawOffset(Number(data.getUint8(0))))
+        setResetOffset(() => Number(data.getUint8(1)))
+        setRapidTriggerOffset(() => parseRawOffset(Number(data.getUint8(2))))
+      }
+      // if (data.getInt8() === 13) {
+      //   currentReceiverLine = null
+      // } else {
+      //   appendLines('receiver_lines', textDecoder.decode(data))
+      // }
+      // const parseReport = useCallback((data: DataView) => {
     }
+
+    port.onReceiveError = (error) => {
+      console.error(error)
+    }
+    // const device = await navigator.usb.requestDevice({ filters: [{ vendorId: 0xcafe }] })
+    // console.log(device)
+    // await device.open()
+    // await device.selectConfiguration(1)
+    // await device.claimInterface(1)
+    // await device.transferOut(2, new Uint8Array([50, 40, 30]))
+    setDevice(port.device)
   }, [])
 
-  const parseReport = useCallback((data: DataView) => {
-    const time = new Date()
-    new Array(6).fill(null).forEach((_, index) => {
-      if (isBufferEmpty(data, index * 10, 10)) return null
+  // useEffect(() => {
+  //   device?.transferIn
+  //   return () => {
 
-      const offset = index * 10
+  //   }
+  // }, [])
 
-      const row = data.getUint8(offset)
-      const col = data.getUint8(offset + 1)
+  // const parseReport = useCallback((data: DataView) => {
+  //   const time = new Date()
+  //   new Array(6).fill(null).forEach((_, index) => {
+  //     if (isBufferEmpty(data, index * 10, 10)) return null
 
-      const state: State = {
-        value: data.getUint16(offset + 6, true),
-        distance8bits: data.getUint8(offset + 8),
-        status: status[data.getUint8(offset + 9)],
-      }
+  //     const offset = index * 10
 
-      const calibration: Calibration = {
-        idleValue: data.getUint16(offset + 2, true),
-        maxDistance: data.getUint16(offset + 4, true),
-      }
+  //     const row = data.getUint8(offset)
+  //     const col = data.getUint8(offset + 1)
 
-      setKeys((keys) => ({
-        ...keys,
-        [`${row}-${col}`]: {
-          row,
-          col,
-          calibration,
-          state,
-          calibrations: [
-            ...(keys[`${row}-${col}`]?.calibrations || []),
-            { ...calibration, time },
-          ].slice(-MAX_VALUES),
-          states: [...(keys[`${row}-${col}`]?.states || []), { ...state, time }].slice(-MAX_VALUES),
-        },
-      }))
-    })
-    setDuration((duration) => data.getUint8(60) * (1 - 0.8) + duration * 0.8)
-    setTriggerOffset(() => parseRawOffset(Number(data.getUint8(61))))
-    setResetOffset(() => Number(data.getUint8(62)))
-    setRapidTriggerOffset(() => parseRawOffset(Number(data.getUint8(63))))
-    setRawReports((rawReports) => [dataViewToHexs(data), ...rawReports].slice(0, MAX_VALUES))
-  }, [])
+  //     const state: State = {
+  //       value: data.getUint16(offset + 6, true),
+  //       distance8bits: data.getUint8(offset + 8),
+  //       status: status[data.getUint8(offset + 9)],
+  //     }
 
-  useEffect(() => {
-    if (devices.length == 0) {
-      navigator.hid.getDevices().then((devices) => {
-        setDevices(devices)
-      })
-    } else {
-      devices
-        .filter((device) => device.collections.length == 1)
-        .forEach((device) => {
-          if (!device.opened) {
-            device.open().then(() => (device.oninputreport = (event) => parseReport(event.data)))
-          } else {
-            device.oninputreport = (event) => parseReport(event.data)
-          }
-        })
-    }
-  }, [devices])
+  //     const calibration: Calibration = {
+  //       idleValue: data.getUint16(offset + 2, true),
+  //       maxDistance: data.getUint16(offset + 4, true),
+  //     }
+
+  //     setKeys((keys) => ({
+  //       ...keys,
+  //       [`${row}-${col}`]: {
+  //         row,
+  //         col,
+  //         calibration,
+  //         state,
+  //         calibrations: [
+  //           ...(keys[`${row}-${col}`]?.calibrations || []),
+  //           { ...calibration, time },
+  //         ].slice(-MAX_VALUES),
+  //         states: [...(keys[`${row}-${col}`]?.states || []), { ...state, time }].slice(-MAX_VALUES),
+  //       },
+  //     }))
+  //   })
+  //   setDuration((duration) => data.getUint8(60) * (1 - 0.8) + duration * 0.8)
+  //   setTriggerOffset(() => parseRawOffset(Number(data.getUint8(61))))
+  //   setResetOffset(() => Number(data.getUint8(62)))
+  //   setRapidTriggerOffset(() => parseRawOffset(Number(data.getUint8(63))))
+  //   setRawReports((rawReports) => [dataViewToHexs(data), ...rawReports].slice(0, MAX_VALUES))
+  // }, [])
 
   return (
     <div className="space-y-8">
       <div className="relative space-y-2">
-        {devices.length === 0 && (
+        {!device && (
           <div className="absolute z-10 top-0 bottom-0 left-0 right-0 flex justify-center items-center">
-            <Button
-              primary
-              onClick={async () => {
-                const devices = await navigator.hid.requestDevice({
-                  filters: [
-                    // {
-                    //   vendorId: 0xcafe,
-                    // },
-                  ],
-                })
-                setDevices(devices)
-              }}
-            >
+            <Button primary onClick={() => connect()}>
               Connect your macrolev
             </Button>
           </div>
         )}
-        <div className={devices.length == 0 ? 'opacity-80' : ''}>
+        <div className={!device ? 'opacity-80' : ''}>
           <Keyboard keys={keys} mode={mode} onClick={setKeyIndex} />
         </div>
-        <div className={`w-full flex justify-between ${devices.length == 0 ? 'hidden' : ''}`}>
+        <div className={`w-full flex justify-between ${!device ? 'hidden' : ''}`}>
           <div className="flex gap-4">
             <Link preventScrollReset to="" onClick={() => setMode('IDLE_HEATMAP')}>
               Show idle value heatmap
@@ -246,18 +243,13 @@ export default function Index() {
                 preventScrollReset
                 to=""
                 onClick={() =>
-                  devices
-                    .filter((device) => device.collections.length == 1)
-                    .forEach((device) =>
-                      device.sendReport(
-                        0,
-                        new Uint8Array([
-                          formatRawOffset(triggerOffset),
-                          resetOffset,
-                          formatRawOffset(rapidTriggerOffset),
-                        ]),
-                      ),
-                    )
+                  port?.send(
+                    new Uint8Array([
+                      formatRawOffset(triggerOffset),
+                      resetOffset,
+                      formatRawOffset(rapidTriggerOffset),
+                    ]),
+                  )
                 }
               >
                 Save
@@ -271,16 +263,9 @@ export default function Index() {
         </div>
       </div>
 
-      {devices.length !== 0 && (
+      {device && (
         <>
           <div className="flex gap-4 justify-start">
-            <div className="space-y-4 bg-slate-700 rounded-md p-4">
-              <div className="text-xl text-slate-50">Raw HID reports</div>
-              <pre className="overflow-y-auto h-96">
-                {rawReports.map((report) => report + '\n\n')}
-              </pre>
-            </div>
-
             <div className="w-full h-full bg-slate-700 rounded-md p-4">
               {keyIndex ? (
                 <Graph
@@ -295,13 +280,7 @@ export default function Index() {
           </div>
 
           <div className="space-x-4">
-            <Button
-              primary
-              onClick={() => {
-                devices.forEach((device) => device.forget())
-                setDevices([])
-              }}
-            >
+            <Button primary onClick={device.close}>
               Disconnect
             </Button>
           </div>
@@ -379,8 +358,8 @@ function Key({ mode, calibrationRange, legends, keyItem: key, onClick }: KeyProp
           {mode === 'IDLE_HEATMAP'
             ? key.calibration.idleValue.toString()
             : mode === 'DISTANCE_HEATMAP'
-            ? key.calibration.maxDistance.toString()
-            : key.state.distance8bits.toString()}
+              ? key.calibration.maxDistance.toString()
+              : key.state.distance8bits.toString()}
         </span>
       )}
     </div>

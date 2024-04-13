@@ -89,12 +89,21 @@ static uint8_t key_triggered = 0;
 
 static uint8_t should_send_consumer_report = 0;
 static uint8_t should_send_keyboard_report = 0;
-static uint8_t should_send_generic_inout_report = 0;
 
 static uint8_t modifiers = 0;
 static uint8_t keycodes[6] = {0};
 static uint8_t consumer_report = 0;
-static struct hid_generic_inout_report generic_inout_report = {0};
+
+extern uint8_t const desc_ms_os_20[];
+#define URL "heiso.github.io/macrolev/configurator"
+const tusb_desc_webusb_url_t desc_url =
+    {
+        .bLength = 3 + sizeof(URL) - 1,
+        .bDescriptorType = 3, // WEBUSB URL type
+        .bScheme = 1,         // 0: http, 1: https
+        .url = URL};
+static bool web_serial_connected = false;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -152,6 +161,7 @@ void writeConfig(uint8_t *buffer, uint16_t size) {
  * @retval int
  */
 int main(void) {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -187,8 +197,7 @@ int main(void) {
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
-    uint32_t start = HAL_GetTick();
-
+    // MARK: Main loop
     tud_task();
 
     key_triggered = 0;
@@ -237,26 +246,53 @@ int main(void) {
       }
     }
 
-    if ((should_send_consumer_report || should_send_keyboard_report) && tud_hid_n_ready(ITF_NUM_KEYBOARD)) {
+    // if (mode == USB_MODE_SERIAL) {
+    // if (tud_cdc_connected()) {
+    //   if (tud_cdc_available()) {
+    //     uint8_t buffer[CFG_TUD_CDC_RX_BUFSIZE] = {0};
+    //     uint32_t count = tud_cdc_read(buffer, sizeof(buffer));
+    //     // tud_cdc_write(buffer, count);
+    //     // tud_cdc_write_str("_cdc_\r\n");
+    //     // tud_cdc_write_flush();
+
+    //     writeConfig(buffer, count);
+
+    //     init_keys();
+    //     tud_cdc_write(&user_config, 3);
+    //     tud_cdc_write_str('EOT');
+    //     tud_cdc_write_flush();
+    //   } else {
+    //     // tud_cdc_write(&user_config, sizeof(user_config));
+    //     // tud_cdc_write_flush();
+    //   }
+    // }
+
+    if (web_serial_connected) {
+      if (tud_vendor_available()) {
+        uint8_t buffer[CFG_TUD_VENDOR_RX_BUFSIZE];
+        uint32_t count = tud_vendor_read(buffer, sizeof(buffer));
+        writeConfig(buffer, 3);
+
+        init_keys();
+        tud_vendor_write(&user_config, 3);
+        tud_vendor_write_flush();
+      }
+    }
+    // } else {
+    if ((should_send_consumer_report || should_send_keyboard_report) && tud_hid_ready()) {
       if (tud_suspended()) {
         tud_remote_wakeup();
       } else {
         if (should_send_consumer_report) {
           should_send_consumer_report = 0;
-          tud_hid_n_report(ITF_NUM_KEYBOARD, REPORT_ID_CONSUMER_CONTROL, &consumer_report, 2);
+          tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &consumer_report, 2);
         } else if (should_send_keyboard_report) {
           should_send_keyboard_report = 0;
-          tud_hid_n_keyboard_report(ITF_NUM_KEYBOARD, REPORT_ID_KEYBOARD, modifiers, keycodes);
+          tud_hid_keyboard_report(REPORT_ID_KEYBOARD, modifiers, keycodes);
         }
       }
-    } else if (should_send_generic_inout_report && tud_hid_n_ready(ITF_NUM_GENERIC_INOUT)) {
-      should_send_generic_inout_report = 0;
-      generic_inout_report.duration = HAL_GetTick() - start;
-      generic_inout_report.trigger_offset = user_config.trigger_offset;
-      generic_inout_report.reset_threshold = user_config.reset_threshold;
-      generic_inout_report.rapid_trigger_offset = user_config.rapid_trigger_offset;
-      tud_hid_n_report(ITF_NUM_GENERIC_INOUT, 0, &generic_inout_report, HID_GENERIC_INOUT_REPORT_BUFFSIZE);
     }
+    // }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -549,58 +585,6 @@ void remove_from_hid_report(struct key *key, uint8_t layer) {
   }
 }
 
-void add_to_hid_generic_inout_report(struct key *key) {
-  uint8_t added = 0;
-  for (uint8_t i = 0; i < 6; i++) {
-    if (generic_inout_report.keys[i].row == key->row && generic_inout_report.keys[i].column == key->column) {
-      generic_inout_report.keys[i].row = key->row;
-      generic_inout_report.keys[i].column = key->column;
-      generic_inout_report.keys[i].idle_value = key->calibration.idle_value;
-      generic_inout_report.keys[i].max_distance = key->calibration.max_distance;
-      generic_inout_report.keys[i].value = key->state.value;
-      generic_inout_report.keys[i].distance_8bits = key->state.distance_8bits;
-      generic_inout_report.keys[i].status = key->actuation.status;
-
-      added = 1;
-      should_send_generic_inout_report = 1;
-      break;
-    }
-  }
-
-  if (!added) {
-    for (uint8_t i = 0; i < 6; i++) {
-      // check if value is 0, 0 means the report is empty
-      if (generic_inout_report.keys[i].value == 0) {
-        generic_inout_report.keys[i].row = key->row;
-        generic_inout_report.keys[i].column = key->column;
-        generic_inout_report.keys[i].idle_value = key->calibration.idle_value;
-        generic_inout_report.keys[i].max_distance = key->calibration.max_distance;
-        generic_inout_report.keys[i].value = key->state.value;
-        generic_inout_report.keys[i].distance_8bits = key->state.distance_8bits;
-        generic_inout_report.keys[i].status = key->actuation.status;
-
-        should_send_generic_inout_report = 1;
-        break;
-      }
-    }
-  }
-}
-
-void remove_from_hid_generic_inout_report(struct key *key) {
-  for (uint8_t i = 0; i < 6; i++) {
-    if (generic_inout_report.keys[i].row == key->row && generic_inout_report.keys[i].column == key->column) {
-      generic_inout_report.keys[i].row = 0;
-      generic_inout_report.keys[i].column = 0;
-      generic_inout_report.keys[i].idle_value = 0;
-      generic_inout_report.keys[i].max_distance = 0;
-      generic_inout_report.keys[i].value = 0;
-      generic_inout_report.keys[i].distance_8bits = 0;
-      generic_inout_report.keys[i].status = 0;
-      break;
-    }
-  }
-}
-
 uint8_t update_key_state(struct key *key) {
   struct state state;
 
@@ -628,7 +612,6 @@ uint8_t update_key_state(struct key *key) {
   if (key->state.distance == 0 && state.value >= key->calibration.idle_value - IDLE_VALUE_OFFSET) {
     if (key->idle_counter >= IDLE_CYCLES_UNTIL_SLEEP) {
       key->is_idle = 1;
-      remove_from_hid_generic_inout_report(key);
       return 0;
     }
     key->idle_counter++;
@@ -765,8 +748,6 @@ void update_key_actuation(struct key *key) {
     }
     break;
   }
-
-  add_to_hid_generic_inout_report(key);
 }
 
 void update_key(struct key *key) {
@@ -776,6 +757,8 @@ void update_key(struct key *key) {
 
   update_key_actuation(key);
 }
+
+// MARK: tud_* functions
 
 // Invoked when received SET_PROTOCOL request
 // protocol is either HID_PROTOCOL_BOOT (0) or HID_PROTOCOL_REPORT (1)
@@ -814,12 +797,85 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_t
 // received data on OUT endpoint ( Report ID = 0, Type = 0 )
 void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
   (void)report_id;
-  if (instance == 1 && report_id == 0) {
-    writeConfig(buffer, bufsize);
-    // tud_hid_n_report(ITF_NUM_GENERIC_INOUT, 0, &user_config, HID_GENERIC_INOUT_REPORT_BUFFSIZE);
+  // if (instance == 1 && report_id == 0) {
+  //   writeConfig(buffer, bufsize);
 
-    init_keys();
+  //   init_keys();
+  // }
+}
+
+// // Invoked when cdc when line state changed e.g connected/disconnected
+// void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts) {
+//   (void)itf;
+
+//   // connected
+//   if (dtr && rts) {
+//     // print initial message when connected
+//     tud_cdc_write(&user_config, 3);
+//     tud_cdc_write_str('\r\n');
+//     tud_cdc_write_flush();
+//   }
+// }
+
+// // Invoked when CDC interface received data from host
+// void tud_cdc_rx_cb(uint8_t itf) {
+//   (void)itf;
+// }
+
+// Invoked when a control transfer occurred on an interface of this class
+// Driver response accordingly to the request and the transfer stage (setup/data/ack)
+// return false to stall control endpoint (e.g unsupported request)
+bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_request_t const *request) {
+  // nothing to with DATA & ACK stage
+  if (stage != CONTROL_STAGE_SETUP)
+    return true;
+
+  switch (request->bmRequestType_bit.type) {
+  case TUSB_REQ_TYPE_VENDOR:
+    switch (request->bRequest) {
+    case VENDOR_REQUEST_WEBUSB:
+      // match vendor request in BOS descriptor
+      // Get landing page url
+      return tud_control_xfer(rhport, request, (void *)(uintptr_t)&desc_url, desc_url.bLength);
+
+    case VENDOR_REQUEST_MICROSOFT:
+      if (request->wIndex == 7) {
+        // Get Microsoft OS 2.0 compatible descriptor
+        uint16_t total_len;
+        memcpy(&total_len, desc_ms_os_20 + 8, 2);
+
+        return tud_control_xfer(rhport, request, (void *)(uintptr_t)desc_ms_os_20, total_len);
+      } else {
+        return false;
+      }
+
+    default:
+      break;
+    }
+    break;
+
+  case TUSB_REQ_TYPE_CLASS:
+    if (request->bRequest == 0x22) {
+      // Webserial simulate the CDC_REQUEST_SET_CONTROL_LINE_STATE (0x22) to connect and disconnect.
+      web_serial_connected = (request->wValue != 0);
+
+      if (web_serial_connected) {
+        // MARK: WIP
+        tud_vendor_write(&user_config, 3);
+        tud_vendor_write_flush();
+      }
+
+      // response with status OK
+      return tud_control_status(rhport, request);
+    }
+    break;
+
+  default:
+    break;
   }
+
+  // stall unknown request
+  return false;
 }
 
 /* USER CODE END 4 */
