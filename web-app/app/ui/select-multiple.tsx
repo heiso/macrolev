@@ -6,10 +6,11 @@ import { type Option } from './select.tsx'
 
 export type SelectMultipleProps = Pick<
   SelectHTMLAttributes<HTMLSelectElement>,
-  'placeholder' | 'defaultValue' | 'className' | 'name'
+  'defaultValue' | 'className' | 'name'
 > & {
+  placeholder?: string
   options: Option[]
-  error?: string
+  hasError?: boolean
 }
 
 export function SelectMultiple({

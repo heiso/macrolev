@@ -61,7 +61,7 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-struct calibration {
+struct __attribute__((__packed__)) calibration {
   uint16_t cycles_count;
   uint16_t idle_value;
   uint16_t max_distance;
@@ -72,7 +72,7 @@ enum direction {
   GOING_DOWN,
 };
 
-struct state {
+struct __attribute__((__packed__)) state {
   uint16_t value;
   uint16_t distance;
   uint8_t distance_8bits;
@@ -89,7 +89,7 @@ enum actuation_status {
   STATUS_RAPID_TRIGGER_RESET
 };
 
-struct actuation {
+struct __attribute__((__packed__)) actuation {
   enum direction direction;
   uint8_t direction_changed_point;
   enum actuation_status status;
@@ -107,7 +107,7 @@ enum key_type {
   KEY_TYPE_CONSUMER_CONTROL,
 };
 
-struct layer {
+struct __attribute__((__packed__)) layer {
   enum key_type type;
   uint16_t value;
 };
@@ -118,7 +118,7 @@ enum {
   LAYERS_COUNT
 };
 
-struct key {
+struct __attribute__((__packed__)) key {
   uint8_t is_enabled;
   uint8_t row;
   uint8_t column;
@@ -128,16 +128,6 @@ struct key {
   struct calibration calibration;
   struct state state;
   struct actuation actuation;
-};
-
-struct serial_key {
-  uint8_t row;
-  uint8_t column;
-  uint16_t idle_value;
-  uint16_t max_distance;
-  uint16_t value;
-  uint8_t distance_8bits;
-  enum actuation_status status;
 };
 
 struct user_config {

@@ -10,7 +10,7 @@ import {
 import { Icon } from './icon.tsx'
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
-  error?: string
+  hasError?: boolean
   icon?: ReactNode
 }
 
@@ -20,7 +20,7 @@ export const errorStyles =
   'text-red-500 placeholder:text-red-300 hover:border-red-500 focus:border-red-500 bg-red-100 selection:bg-red-500 selection:text-red-50'
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ error, className, icon, ...props }, ref) => {
+  ({ hasError, className, icon, ...props }, ref) => {
     const innerRef = useRef<HTMLInputElement>(null)
     useImperativeHandle(ref, () => innerRef.current!, [])
     const [isFilled, setIsFilled] = useState(Boolean(props.defaultValue))
@@ -35,15 +35,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           className={`w-full h-full px-4 py-3 ${
             icon ? 'pr-11' : ''
           } appearance-none outline-none disabled:pointer-events-none border rounded-lg ${
-            error ? 'bg-red-100' : isFilled ? 'bg-pink-100' : 'bg-white'
-          } ${error ? errorStyles : defaultStyles}`}
+            hasError ? 'bg-red-100' : isFilled ? 'bg-pink-100' : 'bg-white'
+          } ${hasError ? errorStyles : defaultStyles}`}
           ref={innerRef}
           {...props}
         />
         {icon && (
           <div
             className={`absolute top-0 right-0 bottom-0 z-10 px-4 py-3 select-none ${
-              error ? 'text-red-500 fill-red-500' : 'text-pink-500 fill-pink-500'
+              hasError ? 'text-red-500 fill-red-500' : 'text-pink-500 fill-pink-500'
             } flex justify-center items-center`}
           >
             {icon}
@@ -56,7 +56,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = 'Input'
 
 export const Checkbox = forwardRef<HTMLInputElement, InputProps>(
-  ({ error, className, ...props }, ref) => {
+  ({ hasError, className, ...props }, ref) => {
     return (
       <div className="relative flex flex-row items-center justify-center">
         <input

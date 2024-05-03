@@ -35,6 +35,14 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+#define VENDOR_REQUEST_KEYS 0xfe
+#define VENDOR_REQUEST_CONFIG 0xff
+#define VENDOR_REQUEST_RESET_CONFIG 0xfd
+
+#define VENDOR_VALUE_GET_LENGTH 0x00
+#define VENDOR_VALUE_GET 0x01
+#define VENDOR_VALUE_SET 0x02
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -50,7 +58,32 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE BEGIN PV */
 ADC_ChannelConfTypeDef ADC_channel_Config = {0};
 
+CFG_TUSB_MEM_SECTION CFG_TUSB_MEM_ALIGN static uint8_t usb_vendor_control_buffer[CFG_TUD_VENDOR_RX_BUFSIZE];
+
 struct user_config user_config = {0};
+
+const struct user_config default_user_config = {
+    .trigger_offset = DEFAULT_TRIGGER_OFFSET,
+    .reset_threshold = DEFAULT_RESET_THRESHOLD,
+    .rapid_trigger_offset = DEFAULT_RAPID_TRIGGER_OFFSET,
+    .keymaps = {
+        // clang-format off
+        [_BASE_LAYER] = {
+            {HID_KEY_ESCAPE, HID_KEY_GRAVE, HID_KEY_1, HID_KEY_2, HID_KEY_3, HID_KEY_4, HID_KEY_5, HID_KEY_6, HID_KEY_7, HID_KEY_8, HID_KEY_9, HID_KEY_0, HID_KEY_MINUS, HID_KEY_EQUAL, HID_KEY_BACKSPACE},
+            {SPECIAL(HID_USAGE_CONSUMER_VOLUME_INCREMENT), HID_KEY_TAB, HID_KEY_Q, HID_KEY_W, HID_KEY_E, HID_KEY_R, HID_KEY_T, HID_KEY_Y, HID_KEY_U, HID_KEY_I, HID_KEY_O, HID_KEY_P, HID_KEY_BRACKET_LEFT, HID_KEY_BRACKET_RIGHT, HID_KEY_ENTER},
+            {SPECIAL(HID_USAGE_CONSUMER_VOLUME_DECREMENT), HID_KEY_CAPS_LOCK, HID_KEY_A, HID_KEY_S, HID_KEY_D, HID_KEY_F, HID_KEY_G, HID_KEY_H, HID_KEY_J, HID_KEY_K, HID_KEY_L, HID_KEY_SEMICOLON, HID_KEY_APOSTROPHE, HID_KEY_EUROPE_1, XXXX},
+            {XXXX, HID_KEY_SHIFT_LEFT, HID_KEY_EUROPE_2, HID_KEY_Z, HID_KEY_X, HID_KEY_C, HID_KEY_V, HID_KEY_B, HID_KEY_N, HID_KEY_M, HID_KEY_COMMA, HID_KEY_PERIOD, HID_KEY_SLASH, HID_KEY_SHIFT_RIGHT, XXXX},
+            {XXXX, HID_KEY_CONTROL_LEFT, HID_KEY_ALT_LEFT, HID_KEY_GUI_LEFT, XXXX, HID_KEY_SPACE, XXXX, HID_KEY_SPACE, XXXX, HID_KEY_GUI_RIGHT, HID_KEY_ALT_RIGHT, XXXX, HID_KEY_ARROW_LEFT, SPECIAL(HID_USAGE_CONSUMER_PLAY_PAUSE), HID_KEY_ARROW_RIGHT},
+        },
+        [_TAP_LAYER] = {
+            {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____},
+            {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____},
+            {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, XXXX},
+            {XXXX, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, HID_KEY_ARROW_UP, XXXX},
+            {XXXX, ____, ____, ____, XXXX, ____, XXXX, ____, XXXX, ____, ____, XXXX, ____, HID_KEY_ARROW_DOWN, ____},
+        },
+        // clang-format on
+    }};
 
 // {adc_channel, amux_channel}
 const uint8_t channels_by_row_col[MATRIX_ROWS][MATRIX_COLS][2] = {
@@ -60,25 +93,6 @@ const uint8_t channels_by_row_col[MATRIX_ROWS][MATRIX_COLS][2] = {
     {{XXXX, XXXX}, {0, 13}, {0, 0}, {0, 3}, {1, 13}, {1, 15}, {1, 2}, {1, 3}, {2, 14}, {2, 0}, {2, 2}, {3, 12}, {3, 15}, {3, 3}, {XXXX, XXXX}},
     {{XXXX, XXXX}, {0, 15}, {0, 1}, {1, 12}, {XXXX, XXXX}, {1, 0}, {XXXX, XXXX}, {2, 13}, {XXXX, XXXX}, {2, 1}, {3, 13}, {XXXX, XXXX}, {3, 0}, {3, 2}, {4, 0}},
 };
-
-// clang-format off
-const uint16_t keymaps[LAYERS_COUNT][MATRIX_ROWS][MATRIX_COLS] = {
-    [_BASE_LAYER] = {
-        {HID_KEY_ESCAPE, HID_KEY_GRAVE, HID_KEY_1, HID_KEY_2, HID_KEY_3, HID_KEY_4, HID_KEY_5, HID_KEY_6, HID_KEY_7, HID_KEY_8, HID_KEY_9, HID_KEY_0, HID_KEY_MINUS, HID_KEY_EQUAL, HID_KEY_BACKSPACE},
-        {SPECIAL(HID_USAGE_CONSUMER_VOLUME_INCREMENT), HID_KEY_TAB, HID_KEY_Q, HID_KEY_W, HID_KEY_E, HID_KEY_R, HID_KEY_T, HID_KEY_Y, HID_KEY_U, HID_KEY_I, HID_KEY_O, HID_KEY_P, HID_KEY_BRACKET_LEFT, HID_KEY_BRACKET_RIGHT, HID_KEY_ENTER},
-        {SPECIAL(HID_USAGE_CONSUMER_VOLUME_DECREMENT), HID_KEY_CAPS_LOCK, HID_KEY_A, HID_KEY_S, HID_KEY_D, HID_KEY_F, HID_KEY_G, HID_KEY_H, HID_KEY_J, HID_KEY_K, HID_KEY_L, HID_KEY_SEMICOLON, HID_KEY_APOSTROPHE, HID_KEY_EUROPE_1, XXXX},
-        {XXXX, HID_KEY_SHIFT_LEFT, HID_KEY_EUROPE_2, HID_KEY_Z, HID_KEY_X, HID_KEY_C, HID_KEY_V, HID_KEY_B, HID_KEY_N, HID_KEY_M, HID_KEY_COMMA, HID_KEY_PERIOD, HID_KEY_SLASH, HID_KEY_SHIFT_RIGHT, XXXX},
-        {XXXX, HID_KEY_CONTROL_LEFT, HID_KEY_ALT_LEFT, HID_KEY_GUI_LEFT, XXXX, HID_KEY_SPACE, XXXX, HID_KEY_SPACE, XXXX, HID_KEY_GUI_RIGHT, HID_KEY_ALT_RIGHT, XXXX, HID_KEY_ARROW_LEFT, SPECIAL(HID_USAGE_CONSUMER_PLAY_PAUSE), HID_KEY_ARROW_RIGHT},
-    },
-    [_TAP_LAYER] = {
-        {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____},
-        {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____},
-        {____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, XXXX},
-        {XXXX, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, HID_KEY_ARROW_UP, XXXX},
-        {XXXX, ____, ____, ____, XXXX, ____, XXXX, ____, XXXX, ____, ____, XXXX, ____, HID_KEY_ARROW_DOWN, ____},
-    },
-};
-// clang-format on
 
 const uint32_t adc_channels[ADC_CHANNEL_COUNT] = {ADC_CHANNEL_3, ADC_CHANNEL_4, ADC_CHANNEL_5, ADC_CHANNEL_6, ADC_CHANNEL_7};
 const uint32_t amux_select_pins[AMUX_SELECT_PINS_COUNT] = {GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14, GPIO_PIN_15};
@@ -102,7 +116,6 @@ const tusb_desc_webusb_url_t desc_url =
         .bDescriptorType = 3, // WEBUSB URL type
         .bScheme = 1,         // 0: http, 1: https
         .url = URL};
-static bool web_serial_connected = false;
 
 /* USER CODE END PV */
 
@@ -123,36 +136,23 @@ static void remove_from_hid_report(struct key *key, uint8_t layer);
 /* USER CODE BEGIN 0 */
 void readConfig() {
   memcpy(&user_config, (uint32_t *)CONFIG_ADDRESS, sizeof(user_config));
-  if (!user_config.trigger_offset || user_config.trigger_offset == 0xff) {
-    user_config.trigger_offset = DEFAULT_TRIGGER_OFFSET;
-  }
-  if (!user_config.reset_threshold || user_config.reset_threshold == 0xff) {
-    user_config.reset_threshold = DEFAULT_RESET_THRESHOLD;
-  }
-  if (!user_config.rapid_trigger_offset || user_config.rapid_trigger_offset == 0xff) {
-    user_config.rapid_trigger_offset = DEFAULT_RAPID_TRIGGER_OFFSET;
-  }
-  if (!user_config.keymaps) {
-    for (uint8_t layer; layer < LAYERS_COUNT; layer++) {
-      for (uint8_t row; row < MATRIX_ROWS; row++) {
-        for (uint8_t col; col < MATRIX_COLS; col++) {
-          user_config.keymaps[layer][row][col] = keymaps[layer][row][col];
-        }
-      }
-    }
-  }
 }
 
-void writeConfig(uint8_t *buffer, uint16_t size) {
+bool writeConfig(uint8_t *buffer, uint16_t offset, uint16_t size) {
+  if (offset >= sizeof user_config) {
+    return false;
+  }
+
   HAL_FLASH_Unlock();
   __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGSERR);
   FLASH_Erase_Sector(FLASH_SECTOR_6, VOLTAGE_RANGE_3);
-  for (uint16_t i = 0; i < size; i++) {
+  for (uint16_t i = offset; i < size; i++) {
     if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, CONFIG_ADDRESS + i, buffer[i]) != HAL_OK) {
       HAL_FLASH_Lock();
     };
   }
   HAL_FLASH_Lock();
+  return true;
 }
 /* USER CODE END 0 */
 
@@ -246,39 +246,6 @@ int main(void) {
       }
     }
 
-    // if (mode == USB_MODE_SERIAL) {
-    // if (tud_cdc_connected()) {
-    //   if (tud_cdc_available()) {
-    //     uint8_t buffer[CFG_TUD_CDC_RX_BUFSIZE] = {0};
-    //     uint32_t count = tud_cdc_read(buffer, sizeof(buffer));
-    //     // tud_cdc_write(buffer, count);
-    //     // tud_cdc_write_str("_cdc_\r\n");
-    //     // tud_cdc_write_flush();
-
-    //     writeConfig(buffer, count);
-
-    //     init_keys();
-    //     tud_cdc_write(&user_config, 3);
-    //     tud_cdc_write_str('EOT');
-    //     tud_cdc_write_flush();
-    //   } else {
-    //     // tud_cdc_write(&user_config, sizeof(user_config));
-    //     // tud_cdc_write_flush();
-    //   }
-    // }
-
-    if (web_serial_connected) {
-      if (tud_vendor_available()) {
-        uint8_t buffer[CFG_TUD_VENDOR_RX_BUFSIZE];
-        uint32_t count = tud_vendor_read(buffer, sizeof(buffer));
-        writeConfig(buffer, 3);
-
-        init_keys();
-        tud_vendor_write(&user_config, 3);
-        tud_vendor_write_flush();
-      }
-    }
-    // } else {
     if ((should_send_consumer_report || should_send_keyboard_report) && tud_hid_ready()) {
       if (tud_suspended()) {
         tud_remote_wakeup();
@@ -292,7 +259,6 @@ int main(void) {
         }
       }
     }
-    // }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -503,19 +469,19 @@ void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t co
   key->actuation.is_continuous_rapid_trigger_enabled = 0;
 
   for (uint8_t i = 0; i < LAYERS_COUNT; i++) {
-    if (keymaps[i][row][column] != ____) {
-      uint16_t usage_consumer_control = get_usage_consumer_control(keymaps[i][row][column]);
+    if (user_config.keymaps[i][row][column] != ____) {
+      uint16_t usage_consumer_control = get_usage_consumer_control(user_config.keymaps[i][row][column]);
       if (usage_consumer_control) {
         key->layers[i].type = KEY_TYPE_CONSUMER_CONTROL;
         key->layers[i].value = usage_consumer_control;
       } else {
-        uint8_t bitmask = get_bitmask_for_modifier(keymaps[i][row][column]);
+        uint8_t bitmask = get_bitmask_for_modifier(user_config.keymaps[i][row][column]);
         if (bitmask) {
           key->layers[i].type = KEY_TYPE_MODIFIER;
           key->layers[i].value = bitmask;
         } else {
           key->layers[i].type = KEY_TYPE_NORMAL;
-          key->layers[i].value = keymaps[i][row][column];
+          key->layers[i].value = user_config.keymaps[i][row][column];
         }
       }
     }
@@ -826,19 +792,92 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
 // Driver response accordingly to the request and the transfer stage (setup/data/ack)
 // return false to stall control endpoint (e.g unsupported request)
 bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_request_t const *request) {
-  // nothing to with DATA & ACK stage
-  if (stage != CONTROL_STAGE_SETUP)
-    return true;
-
   switch (request->bmRequestType_bit.type) {
-  case TUSB_REQ_TYPE_VENDOR:
+  case TUSB_REQ_TYPE_VENDOR: {
     switch (request->bRequest) {
-    case VENDOR_REQUEST_WEBUSB:
-      // match vendor request in BOS descriptor
-      // Get landing page url
-      return tud_control_xfer(rhport, request, (void *)(uintptr_t)&desc_url, desc_url.bLength);
 
-    case VENDOR_REQUEST_MICROSOFT:
+    case VENDOR_REQUEST_CONFIG: {
+      switch (request->wValue) {
+      case VENDOR_VALUE_GET_LENGTH: {
+        if (stage == CONTROL_STAGE_SETUP) {
+          uint16_t size = sizeof(user_config);
+          return tud_control_xfer(rhport, request, &size, request->wLength);
+        }
+
+        return true;
+      }
+
+      case VENDOR_VALUE_GET: {
+        if (stage == CONTROL_STAGE_SETUP) {
+          return tud_control_xfer(rhport, request, &user_config, request->wLength);
+        }
+
+        return true;
+      }
+
+      case VENDOR_VALUE_SET: {
+        if (stage == CONTROL_STAGE_SETUP) {
+          return tud_control_xfer(rhport, request, usb_vendor_control_buffer, request->wLength);
+        } else if (stage == CONTROL_STAGE_DATA) {
+          if (!writeConfig(&usb_vendor_control_buffer, 0, request->wLength)) {
+            return false;
+          }
+          readConfig();
+          init_keys();
+        }
+
+        return true;
+      }
+
+      default:
+        break;
+      }
+    }
+
+    case VENDOR_REQUEST_RESET_CONFIG: {
+      if (request->wValue == VENDOR_VALUE_SET) {
+        if (stage == CONTROL_STAGE_SETUP) {
+          if (!writeConfig(&default_user_config, 0, sizeof default_user_config)) {
+            return false;
+          }
+          readConfig();
+          init_keys();
+          return tud_control_status(rhport, request);
+        }
+
+        return true;
+      }
+    }
+
+    case VENDOR_REQUEST_KEYS: {
+      switch (request->wValue) {
+      case VENDOR_VALUE_GET_LENGTH: {
+        if (stage == CONTROL_STAGE_SETUP) {
+          uint16_t size = sizeof(keys);
+          return tud_control_xfer(rhport, request, &size, request->wLength);
+        }
+
+        return true;
+      }
+
+      case VENDOR_VALUE_GET: {
+        if (stage == CONTROL_STAGE_SETUP) {
+          return tud_control_xfer(rhport, request, &keys, request->wLength);
+        }
+
+        return true;
+      }
+
+      default:
+        break;
+      }
+    }
+
+    case VENDOR_REQUEST_WEBUSB: {
+      return tud_control_status(rhport, request);
+    }
+
+    case VENDOR_REQUEST_MICROSOFT: {
       if (request->wIndex == 7) {
         // Get Microsoft OS 2.0 compatible descriptor
         uint16_t total_len;
@@ -848,33 +887,17 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
       } else {
         return false;
       }
+    }
 
     default:
       break;
     }
-    break;
-
-  case TUSB_REQ_TYPE_CLASS:
-    if (request->bRequest == 0x22) {
-      // Webserial simulate the CDC_REQUEST_SET_CONTROL_LINE_STATE (0x22) to connect and disconnect.
-      web_serial_connected = (request->wValue != 0);
-
-      if (web_serial_connected) {
-        // MARK: WIP
-        tud_vendor_write(&user_config, 3);
-        tud_vendor_write_flush();
-      }
-
-      // response with status OK
-      return tud_control_status(rhport, request);
-    }
-    break;
+  }
 
   default:
     break;
   }
 
-  // stall unknown request
   return false;
 }
 
