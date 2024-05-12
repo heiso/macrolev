@@ -804,7 +804,7 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
           return tud_control_xfer(rhport, request, &size, request->wLength);
         }
 
-        return true;
+        break;
       }
 
       case VENDOR_VALUE_GET: {
@@ -812,7 +812,7 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
           return tud_control_xfer(rhport, request, &user_config, request->wLength);
         }
 
-        return true;
+        break;
       }
 
       case VENDOR_VALUE_SET: {
@@ -826,7 +826,7 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
           init_keys();
         }
 
-        return true;
+        break;
       }
 
       default:
@@ -845,7 +845,7 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
           return tud_control_status(rhport, request);
         }
 
-        return true;
+        break;
       }
     }
 
@@ -857,7 +857,7 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
           return tud_control_xfer(rhport, request, &size, request->wLength);
         }
 
-        return true;
+        break;
       }
 
       case VENDOR_VALUE_GET: {
@@ -865,7 +865,7 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
           return tud_control_xfer(rhport, request, &keys, request->wLength);
         }
 
-        return true;
+        break;
       }
 
       default:
@@ -874,19 +874,27 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
     }
 
     case VENDOR_REQUEST_WEBUSB: {
-      return tud_control_status(rhport, request);
+      if (stage == CONTROL_STAGE_SETUP) {
+        return tud_control_status(rhport, request);
+      }
+
+      break;
     }
 
     case VENDOR_REQUEST_MICROSOFT: {
-      if (request->wIndex == 7) {
-        // Get Microsoft OS 2.0 compatible descriptor
-        uint16_t total_len;
-        memcpy(&total_len, desc_ms_os_20 + 8, 2);
+      if (stage == CONTROL_STAGE_SETUP) {
+        if (request->wIndex == 7) {
+          // Get Microsoft OS 2.0 compatible descriptor
+          uint16_t total_len;
+          memcpy(&total_len, desc_ms_os_20 + 8, 2);
 
-        return tud_control_xfer(rhport, request, (void *)(uintptr_t)desc_ms_os_20, total_len);
-      } else {
+          return tud_control_xfer(rhport, request, (void *)(uintptr_t)desc_ms_os_20, total_len);
+        }
+
         return false;
       }
+
+      break;
     }
 
     default:
@@ -894,10 +902,26 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
     }
   }
 
+  case TUSB_REQ_TYPE_CLASS: {
+    if (stage == CONTROL_STAGE_SETUP) {
+      if (request->bRequest == 0x22) {
+        // response with status OK
+        return tud_control_status(rhport, request);
+      }
+
+      return false;
+    }
+
+    break;
+  }
+
   default:
     break;
   }
 
+  if (stage != CONTROL_STAGE_SETUP) {
+    return true;
+  }
   return false;
 }
 
