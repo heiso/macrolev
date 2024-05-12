@@ -1,8 +1,6 @@
-import { conform, type FieldConfig } from '@conform-to/react'
 import {
   forwardRef,
   useState,
-  type HTMLInputTypeAttribute,
   type InputHTMLAttributes,
   type ReactNode,
   type SelectHTMLAttributes,
@@ -17,10 +15,9 @@ import { Select, type Option } from '../ui/select.tsx'
 import { Textarea } from '../ui/textarea.tsx'
 
 export type BaseFieldProps = {
-  field?: FieldConfig<unknown>
   label?: string
-  type?: HTMLInputTypeAttribute
   hint?: HintProps['hint']
+  errors?: string[]
 }
 
 export type FieldProps = InputHTMLAttributes<HTMLInputElement> &
@@ -29,17 +26,12 @@ export type FieldProps = InputHTMLAttributes<HTMLInputElement> &
   }
 
 export const Field = forwardRef<HTMLInputElement, FieldProps>(
-  ({ label, field, type, hint, ...props }, ref) => {
+  ({ label, hint, errors, ...props }, ref) => {
     return (
       <div className="flex flex-col gap-1 mb-1">
         <Label>{label}</Label>
-        <Input
-          ref={ref}
-          error={field?.error}
-          {...(field && conform.input(field, { type }))}
-          {...props}
-        />
-        <Hint error={field?.error} hint={hint} />
+        <Input ref={ref} hasError={Boolean(errors?.length)} {...props} />
+        <Hint error={errors?.join('\n')} hint={hint} />
       </div>
     )
   },
@@ -67,19 +59,14 @@ export const PasswordField = forwardRef<HTMLInputElement, FieldProps>(({ ...prop
 PasswordField.displayName = 'PasswordField'
 
 export const CheckboxField = forwardRef<HTMLInputElement, FieldProps>(
-  ({ label, field, hint, ...props }, ref) => {
+  ({ label, hint, errors, ...props }, ref) => {
     return (
       <div className="flex flex-col gap-1 mb-1">
         <Label className="cursor-pointer flex flex-row gap-2 select-none items-center">
-          <Checkbox
-            ref={ref}
-            {...props}
-            error={field?.error}
-            {...(field && conform.input(field))}
-          />
+          <Checkbox ref={ref} {...props} hasError={Boolean(errors?.length)} />
           <div>{label}</div>
         </Label>
-        <Hint error={field?.error} hint={hint} />
+        <Hint error={errors?.join('\n')} hint={hint} />
       </div>
     )
   },
@@ -89,17 +76,12 @@ CheckboxField.displayName = 'CheckboxField'
 export type TextareaFieldProps = TextareaHTMLAttributes<HTMLTextAreaElement> & BaseFieldProps
 
 export const TextareaField = forwardRef<HTMLTextAreaElement, TextareaFieldProps>(
-  ({ label, field, type, hint, ...props }, ref) => {
+  ({ label, hint, errors, ...props }, ref) => {
     return (
       <div className="flex flex-col gap-1 mb-1">
         <Label>{label}</Label>
-        <Textarea
-          ref={ref}
-          error={field?.error}
-          {...(field && conform.input(field, { type }))}
-          {...props}
-        />
-        <Hint error={field?.error} hint={hint} />
+        <Textarea ref={ref} hasError={Boolean(errors?.length)} {...props} />
+        <Hint error={errors?.join('\n')} hint={hint} />
       </div>
     )
   },
@@ -112,15 +94,15 @@ export type SelectFieldProps = Omit<SelectHTMLAttributes<HTMLSelectElement>, 'ch
   }
 
 export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
-  ({ label, field, hint, options, ...props }, ref) => {
+  ({ label, hint, options, errors, ...props }, ref) => {
     return (
       <div className="flex flex-col gap-1 mb-1">
         <Label>{label}</Label>
         <Select
+          hasError={Boolean(errors?.length)}
           {...props}
           ref={ref}
           className="border border-gray-300 rounded px-2 py-1"
-          {...(field && conform.input(field))}
         >
           {options.map(({ value, label }) => (
             <option key={value} value={value}>
@@ -128,7 +110,7 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
             </option>
           ))}
         </Select>
-        <Hint error={field?.error} hint={hint} />
+        <Hint error={errors?.join('\n')} hint={hint} />
       </div>
     )
   },
@@ -137,12 +119,12 @@ SelectField.displayName = 'SelectField'
 
 export type SelectMultipleFieldProps = BaseFieldProps & SelectMultipleProps
 
-export function SelectMultipleField({ label, field, hint, ...props }: SelectMultipleFieldProps) {
+export function SelectMultipleField({ label, hint, errors, ...props }: SelectMultipleFieldProps) {
   return (
     <div className="flex flex-col gap-1 mb-1">
       <Label>{label}</Label>
-      <SelectMultiple {...props} error={field?.error} {...(field && conform.input(field))} />
-      <Hint error={field?.error} hint={hint} />
+      <SelectMultiple {...props} hasError={Boolean(errors?.length)} />
+      <Hint error={errors?.join('\n')} hint={hint} />
     </div>
   )
 }

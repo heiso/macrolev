@@ -2,16 +2,16 @@ import { forwardRef, type SelectHTMLAttributes } from 'react'
 
 export type Option = { value: string | number; label: string }
 export type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
-  error?: string
+  hasError?: boolean
   options?: Option[]
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ error, className, options, children, ...props }, ref) => {
+  ({ hasError, className, options, children, ...props }, ref) => {
     return (
       <select
         className={`w-full border pl-4 pr-4 pt-3 pb-3 rounded-lg outline-none ${
-          error
+          hasError
             ? 'text-red-500 placeholder:text-red-300 border-red-300 bg-red-100 hover:border-red-500'
             : 'text-pink-500 placeholder:text-pink-300 border-pink-500 focus:border-pink-500 hover:text-pink-500'
         } ${className ?? ''}`}
