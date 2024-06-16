@@ -1,5 +1,5 @@
 SWITCH_HOLE_WIDTH = 14;
-SWITCH_HOLE_TOLERANCE = 0.1;
+SWITCH_HOLE_TOLERANCE = 0.2;
 
 PLATE_THICKNESS = 1.7;
 PLATE_BORDER_WIDTH = 3;
@@ -10,13 +10,16 @@ SWITCH_PLACEHOLDER_WIDTH = 19.05;
 STAB_2u_DISTANCE_BETWEEN_HOLES_CENTER = 23.8;
 STAB_3u_DISTANCE_BETWEEN_HOLES_CENTER = 38.1;
 STAB_5u_DISTANCE_BETWEEN_HOLES_CENTER = 76.2;
-STAB_HOLE_WIDHT = 6.75;
+// STAB_HOLE_WIDHT = 6.75;
+STAB_HOLE_WIDHT = 7;
 STAB_HOLE_HEIGHT = 14;
 STAB_HOLE_DISTANCE_TO_SWITCH_TOP = 1;
 
 KEYCAP_WIDTH = 18.10;
 KEYCAP_HEIGHT = 11.60;
 KEYCAP_HEIGHT_ABOVE_PLATE = 6.80;
+
+SUPPORT_WALL_THICKNESS = 1.85;
 
 /* [Hidden] */
 
@@ -34,23 +37,23 @@ module hole(x = 0, y = 0, w = 0, h = 0, is_support = false) {
     if (is_support) {
       r = 1.5;
       // Switch under plate
-      offset(r = r) offset(r = -r) square(SWITCH_PLACEHOLDER_WIDTH - 1.2, true);
+      offset(r = r) offset(r = -r) square(SWITCH_PLACEHOLDER_WIDTH - SUPPORT_WALL_THICKNESS, true);
 
       // Stab under plate
       offset(r = r) offset(r = -r) {
         // 2u, 2.25u, 2.75u stab
         if (w == 2 || w == 2.25 || w == 2.75) {
-          square([STAB_HOLE_WIDHT + STAB_2u_DISTANCE_BETWEEN_HOLES_CENTER + 3, SWITCH_PLACEHOLDER_WIDTH - 1.2], true);
+          square([STAB_HOLE_WIDHT + STAB_2u_DISTANCE_BETWEEN_HOLES_CENTER + 3, SWITCH_PLACEHOLDER_WIDTH + 1], true);
         }
         
         // 3u stab
         if (w == 3) {
-          square([STAB_HOLE_WIDHT + STAB_3u_DISTANCE_BETWEEN_HOLES_CENTER + 3, SWITCH_PLACEHOLDER_WIDTH - 1.2], true);
+          square([STAB_HOLE_WIDHT + STAB_3u_DISTANCE_BETWEEN_HOLES_CENTER + 3, SWITCH_PLACEHOLDER_WIDTH + 1], true);
         }
 
         // ISO enter key
         if (h == 2) {
-          square([SWITCH_PLACEHOLDER_WIDTH - 1.2, STAB_HOLE_WIDHT + STAB_2u_DISTANCE_BETWEEN_HOLES_CENTER + 3], true);
+          square([SWITCH_PLACEHOLDER_WIDTH + 1, STAB_HOLE_WIDHT + STAB_2u_DISTANCE_BETWEEN_HOLES_CENTER + 3], true);
         }
       }
     } else {
