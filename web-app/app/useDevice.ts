@@ -339,6 +339,7 @@ export function useDevice() {
 
   const read = useCallback(
     async (request: keyof typeof vendorRequests) => {
+      console.log(request)
       if (!device || !deviceConfig?.endpointInNumber || !isConnected)
         throw new Error('Not connected')
 
@@ -378,6 +379,7 @@ export function useDevice() {
       }
 
       if (result.data) {
+        console.log(result.data)
         return result.data
       }
 
@@ -399,6 +401,7 @@ export function useDevice() {
 
   const loadKeys = useCallback(async () => {
     const keys = await read('VENDOR_REQUEST_KEYS')
+    console.log(keys)
     setKeys(parseKeys(keys))
   }, [read])
 

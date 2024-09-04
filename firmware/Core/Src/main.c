@@ -109,13 +109,13 @@ static uint8_t keycodes[6] = {0};
 static uint8_t consumer_report = 0;
 
 extern uint8_t const desc_ms_os_20[];
-#define URL "heiso.github.io/macrolev/configurator"
-const tusb_desc_webusb_url_t desc_url =
-    {
-        .bLength = 3 + sizeof(URL) - 1,
-        .bDescriptorType = 3, // WEBUSB URL type
-        .bScheme = 1,         // 0: http, 1: https
-        .url = URL};
+// #define URL "heiso.github.io/macrolev/configurator"
+// const tusb_desc_webusb_url_t desc_url =
+//     {
+//         .bLength = 3 + sizeof(URL) - 1,
+//         .bDescriptorType = 3, // WEBUSB URL type
+//         .bScheme = 1,         // 0: http, 1: https
+//         .url = URL};
 
 /* USER CODE END PV */
 
