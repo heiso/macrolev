@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type HTMLAttributes, type SVGProps } from 'react'
 import type { LogoSvg } from '../../svgs.ts'
 
-const ROTATION_RANGE = 15
-const DISTANCE = 5
+const ROTATION_RANGE = 20
+const DISTANCE = 10
 const RANGE = 500
 
 type LogoProps = HTMLAttributes<HTMLDivElement>

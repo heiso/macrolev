@@ -7,6 +7,8 @@ Custom analog keyboard based on the Lekker Switch from Wooting.
 
 - [keyboard layout](http://www.keyboard-layout-editor.com/#/gists/9dc992fd631d9f29cc5bdf738b10b4e4)
 - [Onshape project](https://cad.onshape.com/documents/2af2025c576c4f084cb26625/w/9564bb1d9dfbd4b4af4294c8/e/e2406b8294380372b9116245)
+- [Schema](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2Fmacrolev.kicad_sch)
+- [Pcb](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2Fmacrolev.kicad_pcb)
 
 ## Todo
 
@@ -60,17 +62,3 @@ Custom analog keyboard based on the Lekker Switch from Wooting.
 
 [Review request on PrintedCircuitBoard](https://www.reddit.com/r/PrintedCircuitBoard/comments/17hjp88/review_request_analog_keyboard)  
 [Second review request on PrintedCircuitBoard](https://www.reddit.com/r/PrintedCircuitBoard/comments/17kqc2j/review_request_analog_keyboard_2/)
-
-![schema](./assets/schema.png)  
-[Schema](./assets/schema.pdf)
-
-(All components are located on the back of the PCB. To enhance readability, I've flipped the board view)
-
-![pcb](./assets/pcb.png)  
-B.Silkscreen (white) - B.Cu (blue) - F.Cu (red)
-
-![usbc](./assets/usbc.png)  
-USB-C board
-
-![mcu zoomed](./assets/mcu-zoomed.png)  
-MCU zoomed

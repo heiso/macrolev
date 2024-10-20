@@ -21,6 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "DRV2605L.h"
 #include "tusb.h"
 #include "usb_descriptors.h"
 #include <stdlib.h>
@@ -34,6 +35,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+#define IS_DRV2605_ENABLED false
 
 #define VENDOR_REQUEST_KEYS 0xfe
 #define VENDOR_REQUEST_CONFIG 0xff
@@ -52,6 +55,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+
+I2C_HandleTypeDef hi2c1;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
@@ -109,13 +114,6 @@ static uint8_t keycodes[6] = {0};
 static uint8_t consumer_report = 0;
 
 extern uint8_t const desc_ms_os_20[];
-#define URL "heiso.github.io/macrolev/configurator"
-const tusb_desc_webusb_url_t desc_url =
-    {
-        .bLength = 3 + sizeof(URL) - 1,
-        .bDescriptorType = 3, // WEBUSB URL type
-        .bScheme = 1,         // 0: http, 1: https
-        .url = URL};
 
 /* USER CODE END PV */
 
@@ -124,6 +122,9 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
+#if IS_DRV2605_ENABLED
+static void MX_I2C1_Init(void);
+#endif
 /* USER CODE BEGIN PFP */
 static void update_key(struct key *key);
 static void init_keys();
@@ -153,6 +154,50 @@ bool writeConfig(uint8_t *buffer, uint16_t offset, uint16_t size) {
   }
   HAL_FLASH_Lock();
   return true;
+}
+
+uint8_t readRegister8(uint8_t reg) {
+  uint8_t buffer[1] = {reg};
+  HAL_I2C_Master_Transmit(&hi2c1, DRV2605_ADDR << 1, buffer, 1, 1000);
+  HAL_I2C_Master_Receive(&hi2c1, DRV2605_ADDR << 1, buffer, 1, 1000);
+  return buffer[0];
+}
+
+void writeRegister8(uint8_t reg, uint8_t val) {
+  uint8_t buffer[2] = {reg, val};
+  HAL_I2C_Master_Transmit(&hi2c1, DRV2605_ADDR << 1, buffer, sizeof(buffer), 1);
+}
+
+void DRV2605_init() {
+  writeRegister8(DRV2605_REG_MODE, 0x00); // out of standby
+
+  writeRegister8(DRV2605_REG_RTPIN, 0x00); // no real-time-playback
+
+  writeRegister8(DRV2605_REG_WAVESEQ1, 1); // strong click
+  writeRegister8(DRV2605_REG_WAVESEQ2, 0); // end sequence
+
+  writeRegister8(DRV2605_REG_OVERDRIVE, 1); // no overdrive
+
+  writeRegister8(DRV2605_REG_SUSTAINPOS, 0);
+  writeRegister8(DRV2605_REG_SUSTAINNEG, 0);
+  writeRegister8(DRV2605_REG_BREAK, 0);
+  writeRegister8(DRV2605_REG_AUDIOMAX, 0x64);
+
+  // ERM open loop
+
+  // turn on N_ERM_LRA
+  writeRegister8(DRV2605_REG_FEEDBACK,
+                 readRegister8(DRV2605_REG_FEEDBACK) | 0x80);
+
+  // // turn off N_ERM_LRA
+  // writeRegister8(DRV2605_REG_FEEDBACK,
+  //                readRegister8(DRV2605_REG_FEEDBACK) & 0x7F);
+  // // turn on ERM_OPEN_LOOP
+  // writeRegister8(DRV2605_REG_CONTROL3,
+  //                readRegister8(DRV2605_REG_CONTROL3) | 0x20);
+
+  writeRegister8(DRV2605_REG_LIBRARY, 1);
+  writeRegister8(DRV2605_REG_MODE, DRV2605_MODE_INTTRIG);
 }
 /* USER CODE END 0 */
 
@@ -186,11 +231,17 @@ int main(void) {
   MX_GPIO_Init();
   MX_ADC1_Init();
   MX_USB_OTG_FS_PCD_Init();
+#if IS_DRV2605_ENABLED
+  MX_I2C1_Init();
+#endif
   /* USER CODE BEGIN 2 */
 
   init_keys();
 
   tud_init(BOARD_TUD_RHPORT);
+#if IS_DRV2605_ENABLED
+  drv2605l_init();
+#endif
 
   /* USER CODE END 2 */
 
@@ -259,6 +310,14 @@ int main(void) {
         }
       }
     }
+
+#if IS_DRV2605_ENABLED
+    if (key_triggered) {
+      writeRegister8(DRV2605_REG_WAVESEQ1 + 0, 1);
+      writeRegister8(DRV2605_REG_WAVESEQ1 + 1, 0);
+      writeRegister8(DRV2605_REG_GO, 1);
+    }
+#endif
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -355,6 +414,37 @@ static void MX_ADC1_Init(void) {
   // memcpy(&ADC_channel_Config, &sConfig, sizeof(ADC_ChannelConfTypeDef));
 
   /* USER CODE END ADC1_Init 2 */
+}
+
+/**
+ * @brief I2C1 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_I2C1_Init(void) {
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK) {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
 }
 
 /**
