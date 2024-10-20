@@ -1,14 +1,15 @@
 # Macrolev
 
-🚧 Work in progress 🚧
-
-~~Custom analog keyboard based on the [void_switch](https://github.com/riskable/void_switch) from [@riskable](https://github.com/riskable).~~  
-Custom analog keyboard based on the Lekker Switch from Wooting.
+Custom analog keyboard based on Hall Effect switches.
 
 - [keyboard layout](http://www.keyboard-layout-editor.com/#/gists/9dc992fd631d9f29cc5bdf738b10b4e4)
 - [Onshape project](https://cad.onshape.com/documents/2af2025c576c4f084cb26625/w/9564bb1d9dfbd4b4af4294c8/e/e2406b8294380372b9116245)
-- [Schema](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2Fmacrolev.kicad_sch)
-- [Pcb](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2Fmacrolev.kicad_pcb)
+- [Rev 1.0 Schema](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Frev-1.0%2Fkicad%2Fmacrolev.kicad_sch)
+- [Rev 1.0 Pcb](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Frev-1.0%2Fkicad%2Fmacrolev.kicad_pcb)
+- [WIP Rev 1.1 Schema](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2Fmacrolev.kicad_sch)
+- [WIP Rev 1.1 Pcb](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2Fmacrolev.kicad_pcb)
+- [Web Configurator](https://heiso.github.io/macrolev/)
+  ![web configurator screenshot](assets/web-configurator-screenshot.png)
 
 ## Todo
 
@@ -20,7 +21,8 @@ Custom analog keyboard based on the Lekker Switch from Wooting.
 
 ### Should Have
 
-- Rapid trigger
+- ~~Rapid trigger~~
+- web configurator
 - haptic feedback
 
 ### Could Have
@@ -58,7 +60,7 @@ Custom analog keyboard based on the Lekker Switch from Wooting.
 - [JLC2KiCad_lib](https://github.com/TousstNicolas/JLC2KiCad_lib)
 - [Debug HardFault](https://interrupt.memfault.com/blog/cortex-m-hardfault-debug)
 
-## PCB
+## PCB reviews
 
 [Review request on PrintedCircuitBoard](https://www.reddit.com/r/PrintedCircuitBoard/comments/17hjp88/review_request_analog_keyboard)  
 [Second review request on PrintedCircuitBoard](https://www.reddit.com/r/PrintedCircuitBoard/comments/17kqc2j/review_request_analog_keyboard_2/)
