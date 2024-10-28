@@ -36,6 +36,7 @@ type UserConfig = {
   triggerOffset: number
   resetThreshold: number
   rapidTriggerOffset: number
+  screamingVelocityTrigger: number
   keymaps: ArrayBuffer
 }
 
@@ -44,7 +45,8 @@ function parseUserConfig(config: DataView): UserConfig {
     triggerOffset: config.getUint8(0),
     resetThreshold: config.getUint8(1),
     rapidTriggerOffset: config.getUint8(2),
-    keymaps: config.buffer.slice(3),
+    screamingVelocityTrigger: config.getUint8(3),
+    keymaps: config.buffer.slice(4),
   }
 }
 
@@ -53,6 +55,7 @@ function formatUserConfig(config: UserConfig): BufferSource {
     config.triggerOffset,
     config.resetThreshold,
     config.rapidTriggerOffset,
+    config.screamingVelocityTrigger,
     ...new Uint8Array(config.keymaps),
   ])
 }

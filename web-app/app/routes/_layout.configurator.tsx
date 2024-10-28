@@ -109,6 +109,25 @@ export default function Index() {
                 {Number(((userConfig.resetThreshold * 4) / 255).toFixed(2))} mm
               </span>
             </div>
+
+            <div className="flex gap-2 items-center">
+              <Label>Screaming Velocity Trigger</Label>
+              <input
+                className="cursor-pointer"
+                min={1}
+                max={255}
+                step={1}
+                type="range"
+                onChange={(event) => {
+                  setUserConfig({
+                    ...userConfig,
+                    screamingVelocityTrigger: Number(event.target.value),
+                  })
+                }}
+                value={userConfig.screamingVelocityTrigger}
+              />
+              <span className="text-slate-400">{Number(userConfig.screamingVelocityTrigger)}</span>
+            </div>
           </div>
 
           <div className="space-x-4">

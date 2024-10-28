@@ -38,6 +38,7 @@ extern "C" {
 #define DEFAULT_TRIGGER_OFFSET 64
 #define DEFAULT_RESET_THRESHOLD 3
 #define DEFAULT_RAPID_TRIGGER_OFFSET 40
+#define DEFAULT_SCREAMING_VELOCITY_TRIGGER 45
 
 #define IDLE_VALUE_APPROX 1800
 #define MAX_DISTANCE_APPROX 500
@@ -134,6 +135,7 @@ struct user_config {
   uint8_t trigger_offset;
   uint8_t reset_threshold;
   uint8_t rapid_trigger_offset;
+  uint8_t screaming_velocity_trigger;
   uint16_t keymaps[LAYERS_COUNT][MATRIX_ROWS][MATRIX_COLS];
 };
 /* USER CODE END ET */
