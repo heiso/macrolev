@@ -628,13 +628,13 @@ void add_to_hid_report(struct key *key, uint8_t layer) {
       if (keycodes[i] == 0) {
         keycodes[i] = key->layers[layer].value;
         // if the key is violently pressed, automatically add the MAJ modifier :)
-        if (is_screaming) {
-          is_screaming = 0;
-          modifiers &= ~get_bitmask_for_modifier(HID_KEY_SHIFT_LEFT);
-        } else if (i == 0 && key->state.velocity > user_config.screaming_velocity_trigger) {
-          is_screaming = 1;
-          modifiers |= get_bitmask_for_modifier(HID_KEY_SHIFT_LEFT);
-        }
+        // if (is_screaming) {
+        //   is_screaming = 0;
+        //   modifiers &= ~get_bitmask_for_modifier(HID_KEY_SHIFT_LEFT);
+        // } else if (i == 0 && key->state.velocity > user_config.screaming_velocity_trigger) {
+        //   is_screaming = 1;
+        //   modifiers |= get_bitmask_for_modifier(HID_KEY_SHIFT_LEFT);
+        // }
         should_send_keyboard_report = 1;
         break;
       }
@@ -659,10 +659,10 @@ void remove_from_hid_report(struct key *key, uint8_t layer) {
     for (uint8_t i = 0; i < 6; i++) {
       if (keycodes[i] == key->layers[layer].value) {
         keycodes[i] = 0;
-        if (is_screaming) {
-          is_screaming = 0;
-          modifiers &= ~get_bitmask_for_modifier(HID_KEY_SHIFT_LEFT);
-        }
+        // if (is_screaming) {
+        //   is_screaming = 0;
+        //   modifiers &= ~get_bitmask_for_modifier(HID_KEY_SHIFT_LEFT);
+        // }
         should_send_keyboard_report = 1;
         break;
       }
