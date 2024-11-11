@@ -148,6 +148,7 @@ export default function Index() {
             <Button onClick={loadUserConfig}>Load Config</Button>
             <Button onClick={persistUserConfig}>Save Config</Button>
             <Button onClick={() => write('VENDOR_REQUEST_RESET_CONFIG')}>Reset Config</Button>
+            <Button onClick={() => write('VENDOR_REQUEST_DFU_MODE')}>DFU Mode</Button>
           </div>
         </>
       )}

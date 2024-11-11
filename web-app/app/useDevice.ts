@@ -7,6 +7,7 @@ const vendorRequests = {
   VENDOR_REQUEST_KEYS: 0xfe,
   VENDOR_REQUEST_CONFIG: 0xff,
   VENDOR_REQUEST_RESET_CONFIG: 0xfd,
+  VENDOR_REQUEST_DFU_MODE: 0xfc,
 }
 
 const vendorValues = {

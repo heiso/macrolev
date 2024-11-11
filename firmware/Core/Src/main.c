@@ -41,6 +41,7 @@
 #define VENDOR_REQUEST_KEYS 0xfe
 #define VENDOR_REQUEST_CONFIG 0xff
 #define VENDOR_REQUEST_RESET_CONFIG 0xfd
+#define VENDOR_REQUEST_DFU_MODE 0xfc
 
 #define VENDOR_VALUE_GET_LENGTH 0x00
 #define VENDOR_VALUE_GET 0x01
@@ -137,6 +138,26 @@ static void remove_from_hid_report(struct key *key, uint8_t layer);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+// https://stm32f4-discovery.net/2017/04/tutorial-jump-system-memory-software-stm32/
+void jump_to_bootloader(void) {
+  __enable_irq();
+  HAL_RCC_DeInit();
+  HAL_DeInit();
+  SysTick->CTRL = SysTick->LOAD = SysTick->VAL = 0;
+  __HAL_SYSCFG_REMAPMEMORY_SYSTEMFLASH();
+
+  const uint32_t p = (*((uint32_t *)0x1FFF0000));
+  __set_MSP(p);
+
+  void (*SysMemBootJump)(void);
+  SysMemBootJump = (void (*)(void))(*((uint32_t *)0x1FFF0004));
+  SysMemBootJump();
+
+  while (1) {
+  }
+}
+
 void readConfig() {
   memcpy(&user_config, (uint32_t *)CONFIG_ADDRESS, sizeof(user_config));
 }
@@ -946,6 +967,17 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
           }
           readConfig();
           init_keys();
+          return tud_control_status(rhport, request);
+        }
+
+        break;
+      }
+    }
+
+    case VENDOR_REQUEST_DFU_MODE: {
+      if (request->wValue == VENDOR_VALUE_SET) {
+        if (stage == CONTROL_STAGE_SETUP) {
+          jump_to_bootloader();
           return tud_control_status(rhport, request);
         }
 
