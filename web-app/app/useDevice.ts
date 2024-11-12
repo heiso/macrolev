@@ -2,6 +2,9 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 
 const PRODUCT_NAME = 'Macrolev'
 const VENDOR_ID = 0xcafe
+// const LAYER_COUNT = 2
+// const MATRIX_ROWS = 5
+// const MATRIX_COLS = 15
 
 const vendorRequests = {
   VENDOR_REQUEST_KEYS: 0xfe,
@@ -38,7 +41,23 @@ type UserConfig = {
   resetThreshold: number
   rapidTriggerOffset: number
   screamingVelocityTrigger: number
-  keymaps: ArrayBuffer
+  tapTimeout: number
+  keymaps: number[]
+}
+
+function parseKeymaps(config: DataView, byteOffset: number) {
+  const test: number[] = []
+  let i = byteOffset
+  while (i < config.byteLength) {
+    const value = config.getUint16(i, true)
+    // if (value > 0xff) {
+    //   console.log(value & 0b0111111111111111)
+    // }
+    test.push(value)
+    i = i + 2
+  }
+
+  return test
 }
 
 function parseUserConfig(config: DataView): UserConfig {
@@ -47,18 +66,23 @@ function parseUserConfig(config: DataView): UserConfig {
     resetThreshold: config.getUint8(1),
     rapidTriggerOffset: config.getUint8(2),
     screamingVelocityTrigger: config.getUint8(3),
-    keymaps: config.buffer.slice(4),
+    tapTimeout: config.getUint16(4, true),
+    keymaps: parseKeymaps(config, 6),
   }
 }
 
 function formatUserConfig(config: UserConfig): BufferSource {
-  return new Uint8Array([
-    config.triggerOffset,
-    config.resetThreshold,
-    config.rapidTriggerOffset,
-    config.screamingVelocityTrigger,
-    ...new Uint8Array(config.keymaps),
-  ])
+  const buffer = new DataView(new ArrayBuffer(306))
+  buffer.setUint8(0, config.triggerOffset)
+  buffer.setUint8(1, config.resetThreshold)
+  buffer.setUint8(2, config.rapidTriggerOffset)
+  buffer.setUint8(3, config.screamingVelocityTrigger)
+  buffer.setUint16(4, config.tapTimeout, true)
+  config.keymaps.forEach((keycode, index) => {
+    buffer.setUint16(6 + index * 2, keycode, true)
+  })
+
+  return buffer
 }
 
 const layerTypes = [

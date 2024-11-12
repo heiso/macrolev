@@ -128,6 +128,23 @@ export default function Index() {
               />
               <span className="text-slate-400">{Number(userConfig.screamingVelocityTrigger)}</span>
             </div>
+
+            <div className="flex gap-2 items-center">
+              <Label>Tap Timeout</Label>
+              <input
+                min={1}
+                max={65535}
+                type="number"
+                onChange={(event) => {
+                  setUserConfig({
+                    ...userConfig,
+                    tapTimeout: Number(event.target.value),
+                  })
+                }}
+                value={userConfig.tapTimeout}
+              />
+              <span className="text-slate-400">ms</span>
+            </div>
           </div>
 
           <div className="space-x-4">
@@ -150,6 +167,7 @@ export default function Index() {
             <Button onClick={() => write('VENDOR_REQUEST_RESET_CONFIG')}>Reset Config</Button>
             <Button onClick={() => write('VENDOR_REQUEST_DFU_MODE')}>DFU Mode</Button>
           </div>
+          <pre>{JSON.stringify(userConfig, null, 2)}</pre>
         </>
       )}
     </div>

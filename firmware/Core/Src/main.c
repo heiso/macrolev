@@ -73,6 +73,7 @@ const struct user_config default_user_config = {
     .reset_threshold = DEFAULT_RESET_THRESHOLD,
     .rapid_trigger_offset = DEFAULT_RAPID_TRIGGER_OFFSET,
     .screaming_velocity_trigger = DEFAULT_SCREAMING_VELOCITY_TRIGGER,
+    .tap_timeout = DEFAULT_TAP_TIMEOUT,
     .keymaps = {
         // clang-format off
         [_BASE_LAYER] = {
@@ -307,7 +308,7 @@ int main(void) {
 
         struct key *key = &keys[adc_channel][amux_channel];
         uint8_t is_before_reset_offset = key->state.distance_8bits < key->actuation.reset_offset;
-        uint8_t is_before_timeout = HAL_GetTick() - key->actuation.triggered_at <= TAP_TIMEOUT;
+        uint8_t is_before_timeout = HAL_GetTick() - key->actuation.triggered_at <= user_config.tap_timeout;
 
         // if might be tap, can be tap or triggered
         if (is_before_reset_offset && is_before_timeout) {

@@ -39,12 +39,12 @@ extern "C" {
 #define DEFAULT_RESET_THRESHOLD 3
 #define DEFAULT_RAPID_TRIGGER_OFFSET 40
 #define DEFAULT_SCREAMING_VELOCITY_TRIGGER 45
+#define DEFAULT_TAP_TIMEOUT 200
 
 #define IDLE_VALUE_APPROX 1800
 #define MAX_DISTANCE_APPROX 500
 #define IDLE_VALUE_OFFSET 10
 #define MAX_DISTANCE_OFFSET 60
-#define TAP_TIMEOUT 200
 #define IDLE_CYCLES_UNTIL_SLEEP 15
 
 #define ADC_CHANNEL_COUNT 5
@@ -136,6 +136,7 @@ struct user_config {
   uint8_t reset_threshold;
   uint8_t rapid_trigger_offset;
   uint8_t screaming_velocity_trigger;
+  uint16_t tap_timeout;
   uint16_t keymaps[LAYERS_COUNT][MATRIX_ROWS][MATRIX_COLS];
 };
 /* USER CODE END ET */
