@@ -21,10 +21,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "config.h"
+#include "hid.h"
 #include "DRV2605L.h"
-#include "tusb.h"
 #include "keyboard.h"
-#include "usb_descriptors.h"
 #include <stdlib.h>
 
 /* USER CODE END Includes */
@@ -38,15 +38,6 @@
 /* USER CODE BEGIN PD */
 
 #define IS_DRV2605_ENABLED false
-
-#define VENDOR_REQUEST_KEYS 0xfe
-#define VENDOR_REQUEST_CONFIG 0xff
-#define VENDOR_REQUEST_RESET_CONFIG 0xfd
-#define VENDOR_REQUEST_DFU_MODE 0xfc
-
-#define VENDOR_VALUE_GET_LENGTH 0x00
-#define VENDOR_VALUE_GET 0x01
-#define VENDOR_VALUE_SET 0x02
 
 /* USER CODE END PD */
 
@@ -65,13 +56,9 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE BEGIN PV */
 ADC_ChannelConfTypeDef ADC_channel_Config = {0};
 
-CFG_TUSB_MEM_SECTION CFG_TUSB_MEM_ALIGN static uint8_t usb_vendor_control_buffer[CFG_TUD_VENDOR_RX_BUFSIZE];
-
 const uint32_t adc_channels[ADC_CHANNEL_COUNT] = {ADC_CHANNEL_3, ADC_CHANNEL_4, ADC_CHANNEL_5, ADC_CHANNEL_6, ADC_CHANNEL_7};
 
 const uint32_t amux_select_pins[AMUX_SELECT_PINS_COUNT] = {GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14, GPIO_PIN_15};
-
-extern uint8_t const desc_ms_os_20[];
 
 /* USER CODE END PV */
 
@@ -89,25 +76,6 @@ static void MX_I2C1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-// https://stm32f4-discovery.net/2017/04/tutorial-jump-system-memory-software-stm32/
-void jump_to_bootloader(void) {
-  __enable_irq();
-  HAL_RCC_DeInit();
-  HAL_DeInit();
-  SysTick->CTRL = SysTick->LOAD = SysTick->VAL = 0;
-  __HAL_SYSCFG_REMAPMEMORY_SYSTEMFLASH();
-
-  const uint32_t p = (*((uint32_t *)0x1FFF0000));
-  __set_MSP(p);
-
-  void (*SysMemBootJump)(void);
-  SysMemBootJump = (void (*)(void))(*((uint32_t *)0x1FFF0004));
-  SysMemBootJump();
-
-  while (1) {
-  }
-}
 
 uint8_t readRegister8(uint8_t reg) {
   uint8_t buffer[1] = {reg};
@@ -193,7 +161,7 @@ int main(void) {
   ADC_channel_Config.SamplingTime = ADC_SAMPLETIME_3CYCLES;
   keyboard_init_keys();
 
-  tud_init(BOARD_TUD_RHPORT);
+  hid_init();
 #if IS_DRV2605_ENABLED
   drv2605l_init();
 #endif
@@ -207,6 +175,8 @@ int main(void) {
     tud_task();
 
     keyboard_task();
+
+    hid_task();
 
 #if IS_DRV2605_ENABLED
     if (key_triggered) {
@@ -415,7 +385,7 @@ void keyboard_read_config() {
 
 uint8_t keyboard_write_config(uint8_t *buffer, uint16_t offset, uint16_t size) {
   if (offset >= sizeof keyboard_user_config) {
-    return false;
+    return 0;
   }
 
   HAL_FLASH_Unlock();
@@ -427,7 +397,7 @@ uint8_t keyboard_write_config(uint8_t *buffer, uint16_t offset, uint16_t size) {
     };
   }
   HAL_FLASH_Lock();
-  return true;
+  return 1;
 }
 
 void keyboard_select_amux(uint8_t amux_channel) {
@@ -454,218 +424,6 @@ void keyboard_close_adc() {
 
 uint32_t keyboard_get_time() {
   return HAL_GetTick();
-}
-
-// MARK: tud_* functions
-
-// Invoked when received SET_PROTOCOL request
-// protocol is either HID_PROTOCOL_BOOT (0) or HID_PROTOCOL_REPORT (1)
-void tud_hid_set_protocol_cb(uint8_t instance, uint8_t protocol) {
-  (void)instance;
-  (void)protocol;
-
-  // nothing to do since we use the same compatible boot report for both Boot and Report mode.
-  // TODO set a indicator for user
-}
-
-// Invoked when sent REPORT successfully to host
-// Application can use this to send the next report
-// Note: For composite reports, report[0] is report ID
-void tud_hid_report_complete_cb(uint8_t instance, uint8_t const *report, uint16_t len) {
-  (void)instance;
-  (void)report;
-  (void)len;
-}
-
-// Invoked when received GET_REPORT control request
-// Application must fill buffer report's content and return its length.
-// Return zero will cause the stack to STALL request
-uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t *buffer, uint16_t reqlen) {
-  // TODO not Implemented
-  (void)instance;
-  (void)report_id;
-  (void)report_type;
-  (void)buffer;
-  (void)reqlen;
-
-  return 0;
-}
-
-// Invoked when received SET_REPORT control request or
-// received data on OUT endpoint ( Report ID = 0, Type = 0 )
-void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
-  (void)report_id;
-  // if (instance == 1 && report_id == 0) {
-  //   writeConfig(buffer, bufsize);
-
-  //   init_keys();
-  // }
-}
-
-// // Invoked when cdc when line state changed e.g connected/disconnected
-// void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts) {
-//   (void)itf;
-
-//   // connected
-//   if (dtr && rts) {
-//     // print initial message when connected
-//     tud_cdc_write(&keyboard_user_config, 3);
-//     tud_cdc_write_str('\r\n');
-//     tud_cdc_write_flush();
-//   }
-// }
-
-// // Invoked when CDC interface received data from host
-// void tud_cdc_rx_cb(uint8_t itf) {
-//   (void)itf;
-// }
-
-// Invoked when a control transfer occurred on an interface of this class
-// Driver response accordingly to the request and the transfer stage (setup/data/ack)
-// return false to stall control endpoint (e.g unsupported request)
-bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_request_t const *request) {
-  switch (request->bmRequestType_bit.type) {
-  case TUSB_REQ_TYPE_VENDOR: {
-    switch (request->bRequest) {
-
-    case VENDOR_REQUEST_CONFIG: {
-      switch (request->wValue) {
-      case VENDOR_VALUE_GET_LENGTH: {
-        if (stage == CONTROL_STAGE_SETUP) {
-          uint16_t size = sizeof(keyboard_user_config);
-          return tud_control_xfer(rhport, request, &size, request->wLength);
-        }
-
-        break;
-      }
-
-      case VENDOR_VALUE_GET: {
-        if (stage == CONTROL_STAGE_SETUP) {
-          return tud_control_xfer(rhport, request, &keyboard_user_config, request->wLength);
-        }
-
-        break;
-      }
-
-      case VENDOR_VALUE_SET: {
-        if (stage == CONTROL_STAGE_SETUP) {
-          return tud_control_xfer(rhport, request, usb_vendor_control_buffer, request->wLength);
-        } else if (stage == CONTROL_STAGE_DATA) {
-          if (!writeConfig(&usb_vendor_control_buffer, 0, request->wLength)) {
-            return false;
-          }
-          readConfig();
-          init_keys();
-        }
-
-        break;
-      }
-
-      default:
-        break;
-      }
-    }
-
-    case VENDOR_REQUEST_RESET_CONFIG: {
-      if (request->wValue == VENDOR_VALUE_SET) {
-        if (stage == CONTROL_STAGE_SETUP) {
-          if (!writeConfig(&default_keyboard_user_config, 0, sizeof default_keyboard_user_config)) {
-            return false;
-          }
-          readConfig();
-          init_keys();
-          return tud_control_status(rhport, request);
-        }
-
-        break;
-      }
-    }
-
-    case VENDOR_REQUEST_DFU_MODE: {
-      if (request->wValue == VENDOR_VALUE_SET) {
-        if (stage == CONTROL_STAGE_SETUP) {
-          jump_to_bootloader();
-          return tud_control_status(rhport, request);
-        }
-
-        break;
-      }
-    }
-
-    case VENDOR_REQUEST_KEYS: {
-      switch (request->wValue) {
-      case VENDOR_VALUE_GET_LENGTH: {
-        if (stage == CONTROL_STAGE_SETUP) {
-          uint16_t size = sizeof(keys);
-          return tud_control_xfer(rhport, request, &size, request->wLength);
-        }
-
-        break;
-      }
-
-      case VENDOR_VALUE_GET: {
-        if (stage == CONTROL_STAGE_SETUP) {
-          return tud_control_xfer(rhport, request, &keys, request->wLength);
-        }
-
-        break;
-      }
-
-      default:
-        break;
-      }
-    }
-
-    case VENDOR_REQUEST_WEBUSB: {
-      if (stage == CONTROL_STAGE_SETUP) {
-        return tud_control_status(rhport, request);
-      }
-
-      break;
-    }
-
-    case VENDOR_REQUEST_MICROSOFT: {
-      if (stage == CONTROL_STAGE_SETUP) {
-        if (request->wIndex == 7) {
-          // Get Microsoft OS 2.0 compatible descriptor
-          uint16_t total_len;
-          memcpy(&total_len, desc_ms_os_20 + 8, 2);
-
-          return tud_control_xfer(rhport, request, (void *)(uintptr_t)desc_ms_os_20, total_len);
-        }
-
-        return false;
-      }
-
-      break;
-    }
-
-    default:
-      break;
-    }
-  }
-
-  case TUSB_REQ_TYPE_CLASS: {
-    if (stage == CONTROL_STAGE_SETUP) {
-      if (request->bRequest == 0x22) {
-        // response with status OK
-        return tud_control_status(rhport, request);
-      }
-
-      return false;
-    }
-
-    break;
-  }
-
-  default:
-    break;
-  }
-
-  if (stage != CONTROL_STAGE_SETUP) {
-    return true;
-  }
-  return false;
 }
 
 /* USER CODE END 4 */

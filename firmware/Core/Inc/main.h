@@ -31,7 +31,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#define CONFIG_ADDRESS 0x08040000
 
 /* USER CODE END Includes */
 
@@ -47,6 +46,7 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+#define CONFIG_ADDRESS 0x08040000
 
 /* USER CODE END EM */
 

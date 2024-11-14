@@ -8,6 +8,12 @@
   },
   "tailwindCSS.classAttributes": ["class", "className", ".*Styles", ".*Class"],
   "files.associations": {
-    "main.h": "c"
+    "main.h": "c",
+    "stdlib.h": "c",
+    "stm32f4xx_hal_adc.h": "c",
+    "tusb.h": "c",
+    "keyboard.h": "c",
+    "usb_descriptors.h": "c",
+    "drv2605l.h": "c"
   }
 }

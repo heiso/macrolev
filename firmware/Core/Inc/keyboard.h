@@ -1,27 +1,15 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
+#include "config.h"
 #ifndef __KEYBOARD_H
 #define __KEYBOARD_H
 
 #define CALIBRATION_CYCLES 20
-
-#define DEFAULT_TRIGGER_OFFSET 64
-#define DEFAULT_RESET_THRESHOLD 3
-#define DEFAULT_RAPID_TRIGGER_OFFSET 40
-#define DEFAULT_SCREAMING_VELOCITY_TRIGGER 45
-#define DEFAULT_TAP_TIMEOUT 200
 
 #define IDLE_VALUE_APPROX 1800
 #define MAX_DISTANCE_APPROX 500
 #define IDLE_VALUE_OFFSET 10
 #define MAX_DISTANCE_OFFSET 60
 #define IDLE_CYCLES_UNTIL_SLEEP 15
-
-#define ADC_CHANNEL_COUNT 5
-#define AMUX_SELECT_PINS_COUNT 4
-#define AMUX_CHANNEL_COUNT 16
-
-#define MATRIX_ROWS 5
-#define MATRIX_COLS 15
 
 #define XXXX 0xff
 #define ____ 0x00
@@ -106,6 +94,7 @@ struct user_config {
   uint16_t keymaps[LAYERS_COUNT][MATRIX_ROWS][MATRIX_COLS];
 };
 
+static struct key keyboard_keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT];
 struct user_config keyboard_user_config;
 static void keyboard_task();
 static void keyboard_init_keys();
