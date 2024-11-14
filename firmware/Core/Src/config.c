@@ -1,8 +1,8 @@
-#include "keyboard.h"
+#include "config.h"
 #include "DRV2605L.h"
-#include <stdlib.h>
-#include <hid.h>
-#include <config.h>
+#include "keyboard.h"
+#include "stdlib.h"
+#include <class/hid/hid.h>
 
 const struct user_config keyboard_default_user_config = {
     .trigger_offset = DEFAULT_TRIGGER_OFFSET,

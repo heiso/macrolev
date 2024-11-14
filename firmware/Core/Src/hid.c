@@ -1,26 +1,30 @@
-#include <stdlib.h>
 #include "tusb.h"
 #include "usb_descriptors.h"
 #include <hid.h>
 #include <keyboard.h>
+#include <stdlib.h>
 
 extern uint8_t const desc_ms_os_20[];
+extern struct key keyboard_keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT];
+extern struct user_config keyboard_user_config;
 
 static uint8_t should_send_consumer_report = 0;
 static uint8_t should_send_keyboard_report = 0;
 
 static uint8_t modifiers = 0;
 static uint8_t keycodes[6] = {0};
-static uint8_t is_screaming = 0;
+// static uint8_t is_screaming = 0;
 static uint8_t consumer_report = 0;
 
-CFG_TUSB_MEM_SECTION CFG_TUSB_MEM_ALIGN static uint8_t usb_vendor_control_buffer[CFG_TUD_VENDOR_RX_BUFSIZE];
+CFG_TUSB_MEM_SECTION CFG_TUSB_MEM_ALIGN static uint8_t usb_vendor_control_buffer[400];
 
 void hid_init() {
   tud_init(BOARD_TUD_RHPORT);
 }
 
 void hid_task() {
+  tud_task();
+
   if ((should_send_consumer_report || should_send_keyboard_report) && tud_hid_ready()) {
     if (tud_suspended()) {
       tud_remote_wakeup();
@@ -33,6 +37,72 @@ void hid_task() {
         tud_hid_keyboard_report(REPORT_ID_KEYBOARD, modifiers, keycodes);
       }
     }
+  }
+}
+
+void hid_press_key(struct key *key, uint8_t layer) {
+  switch (key->layers[layer].type) {
+  case KEY_TYPE_MODIFIER:
+    modifiers |= key->layers[layer].value;
+    should_send_keyboard_report = 1;
+    break;
+
+  case KEY_TYPE_NORMAL:
+    for (uint8_t i = 0; i < 6; i++) {
+      if (keycodes[i] == 0) {
+        keycodes[i] = key->layers[layer].value;
+        // if the key is violently pressed, automatically add the MAJ modifier :)
+        // if (is_screaming) {
+        //   is_screaming = 0;
+        //   modifiers &= ~get_bitmask_for_modifier(HID_KEY_SHIFT_LEFT);
+        // } else if (i == 0 && key->state.velocity > keyboard_user_config.screaming_velocity_trigger) {
+        //   is_screaming = 1;
+        //   modifiers |= get_bitmask_for_modifier(HID_KEY_SHIFT_LEFT);
+        // }
+        should_send_keyboard_report = 1;
+        break;
+      }
+    }
+    break;
+
+  case KEY_TYPE_CONSUMER_CONTROL:
+    consumer_report = key->layers[layer].value;
+    should_send_consumer_report = 1;
+    break;
+
+  default:
+    break;
+  }
+}
+
+void hid_release_key(struct key *key, uint8_t layer) {
+  switch (key->layers[layer].type) {
+  case KEY_TYPE_MODIFIER:
+    modifiers &= ~key->layers[layer].value;
+    should_send_keyboard_report = 1;
+    break;
+
+  case KEY_TYPE_NORMAL:
+    for (uint8_t i = 0; i < 6; i++) {
+      if (keycodes[i] == key->layers[layer].value) {
+        keycodes[i] = 0;
+        // if (is_screaming) {
+        //   is_screaming = 0;
+        //   modifiers &= ~get_bitmask_for_modifier(HID_KEY_SHIFT_LEFT);
+        // }
+        should_send_keyboard_report = 1;
+        break;
+      }
+    }
+    break;
+
+  case KEY_TYPE_CONSUMER_CONTROL:
+    consumer_report = 0;
+    should_send_consumer_report = 1;
+    break;
+
+  default:
+    break;
   }
 }
 
@@ -74,9 +144,9 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_t
 void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
   (void)report_id;
   // if (instance == 1 && report_id == 0) {
-  //   writeConfig(buffer, bufsize);
+  //   keyboard_write_config(buffer, bufsize);
 
-  //   init_keys();
+  //   keyboard_init_keys();
   // }
 }
 
@@ -129,11 +199,11 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
         if (stage == CONTROL_STAGE_SETUP) {
           return tud_control_xfer(rhport, request, usb_vendor_control_buffer, request->wLength);
         } else if (stage == CONTROL_STAGE_DATA) {
-          if (!writeConfig(&usb_vendor_control_buffer, 0, request->wLength)) {
+          if (!keyboard_write_config(&usb_vendor_control_buffer, 0, request->wLength)) {
             return false;
           }
-          readConfig();
-          init_keys();
+          keyboard_read_config();
+          keyboard_init_keys();
         }
 
         break;
@@ -147,11 +217,11 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
     case VENDOR_REQUEST_RESET_CONFIG: {
       if (request->wValue == VENDOR_VALUE_SET) {
         if (stage == CONTROL_STAGE_SETUP) {
-          if (!writeConfig(&keyboard_default_user_config, 0, sizeof keyboard_default_user_config)) {
+          if (!keyboard_write_config(&keyboard_default_user_config, 0, sizeof keyboard_default_user_config)) {
             return false;
           }
-          readConfig();
-          init_keys();
+          keyboard_read_config();
+          keyboard_init_keys();
           return tud_control_status(rhport, request);
         }
 
@@ -162,7 +232,6 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
     case VENDOR_REQUEST_DFU_MODE: {
       if (request->wValue == VENDOR_VALUE_SET) {
         if (stage == CONTROL_STAGE_SETUP) {
-          jump_to_bootloader();
           return tud_control_status(rhport, request);
         }
 

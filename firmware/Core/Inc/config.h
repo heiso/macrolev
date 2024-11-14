@@ -1,6 +1,8 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+#include <stdint.h>
+
 #define DEFAULT_TRIGGER_OFFSET 64
 #define DEFAULT_RESET_THRESHOLD 3
 #define DEFAULT_RAPID_TRIGGER_OFFSET 40
@@ -14,7 +16,7 @@
 #define MATRIX_ROWS 5
 #define MATRIX_COLS 15
 
-const struct user_config keyboard_default_user_config;
-const uint8_t channels_by_row_col[MATRIX_ROWS][MATRIX_COLS][2];
+extern const struct user_config keyboard_default_user_config;
+extern const uint8_t channels_by_row_col[MATRIX_ROWS][MATRIX_COLS][2];
 
 #endif /* __CONFIG_H */

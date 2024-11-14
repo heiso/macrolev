@@ -3,14 +3,13 @@
     {
       "name": "Firmware",
       "includePath": [
-        "${workspaceFolder}/firmware/**",
-        "${workspaceFolder}/firmware/tinyusb/src/class/hid/**",
-        "${workspaceFolder}/firmware/Core/Inc/**",
+        "${workspaceFolder}/firmware/Core/Inc",
+
         "${workspaceFolder}/firmware/Drivers/STM32F4xx_HAL_Driver/Inc/**",
-        "${workspaceFolder}/firmware/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/**",
-        "${workspaceFolder}/firmware/Drivers/CMSIS/Device/ST/STM32F4xx/Include/**",
-        "${workspaceFolder}/firmware/Drivers/CMSIS/Include/**",
-        "${workspaceFolder}/firmware/tinyusb/hw/bsp/broadcom_32bit/boards/raspberrypi_zero_w"
+        "${workspaceFolder}/firmware/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+        "${workspaceFolder}/firmware/Drivers/CMSIS/Include",
+
+        "${workspaceFolder}/firmware/tinyusb/src/**"
       ],
       "defines": ["USE_HAL_DRIVER", "STM32F411xE"]
     }

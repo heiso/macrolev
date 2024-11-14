@@ -14,6 +14,10 @@
     "tusb.h": "c",
     "keyboard.h": "c",
     "usb_descriptors.h": "c",
-    "drv2605l.h": "c"
+    "drv2605l.h": "c",
+    "_stdlib.h": "c",
+    "hid.h": "c",
+    "config.h": "c",
+    "stdint.h": "c"
   }
 }

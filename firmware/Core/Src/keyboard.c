@@ -1,53 +1,13 @@
 #include "keyboard.h"
 #include "DRV2605L.h"
+#include "hid.h"
+#include <class/hid/hid.h>
 #include <stdlib.h>
 
-keyboard_user_config = {0};
-
-static struct key keyboard_keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT] = {0};
+struct key keyboard_keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT] = {0};
+struct user_config keyboard_user_config = {0};
 
 static uint8_t key_triggered = 0;
-
-void keyboard_task() {
-  key_triggered = 0;
-
-  for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
-    keyboard_select_amux(amux_channel);
-
-    for (uint8_t adc_channel = 0; adc_channel < ADC_CHANNEL_COUNT; adc_channel++) {
-      if (keyboard_keys[adc_channel][amux_channel].is_enabled == 0) {
-        continue;
-      }
-      keyboard_select_adc(adc_channel);
-
-      update_key(&keyboard_keys[adc_channel][amux_channel]);
-
-      keyboard_close_adc();
-    }
-  }
-
-  // If a key might be tap and a non tap key has been triggered, then the might be tap key is a normal trigger
-  for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
-    for (uint8_t adc_channel = 0; adc_channel < ADC_CHANNEL_COUNT; adc_channel++) {
-      if (keyboard_keys[adc_channel][amux_channel].is_enabled == 0 || keyboard_keys[adc_channel][amux_channel].actuation.status != STATUS_MIGHT_BE_TAP) {
-        continue;
-      }
-
-      struct key *key = &keyboard_keys[adc_channel][amux_channel];
-      uint8_t is_before_reset_offset = key->state.distance_8bits < key->actuation.reset_offset;
-      uint8_t is_before_timeout = keyboard_get_time() - key->actuation.triggered_at <= keyboard_user_config.tap_timeout;
-
-      // if might be tap, can be tap or triggered
-      if (is_before_reset_offset && is_before_timeout) {
-        key->actuation.status = STATUS_TAP;
-        add_to_hid_report(key, _TAP_LAYER);
-      } else if (!is_before_timeout || key_triggered) {
-        key->actuation.status = STATUS_TRIGGERED;
-        add_to_hid_report(key, _BASE_LAYER);
-      }
-    }
-  }
-}
 
 uint8_t get_bitmask_for_modifier(uint8_t keycode) {
   switch (keycode) {
@@ -115,78 +75,6 @@ void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t co
         }
       }
     }
-  }
-}
-
-void keyboard_init_keys() {
-  keyboard_read_config();
-
-  for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
-    for (uint8_t col = 0; col < MATRIX_COLS; col++) {
-      if (channels_by_row_col[row][col][0] != XXXX) {
-        init_key(channels_by_row_col[row][col][0], channels_by_row_col[row][col][1], row, col);
-      }
-    }
-  }
-}
-
-void add_to_hid_report(struct key *key, uint8_t layer) {
-  switch (key->layers[layer].type) {
-  case KEY_TYPE_MODIFIER:
-    modifiers |= key->layers[layer].value;
-    should_send_keyboard_report = 1;
-    break;
-
-  case KEY_TYPE_NORMAL:
-    for (uint8_t i = 0; i < 6; i++) {
-      if (keycodes[i] == 0) {
-        keycodes[i] = key->layers[layer].value;
-        // if the key is violently pressed, automatically add the MAJ modifier :)
-        // if (is_screaming) {
-        //   is_screaming = 0;
-        //   modifiers &= ~get_bitmask_for_modifier(HID_KEY_SHIFT_LEFT);
-        // } else if (i == 0 && key->state.velocity > keyboard_user_config.screaming_velocity_trigger) {
-        //   is_screaming = 1;
-        //   modifiers |= get_bitmask_for_modifier(HID_KEY_SHIFT_LEFT);
-        // }
-        should_send_keyboard_report = 1;
-        break;
-      }
-    }
-    break;
-
-  case KEY_TYPE_CONSUMER_CONTROL:
-    consumer_report = key->layers[layer].value;
-    should_send_consumer_report = 1;
-    break;
-  }
-}
-
-void remove_from_hid_report(struct key *key, uint8_t layer) {
-  switch (key->layers[layer].type) {
-  case KEY_TYPE_MODIFIER:
-    modifiers &= ~key->layers[layer].value;
-    should_send_keyboard_report = 1;
-    break;
-
-  case KEY_TYPE_NORMAL:
-    for (uint8_t i = 0; i < 6; i++) {
-      if (keycodes[i] == key->layers[layer].value) {
-        keycodes[i] = 0;
-        // if (is_screaming) {
-        //   is_screaming = 0;
-        //   modifiers &= ~get_bitmask_for_modifier(HID_KEY_SHIFT_LEFT);
-        // }
-        should_send_keyboard_report = 1;
-        break;
-      }
-    }
-    break;
-
-  case KEY_TYPE_CONSUMER_CONTROL:
-    consumer_report = 0;
-    should_send_consumer_report = 1;
-    break;
   }
 }
 
@@ -309,7 +197,7 @@ void update_key_actuation(struct key *key) {
       } else {
         key->actuation.status = STATUS_TRIGGERED;
         key_triggered = 1;
-        add_to_hid_report(key, _BASE_LAYER);
+        hid_press_key(key, _BASE_LAYER);
       }
       key->actuation.triggered_at = now;
     }
@@ -328,7 +216,7 @@ void update_key_actuation(struct key *key) {
       } else {
         key->actuation.status = STATUS_TRIGGERED;
         key_triggered = 1;
-        add_to_hid_report(key, _BASE_LAYER);
+        hid_press_key(key, _BASE_LAYER);
       }
       key->actuation.triggered_at = now;
     } else if (is_before_reset_offset) {
@@ -339,18 +227,21 @@ void update_key_actuation(struct key *key) {
   case STATUS_TAP:
     // if tap, can be reset
     key->actuation.status = STATUS_RESET;
-    remove_from_hid_report(key, _TAP_LAYER);
+    hid_release_key(key, _TAP_LAYER);
     break;
 
   case STATUS_TRIGGERED:
     // if triggered, can be reset
     if (is_before_reset_offset) {
       key->actuation.status = STATUS_RESET;
-      remove_from_hid_report(key, _BASE_LAYER);
+      hid_release_key(key, _BASE_LAYER);
     } else if (has_rapid_trigger && key->actuation.direction == GOING_UP && is_before_rapid_reset_offset) {
       key->actuation.status = STATUS_RAPID_TRIGGER_RESET;
-      remove_from_hid_report(key, _BASE_LAYER);
+      hid_release_key(key, _BASE_LAYER);
     }
+    break;
+
+  default:
     break;
   }
 }
@@ -361,4 +252,57 @@ void update_key(struct key *key) {
   }
 
   update_key_actuation(key);
+}
+
+void keyboard_init_keys() {
+  keyboard_read_config();
+
+  for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
+    for (uint8_t col = 0; col < MATRIX_COLS; col++) {
+      if (channels_by_row_col[row][col][0] != XXXX) {
+        init_key(channels_by_row_col[row][col][0], channels_by_row_col[row][col][1], row, col);
+      }
+    }
+  }
+}
+
+void keyboard_task() {
+  key_triggered = 0;
+
+  for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
+    keyboard_select_amux(amux_channel);
+
+    for (uint8_t adc_channel = 0; adc_channel < ADC_CHANNEL_COUNT; adc_channel++) {
+      if (keyboard_keys[adc_channel][amux_channel].is_enabled == 0) {
+        continue;
+      }
+      keyboard_select_adc(adc_channel);
+
+      update_key(&keyboard_keys[adc_channel][amux_channel]);
+
+      keyboard_close_adc();
+    }
+  }
+
+  // If a key might be tap and a non tap key has been triggered, then the might be tap key is a normal trigger
+  for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
+    for (uint8_t adc_channel = 0; adc_channel < ADC_CHANNEL_COUNT; adc_channel++) {
+      if (keyboard_keys[adc_channel][amux_channel].is_enabled == 0 || keyboard_keys[adc_channel][amux_channel].actuation.status != STATUS_MIGHT_BE_TAP) {
+        continue;
+      }
+
+      struct key *key = &keyboard_keys[adc_channel][amux_channel];
+      uint8_t is_before_reset_offset = key->state.distance_8bits < key->actuation.reset_offset;
+      uint8_t is_before_timeout = keyboard_get_time() - key->actuation.triggered_at <= keyboard_user_config.tap_timeout;
+
+      // if might be tap, can be tap or triggered
+      if (is_before_reset_offset && is_before_timeout) {
+        key->actuation.status = STATUS_TAP;
+        hid_press_key(key, _TAP_LAYER);
+      } else if (!is_before_timeout || key_triggered) {
+        key->actuation.status = STATUS_TRIGGERED;
+        hid_press_key(key, _BASE_LAYER);
+      }
+    }
+  }
 }

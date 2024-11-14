@@ -19,17 +19,6 @@ const vendorValues = {
   VENDOR_VALUE_SET: 0x02,
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function printHex(data: DataView) {
-  const bytes = []
-  for (let i = 0; i < data.byteLength; i++) {
-    const byte = data.getUint8(i).toString(16)
-    const missingZeroes = 4 - byte.length
-    bytes.push(new Array(missingZeroes).fill(0).join('') + byte)
-  }
-  console.log(bytes.join(' '))
-}
-
 // struct user_config {
 //   uint8_t trigger_offset;
 //   uint8_t reset_threshold;
@@ -60,15 +49,17 @@ function parseKeymaps(config: DataView, byteOffset: number) {
   return test
 }
 
-function parseUserConfig(config: DataView): UserConfig {
-  return {
-    triggerOffset: config.getUint8(0),
-    resetThreshold: config.getUint8(1),
-    rapidTriggerOffset: config.getUint8(2),
-    screamingVelocityTrigger: config.getUint8(3),
-    tapTimeout: config.getUint16(4, true),
-    keymaps: parseKeymaps(config, 6),
+function parseUserConfig(buffer: DataView): UserConfig {
+  const config = {
+    triggerOffset: buffer.getUint8(0),
+    resetThreshold: buffer.getUint8(1),
+    rapidTriggerOffset: buffer.getUint8(2),
+    screamingVelocityTrigger: buffer.getUint8(3),
+    tapTimeout: buffer.getUint16(4, true),
+    keymaps: parseKeymaps(buffer, 6),
   }
+
+  return config
 }
 
 function formatUserConfig(config: UserConfig): BufferSource {

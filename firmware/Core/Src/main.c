@@ -21,11 +21,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "DRV2605L.h"
 #include "config.h"
 #include "hid.h"
-#include "DRV2605L.h"
 #include "keyboard.h"
-#include <stdlib.h>
+#include <string.h>
 
 /* USER CODE END Includes */
 
@@ -56,8 +56,9 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE BEGIN PV */
 ADC_ChannelConfTypeDef ADC_channel_Config = {0};
 
-const uint32_t adc_channels[ADC_CHANNEL_COUNT] = {ADC_CHANNEL_3, ADC_CHANNEL_4, ADC_CHANNEL_5, ADC_CHANNEL_6, ADC_CHANNEL_7};
+extern struct user_config keyboard_user_config;
 
+const uint32_t adc_channels[ADC_CHANNEL_COUNT] = {ADC_CHANNEL_3, ADC_CHANNEL_4, ADC_CHANNEL_5, ADC_CHANNEL_6, ADC_CHANNEL_7};
 const uint32_t amux_select_pins[AMUX_SELECT_PINS_COUNT] = {GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14, GPIO_PIN_15};
 
 /* USER CODE END PV */
@@ -172,8 +173,6 @@ int main(void) {
   /* USER CODE BEGIN WHILE */
   while (1) {
     // MARK: Main loop
-    tud_task();
-
     keyboard_task();
 
     hid_task();
@@ -283,6 +282,7 @@ static void MX_ADC1_Init(void) {
   /* USER CODE END ADC1_Init 2 */
 }
 
+#if IS_DRV2605_ENABLED
 /**
  * @brief I2C1 Initialization Function
  * @param None
@@ -313,6 +313,7 @@ static void MX_I2C1_Init(void) {
 
   /* USER CODE END I2C1_Init 2 */
 }
+#endif
 
 /**
  * @brief USB_OTG_FS Initialization Function
@@ -384,7 +385,7 @@ void keyboard_read_config() {
 }
 
 uint8_t keyboard_write_config(uint8_t *buffer, uint16_t offset, uint16_t size) {
-  if (offset >= sizeof keyboard_user_config) {
+  if (offset >= sizeof(keyboard_user_config)) {
     return 0;
   }
 

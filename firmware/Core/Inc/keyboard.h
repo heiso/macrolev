@@ -1,7 +1,9 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
-#include "config.h"
 #ifndef __KEYBOARD_H
 #define __KEYBOARD_H
+
+#include "config.h"
+#include <stdint.h>
 
 #define CALIBRATION_CYCLES 20
 
@@ -94,16 +96,14 @@ struct user_config {
   uint16_t keymaps[LAYERS_COUNT][MATRIX_ROWS][MATRIX_COLS];
 };
 
-static struct key keyboard_keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT];
-struct user_config keyboard_user_config;
-static void keyboard_task();
-static void keyboard_init_keys();
-static void keyboard_read_config();
-static uint8_t keyboard_write_config(uint8_t *buffer, uint16_t offset, uint16_t size);
-static void keyboard_select_amux(uint8_t amux_channel);
-static void keyboard_select_adc(uint8_t adc_channel);
-static uint16_t keyboard_read_adc();
-static void keyboard_close_adc();
-static uint32_t keyboard_get_time();
+void keyboard_task();
+void keyboard_init_keys();
+extern void keyboard_read_config();
+extern uint8_t keyboard_write_config(uint8_t *buffer, uint16_t offset, uint16_t size);
+extern void keyboard_select_amux(uint8_t amux_channel);
+extern void keyboard_select_adc(uint8_t adc_channel);
+extern uint16_t keyboard_read_adc();
+extern void keyboard_close_adc();
+extern uint32_t keyboard_get_time();
 
 #endif /* __KEYBOARD_H */
