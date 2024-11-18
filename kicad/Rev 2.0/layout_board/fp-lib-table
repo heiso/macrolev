@@ -1,0 +1,5 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "JLCPCB")(type "KiCad")(uri "${KIPRJMOD}/libraries/JLCPCB")(options "")(descr ""))
+  (lib (name "SW_MX_Lekker")(type "KiCad")(uri "${KIPRJMOD}/libraries/SW_MX_Lekker")(options "")(descr ""))
+)

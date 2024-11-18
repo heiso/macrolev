@@ -18,10 +18,10 @@ I use the two prototypes shown above as my daily drivers for both coding and gam
 - [keyboard layout](http://www.keyboard-layout-editor.com/#/gists/9dc992fd631d9f29cc5bdf738b10b4e4)
 - [Onshape - Case](https://cad.onshape.com/documents/2af2025c576c4f084cb26625/w/9564bb1d9dfbd4b4af4294c8/e/e2406b8294380372b9116245)
 - [Onshape - Low profile MX keycaps](https://cad.onshape.com/documents/93ff700fd3fbb6e9cde6f6e3)
-- [Rev 1.0 Schema](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Frev-1.0%2Fkicad%2Fmacrolev.kicad_sch)
-- [Rev 1.0 Pcb](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Frev-1.0%2Fkicad%2Fmacrolev.kicad_pcb)
-- [WIP Rev 1.1 Schema](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2Fmacrolev.kicad_sch)
-- [WIP Rev 1.1 Pcb](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2Fmacrolev.kicad_pcb)
+- [Rev 1.0 Schema](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2FRev%25201.0%2Fmacrolev.kicad_sch)
+- [Rev 1.0 Pcb](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2FRev%25201.0%2Fmacrolev.kicad_pcb)
+- [WIP Rev 2.0 Schema](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2FRev%25202.0%2Flayout_board%2Flayout_board.kicad_sch)
+- [WIP Rev 2.0 Pcb](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2FRev%25202.0%2Flayout_board%2Flayout_board.kicad_pcb)
 - [Web Configurator](https://heiso.github.io/macrolev/)
 
 ## Misc
@@ -53,7 +53,9 @@ I use the two prototypes shown above as my daily drivers for both coding and gam
 - [QMK keyboard test](https://config.qmk.fm/#/test)
 - [Keyboard ghosting interactive demonstration](https://www.microsoft.com/applied-sciences/projects/anti-ghosting-demo)
 - [JLC2KiCad_lib](https://github.com/TousstNicolas/JLC2KiCad_lib)
+- [Kicad lib marbastlib](https://github.com/ebastler/marbastlib)
 - [Debug HardFault](https://interrupt.memfault.com/blog/cortex-m-hardfault-debug)
+- [ai03 Plate Generator](https://kbplate.ai03.com/)
 
 ### PCB reviews
 
