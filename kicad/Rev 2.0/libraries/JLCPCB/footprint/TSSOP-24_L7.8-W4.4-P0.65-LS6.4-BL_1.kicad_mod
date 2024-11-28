@@ -1,6 +1,7 @@
-(module "TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL_1" (layer F.Cu) (tedit 673B8AC2)
+(module "TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL_1" (layer F.Cu) (tedit 67487894)
   (descr "TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL_1 footprint")
-  (tags "TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL_1 footprint")
+  (tags "TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL_1 footprint C2861251")
+  (attr smd)
   (fp_text reference REF** (at 0 -4.780036) (layer F.SilkS)
     (effects (font (size 1 1) (thickness 0.15)))
   )
@@ -42,7 +43,7 @@
   (fp_text user REF** (at 0 6.780036) (layer F.Fab)
     (effects (font (size 1 1) (thickness 0.15)))
   )
-  (model /Users/heiso/Projects/heiso/macrolev/./kicad/layout_board/libraries/JLCPCB/packages3d/TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL_1.wrl
+  (model JLCPCB/footprint/packages3d/TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL_1.step
     (at (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 0))

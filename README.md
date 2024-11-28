@@ -52,10 +52,16 @@ I use the two prototypes shown above as my daily drivers for both coding and gam
 
 - [QMK keyboard test](https://config.qmk.fm/#/test)
 - [Keyboard ghosting interactive demonstration](https://www.microsoft.com/applied-sciences/projects/anti-ghosting-demo)
-- [JLC2KiCad_lib](https://github.com/TousstNicolas/JLC2KiCad_lib)
 - [Kicad lib marbastlib](https://github.com/ebastler/marbastlib)
 - [Debug HardFault](https://interrupt.memfault.com/blog/cortex-m-hardfault-debug)
 - [ai03 Plate Generator](https://kbplate.ai03.com/)
+- [JLC2KiCad_lib](https://github.com/TousstNicolas/JLC2KiCad_lib)
+
+Add footprints and symbols from jlcpcb with this cmd
+
+```bash
+JLC2KiCadLib <...LCSC refs> -dir JLCPCB -symbol_lib JLCPCB
+```
 
 ### PCB reviews
 

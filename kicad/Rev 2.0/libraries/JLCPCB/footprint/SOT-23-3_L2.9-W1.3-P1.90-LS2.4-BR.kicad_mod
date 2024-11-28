@@ -1,6 +1,7 @@
-(module "SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR" (layer F.Cu) (tedit 673B8A38)
+(module "SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR" (layer F.Cu) (tedit 67487892)
   (descr "SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR footprint")
-  (tags "SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR footprint")
+  (tags "SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR footprint C266230")
+  (attr smd)
   (fp_text reference REF** (at 0 -3.526213) (layer F.SilkS)
     (effects (font (size 1 1) (thickness 0.15)))
   )
@@ -20,8 +21,8 @@
   (fp_text user REF** (at 0 5.526213) (layer F.Fab)
     (effects (font (size 1 1) (thickness 0.15)))
   )
-  (model /Users/heiso/Projects/heiso/macrolev/./kicad/layout_board/libraries/JLCPCB/packages3d/SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR.wrl
-    (at (xyz 0 0 0))
+  (model JLCPCB/footprint/packages3d/SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR.step
+    (at (xyz -33.92 33.2 0))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 -180))
   )

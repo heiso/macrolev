@@ -1,7 +1,6 @@
 (fp_lib_table
   (version 7)
-  (lib (name "JLCPCB")(type "KiCad")(uri "${KIPRJMOD}/../libraries/JLCPCB")(options "")(descr ""))
+  (lib (name "JLCPCB")(type "KiCad")(uri "${KIPRJMOD}/../libraries/JLCPCB/footprint")(options "")(descr ""))
   (lib (name "SW_MX_Lekker")(type "KiCad")(uri "${KIPRJMOD}/../libraries/SW_MX_Lekker")(options "")(descr ""))
-  (lib (name "Custom")(type "KiCad")(uri "${KIPRJMOD}/../libraries/Custom")(options "")(descr ""))
   (lib (name "PCM_marbastlib-mx")(type "KiCad")(uri "${KIPRJMOD}/../libraries/marbastlib/footprints/marbastlib-mx.pretty")(options "")(descr ""))
 )
