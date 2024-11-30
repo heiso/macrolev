@@ -73,7 +73,7 @@ export function Logo({ className, ...props }: LogoProps) {
   return (
     <div
       ref={ref}
-      className={`px-4 cursor-pointer transition duration-75 select-none w-fit ${
+      className={`cursor-pointer transition duration-75 select-none w-fit ${
         bump ? 'scale-110' : ''
       } ${className ?? ''}`}
       onClick={() => setBump(true)}

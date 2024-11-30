@@ -1,7 +1,19 @@
-# Macrolev - custom analog keyboard
+<div align="center" >
+  <img src="assets/logo.svg" alt="Macrolev - Open Source Analog Keyboard" />
+  <br>
+  <br>
+  <br>
+  <div>
+    <img src="assets/keyboard-top.png" alt="keyboard - picture from above" />
+  </div>
+  <span>
+    <a href="assets/keyboard-bot.png">bottom picture</a> - <a href="assets/pcb-bot.png">pcb picture</a> - 
+  </span>
+  <br>
+  <br>
+</div>
 
-![keyboard - picture from above](assets/keyboard-top.png)  
-[bottom picture](assets/keyboard-bot.png) - [pcb picture](assets/pcb-bot.png)
+# Macrolev - Open Source Analog Keyboard
 
 I use the two prototypes shown above as my daily drivers for both coding and gaming. They work well, and the current state of the web configurator is sufficient for seamlessly switching between coding and gaming modes. The current layout of my prototypes is Mac ISO azerty (FR).
 

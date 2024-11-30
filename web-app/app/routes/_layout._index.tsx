@@ -6,15 +6,16 @@ import { Icon } from '../ui/icon.tsx'
 export default function Index() {
   return (
     <div className="h-full flex flex-col gap-12 text-center justify-center p-20 w-[80ch] mx-auto">
-      <div className="flex flex-row items-center justify-center">
+      <div className="flex flex-row items-center justify-center gap-16">
         <Logo />
-        <div className="text-center">
+        <div className="text-center flex flex-col gap-4">
           <h1 className="text-3xl font-light text-gray-100">
             <span className="font-bold">Macro</span>lev
           </h1>
 
-          <span className="text-lg font-semibold text-gray-400 transition hover:brightness-125">
-            Open Source Keyboard
+          <span className="text-lg font-light text-gray-400 transition hover:brightness-125 leading-tight">
+            Open Source <br />
+            Analog Keyboard
           </span>
         </div>
       </div>
