@@ -2498,16 +2498,6 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 304.8) (xy 168.91 304.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "67348540-5e12-43de-8059-419dd16e6e3d")
-	)
-	(wire
-		(pts
 			(xy 398.78 337.82) (xy 398.78 327.66)
 		)
 		(stroke
@@ -3575,6 +3565,16 @@
 			(type default)
 		)
 		(uuid "d0a166e3-9a95-441a-b19a-30e709b8d29f")
+	)
+	(wire
+		(pts
+			(xy 157.48 304.8) (xy 168.91 304.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d111c402-07e7-4a68-85f2-9b94cf0ca0a0")
 	)
 	(wire
 		(pts
@@ -7916,7 +7916,7 @@
 				)
 			)
 		)
-		(property "Footprint" "JLCPCB:TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL_1"
+		(property "Footprint" "Custom:(T_S)SOP-24_5.3x8.2mm_P0.65mm"
 			(at 443.23 316.23 0)
 			(effects
 				(font
@@ -7926,7 +7926,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.lcsc.com/datasheet/lcsc_datasheet_2410010330_Texas-Instruments-CD4067BPWR_C2861251.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/cd4067b.pdf?ts=1733023216324"
 			(at 440.944 305.943 0)
 			(effects
 				(font
@@ -9400,7 +9400,7 @@
 				)
 			)
 		)
-		(property "Footprint" "JLCPCB:TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL_1"
+		(property "Footprint" "Custom:(T_S)SOP-24_5.3x8.2mm_P0.65mm"
 			(at 367.03 316.23 0)
 			(effects
 				(font
@@ -9410,7 +9410,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.lcsc.com/datasheet/lcsc_datasheet_2410010330_Texas-Instruments-CD4067BPWR_C2861251.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/cd4067b.pdf?ts=1733023216324"
 			(at 364.744 305.943 0)
 			(effects
 				(font
@@ -11925,7 +11925,7 @@
 				)
 			)
 		)
-		(property "Footprint" "JLCPCB:TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL_1"
+		(property "Footprint" "Custom:(T_S)SOP-24_5.3x8.2mm_P0.65mm"
 			(at 137.16 316.23 0)
 			(effects
 				(font
@@ -11935,7 +11935,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.lcsc.com/datasheet/lcsc_datasheet_2410010330_Texas-Instruments-CD4067BPWR_C2861251.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/cd4067b.pdf?ts=1733023216324"
 			(at 134.874 305.943 0)
 			(effects
 				(font
@@ -17763,7 +17763,7 @@
 				)
 			)
 		)
-		(property "Footprint" "JLCPCB:TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL_1"
+		(property "Footprint" "Custom:(T_S)SOP-24_5.3x8.2mm_P0.65mm"
 			(at 213.36 316.23 0)
 			(effects
 				(font
@@ -17773,7 +17773,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.lcsc.com/datasheet/lcsc_datasheet_2410010330_Texas-Instruments-CD4067BPWR_C2861251.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/cd4067b.pdf?ts=1733023216324"
 			(at 211.074 305.943 0)
 			(effects
 				(font
@@ -19658,7 +19658,7 @@
 				)
 			)
 		)
-		(property "Footprint" "JLCPCB:TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL_1"
+		(property "Footprint" "Custom:(T_S)SOP-24_5.3x8.2mm_P0.65mm"
 			(at 289.56 316.23 0)
 			(effects
 				(font
@@ -19668,7 +19668,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.lcsc.com/datasheet/lcsc_datasheet_2410010330_Texas-Instruments-CD4067BPWR_C2861251.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/cd4067b.pdf?ts=1733023216324"
 			(at 287.274 305.943 0)
 			(effects
 				(font
