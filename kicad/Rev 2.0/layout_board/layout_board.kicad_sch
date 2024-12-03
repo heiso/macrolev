@@ -5801,7 +5801,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 471.17 120.65 0)
 			(effects
 				(font
@@ -6148,7 +6148,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 471.17 171.45 0)
 			(effects
 				(font
@@ -6231,7 +6231,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 204.47 120.65 0)
 			(effects
 				(font
@@ -6380,7 +6380,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 623.57 72.39 0)
 			(effects
 				(font
@@ -6661,7 +6661,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 166.37 120.65 0)
 			(effects
 				(font
@@ -7008,7 +7008,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 547.37 146.05 0)
 			(effects
 				(font
@@ -7223,7 +7223,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 318.77 120.65 0)
 			(effects
 				(font
@@ -7636,7 +7636,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 318.77 72.39 0)
 			(effects
 				(font
@@ -7916,7 +7916,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Custom:(T_S)SOP-24_5.3x8.2mm_P0.65mm"
+		(property "Footprint" "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm"
 			(at 443.23 316.23 0)
 			(effects
 				(font
@@ -8260,7 +8260,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 280.67 96.52 0)
 			(effects
 				(font
@@ -8409,7 +8409,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 128.27 146.05 0)
 			(effects
 				(font
@@ -8558,7 +8558,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 585.47 72.39 0)
 			(effects
 				(font
@@ -9037,7 +9037,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 394.97 72.39 0)
 			(effects
 				(font
@@ -9252,7 +9252,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 547.37 96.52 0)
 			(effects
 				(font
@@ -9400,7 +9400,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Custom:(T_S)SOP-24_5.3x8.2mm_P0.65mm"
+		(property "Footprint" "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm"
 			(at 367.03 316.23 0)
 			(effects
 				(font
@@ -9546,7 +9546,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 166.37 96.52 0)
 			(effects
 				(font
@@ -9761,7 +9761,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 471.17 146.05 0)
 			(effects
 				(font
@@ -10240,7 +10240,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 280.67 171.45 0)
 			(effects
 				(font
@@ -10587,7 +10587,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 471.17 96.52 0)
 			(effects
 				(font
@@ -11000,7 +11000,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 356.87 171.45 0)
 			(effects
 				(font
@@ -11149,7 +11149,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 394.97 120.65 0)
 			(effects
 				(font
@@ -11364,7 +11364,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 128.27 72.39 0)
 			(effects
 				(font
@@ -11843,7 +11843,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 623.57 96.52 0)
 			(effects
 				(font
@@ -11925,7 +11925,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Custom:(T_S)SOP-24_5.3x8.2mm_P0.65mm"
+		(property "Footprint" "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm"
 			(at 137.16 316.23 0)
 			(effects
 				(font
@@ -12269,7 +12269,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 471.17 72.39 0)
 			(effects
 				(font
@@ -12352,7 +12352,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 204.47 72.39 0)
 			(effects
 				(font
@@ -12435,7 +12435,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 509.27 120.65 0)
 			(effects
 				(font
@@ -12716,7 +12716,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 585.47 171.45 0)
 			(effects
 				(font
@@ -13195,7 +13195,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 166.37 72.39 0)
 			(effects
 				(font
@@ -13542,7 +13542,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 318.77 146.05 0)
 			(effects
 				(font
@@ -13691,7 +13691,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 204.47 96.52 0)
 			(effects
 				(font
@@ -13985,7 +13985,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 356.87 72.39 0)
 			(effects
 				(font
@@ -14147,7 +14147,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 90.17 120.65 0)
 			(effects
 				(font
@@ -14626,7 +14626,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 547.37 72.39 0)
 			(effects
 				(font
@@ -14973,7 +14973,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 623.57 171.45 0)
 			(effects
 				(font
@@ -15320,7 +15320,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 585.47 96.52 0)
 			(effects
 				(font
@@ -15403,7 +15403,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 280.67 120.65 0)
 			(effects
 				(font
@@ -15486,7 +15486,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 509.27 146.05 0)
 			(effects
 				(font
@@ -15701,7 +15701,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 585.47 120.65 0)
 			(effects
 				(font
@@ -15784,7 +15784,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 585.47 146.05 0)
 			(effects
 				(font
@@ -16276,7 +16276,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 433.07 146.05 0)
 			(effects
 				(font
@@ -16425,7 +16425,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 356.87 146.05 0)
 			(effects
 				(font
@@ -16772,7 +16772,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 90.17 96.52 0)
 			(effects
 				(font
@@ -16921,7 +16921,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 128.27 171.45 0)
 			(effects
 				(font
@@ -17202,7 +17202,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 509.27 96.52 0)
 			(effects
 				(font
@@ -17351,7 +17351,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 242.57 96.52 0)
 			(effects
 				(font
@@ -17763,7 +17763,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Custom:(T_S)SOP-24_5.3x8.2mm_P0.65mm"
+		(property "Footprint" "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm"
 			(at 213.36 316.23 0)
 			(effects
 				(font
@@ -18041,7 +18041,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 242.57 120.65 0)
 			(effects
 				(font
@@ -18256,7 +18256,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 90.17 72.39 0)
 			(effects
 				(font
@@ -18669,7 +18669,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 280.67 72.39 0)
 			(effects
 				(font
@@ -18818,7 +18818,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 356.87 96.52 0)
 			(effects
 				(font
@@ -18901,7 +18901,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 318.77 96.52 0)
 			(effects
 				(font
@@ -19050,7 +19050,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 547.37 120.65 0)
 			(effects
 				(font
@@ -19133,7 +19133,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 128.27 120.65 0)
 			(effects
 				(font
@@ -19427,7 +19427,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 166.37 146.05 0)
 			(effects
 				(font
@@ -19576,7 +19576,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 433.07 171.45 0)
 			(effects
 				(font
@@ -19658,7 +19658,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Custom:(T_S)SOP-24_5.3x8.2mm_P0.65mm"
+		(property "Footprint" "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm"
 			(at 289.56 316.23 0)
 			(effects
 				(font
@@ -19804,7 +19804,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 394.97 146.05 0)
 			(effects
 				(font
@@ -19953,7 +19953,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 547.37 171.45 0)
 			(effects
 				(font
@@ -20168,7 +20168,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 433.07 72.39 0)
 			(effects
 				(font
@@ -20383,7 +20383,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 356.87 120.65 0)
 			(effects
 				(font
@@ -20466,7 +20466,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 166.37 171.45 0)
 			(effects
 				(font
@@ -20615,7 +20615,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 509.27 72.39 0)
 			(effects
 				(font
@@ -20830,7 +20830,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 433.07 96.52 0)
 			(effects
 				(font
@@ -20913,7 +20913,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 394.97 96.52 0)
 			(effects
 				(font
@@ -21324,7 +21324,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 242.57 72.39 0)
 			(effects
 				(font
@@ -21605,7 +21605,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 433.07 120.65 0)
 			(effects
 				(font
@@ -21754,7 +21754,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 128.27 96.52 0)
 			(effects
 				(font
@@ -21837,7 +21837,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 280.67 146.05 0)
 			(effects
 				(font
@@ -21920,7 +21920,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 204.47 146.05 0)
 			(effects
 				(font
@@ -22003,7 +22003,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 242.57 146.05 0)
 			(effects
 				(font
@@ -22152,7 +22152,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JLCPCB:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 204.47 171.45 0)
 			(effects
 				(font

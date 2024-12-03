@@ -564,7 +564,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "release/",
+      "plot": "gerber/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",

@@ -118,7 +118,7 @@
 			(mirror no)
 			(drillshape 0)
 			(scaleselection 1)
-			(outputdirectory "release/")
+			(outputdirectory "gerber/")
 		)
 	)
 	(net 0 "")
