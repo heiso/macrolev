@@ -7,6 +7,7 @@
 extern uint8_t const desc_ms_os_20[];
 extern struct key keyboard_keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT];
 extern struct user_config keyboard_user_config;
+extern uint32_t keyboard_last_cycle_duration;
 
 static uint8_t should_send_consumer_report = 0;
 static uint8_t should_send_keyboard_report = 0;

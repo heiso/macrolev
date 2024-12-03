@@ -166,7 +166,11 @@ export default function Index() {
             <Button onClick={loadUserConfig}>Load Config</Button>
             <Button onClick={persistUserConfig}>Save Config</Button>
             <Button onClick={() => write('VENDOR_REQUEST_RESET_CONFIG')}>Reset Config</Button>
-            <Button onClick={async () => console.log(await read('VENDOR_REQUEST_CYCLE_DURATION'))}>
+            <Button
+              onClick={async () =>
+                console.log((await read('VENDOR_REQUEST_CYCLE_DURATION')).getInt32(0, true))
+              }
+            >
               Get cycle duration (in console)
             </Button>
             <Button onClick={() => write('VENDOR_REQUEST_DFU_MODE')}>DFU Mode</Button>

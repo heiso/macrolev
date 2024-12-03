@@ -116,8 +116,6 @@ export type Key = {
     filteredDistance: number // float int32_t ?
     velocity: number // int8_t
     filteredDistance8bits: number // uint8_t
-    lastUpdateStartedAt: number // uint32_t
-    lastUpdateEndedAt: number // uint32_t
   }
   actuation: {
     direction: (typeof actuationDirections)[number] // uint8_t
@@ -182,8 +180,6 @@ function parseKeys(data: DataView): Key[] {
           filteredDistance: getValue(data, 'float', false),
           velocity: getValue(data, 8, false),
           filteredDistance8bits: getValue(data, 8),
-          lastUpdateStartedAt: getValue(data, 32),
-          lastUpdateEndedAt: getValue(data, 32),
         },
         actuation: {
           direction: actuationDirections[getValue(data, 8)],

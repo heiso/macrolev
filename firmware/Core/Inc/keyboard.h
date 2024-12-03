@@ -18,8 +18,6 @@
 
 #define SPECIAL(X) (0b1000000000000000 | X)
 
-uint32_t keyboard_last_cycle_duration;
-
 struct __attribute__((__packed__)) calibration {
   uint16_t cycles_count;
   uint16_t idle_value;
@@ -38,8 +36,6 @@ struct __attribute__((__packed__)) state {
   float filtered_distance;
   int8_t velocity;
   uint8_t filtered_distance_8bits;
-  uint32_t last_update_started_at;
-  uint32_t last_update_ended_at;
 };
 
 enum actuation_status {
