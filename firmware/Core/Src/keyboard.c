@@ -6,6 +6,7 @@
 
 struct key keyboard_keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT] = {0};
 struct user_config keyboard_user_config = {0};
+uint32_t keyboard_last_cycle_duration = 0;
 
 static uint8_t key_triggered = 0;
 
@@ -81,6 +82,8 @@ void init_key(uint8_t adc_channel, uint8_t amux_channel, uint8_t row, uint8_t co
 uint8_t update_key_state(struct key *key) {
   struct state state;
 
+  state.last_update_started_at = keyboard_get_time();
+
   // Get a reading
   state.value = keyboard_read_adc();
 
@@ -153,6 +156,7 @@ uint8_t update_key_state(struct key *key) {
     }
   }
 
+  state.last_update_ended_at = keyboard_get_time();
   key->state = state;
   return 1;
 }
@@ -267,6 +271,7 @@ void keyboard_init_keys() {
 }
 
 void keyboard_task() {
+  uint32_t started_at = keyboard_get_time();
   key_triggered = 0;
 
   for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
@@ -305,4 +310,6 @@ void keyboard_task() {
       }
     }
   }
+
+  keyboard_last_cycle_duration = keyboard_get_time() - started_at;
 }

@@ -11,6 +11,7 @@ const vendorRequests = {
   VENDOR_REQUEST_CONFIG: 0xff,
   VENDOR_REQUEST_RESET_CONFIG: 0xfd,
   VENDOR_REQUEST_DFU_MODE: 0xfc,
+  VENDOR_REQUEST_CYCLE_DURATION: 0xfb,
 }
 
 const vendorValues = {
@@ -115,6 +116,8 @@ export type Key = {
     filteredDistance: number // float int32_t ?
     velocity: number // int8_t
     filteredDistance8bits: number // uint8_t
+    lastUpdateStartedAt: number // uint32_t
+    lastUpdateEndedAt: number // uint32_t
   }
   actuation: {
     direction: (typeof actuationDirections)[number] // uint8_t
@@ -179,6 +182,8 @@ function parseKeys(data: DataView): Key[] {
           filteredDistance: getValue(data, 'float', false),
           velocity: getValue(data, 8, false),
           filteredDistance8bits: getValue(data, 8),
+          lastUpdateStartedAt: getValue(data, 32),
+          lastUpdateEndedAt: getValue(data, 32),
         },
         actuation: {
           direction: actuationDirections[getValue(data, 8)],

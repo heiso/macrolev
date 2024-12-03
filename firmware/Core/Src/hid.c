@@ -263,6 +263,30 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
       }
     }
 
+    case VENDOR_REQUEST_CYCLE_DURATION: {
+      switch (request->wValue) {
+      case VENDOR_VALUE_GET_LENGTH: {
+        if (stage == CONTROL_STAGE_SETUP) {
+          uint16_t size = sizeof(keyboard_last_cycle_duration);
+          return tud_control_xfer(rhport, request, &size, request->wLength);
+        }
+
+        break;
+      }
+
+      case VENDOR_VALUE_GET: {
+        if (stage == CONTROL_STAGE_SETUP) {
+          return tud_control_xfer(rhport, request, &keyboard_last_cycle_duration, request->wLength);
+        }
+
+        break;
+      }
+
+      default:
+        break;
+      }
+    }
+
     case VENDOR_REQUEST_WEBUSB: {
       if (stage == CONTROL_STAGE_SETUP) {
         return tud_control_status(rhport, request);
