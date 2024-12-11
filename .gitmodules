@@ -1,3 +1,9 @@
-[submodule "firmware/tinyusb"]
-	path = firmware/tinyusb
+[submodule "firmware/stm32f4xx/tinyusb"]
+	path = firmware/stm32f4xx/tinyusb
+	url = git@github.com:hathach/tinyusb.git
+[submodule "firmware/esp32s3/esp-idf"]
+	path = firmware/esp32s3/esp-idf
+	url = git@github.com:espressif/esp-idf.git
+[submodule "firmware/common/tinyusb"]
+	path = firmware/common/tinyusb
 	url = git@github.com:hathach/tinyusb.git

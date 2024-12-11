@@ -1,0 +1,18 @@
+{
+  "configurations": [
+    {
+      "name": "Firmware",
+      "includePath": [
+        "${workspaceFolder}/Core/Inc",
+
+        "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc/**",
+        "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+        "${workspaceFolder}/Drivers/CMSIS/Include",
+
+        "${workspaceFolder}/tinyusb/src/**"
+      ],
+      "defines": ["USE_HAL_DRIVER", "STM32F411xE"]
+    }
+  ],
+  "version": 4
+}

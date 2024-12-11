@@ -26,20 +26,6 @@
         "enabled": true,
         "samplesPerSecond": 4
       }
-    },
-    {
-      "name": "Cortex Debug (no livewatch)",
-      "cwd": "${workspaceRoot}/firmware",
-      "executable": "${workspaceRoot}/firmware/build/${workspaceFolderBasename}.elf",
-      "request": "launch",
-      "type": "cortex-debug",
-      "servertype": "stlink",
-      "preLaunchTask": "flash",
-      "showDevDebugOutput": "raw",
-      "svdFile": "${workspaceRoot}/firmware/debug-files/STM32F411.svd",
-      "liveWatch": {
-        "enabled": false
-      }
     }
   ]
 }

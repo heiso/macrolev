@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "name": "Firmware",
+      "includePath": [
+        "${workspaceFolder}/main/**",
+
+        "~/esp/esp-idf/components/**",
+
+        // "${workspaceFolder}/../common/src/**",
+
+        "${workspaceFolder}/../common/tinyusb/src/**"
+      ],
+    }
+  ],
+  "version": 4
+}
