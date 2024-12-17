@@ -25,6 +25,19 @@ I use the two prototypes shown above as my daily drivers for both coding and gam
 - **Tap and Hold Functionality:** Each key can be assigned two functions. A tap function for quick presses and a hold function for longer presses. This is ideal for combining shortcuts or creating multi-functional keys, such as assigning the right Shift key to act as an arrow up when tapped.
 - **Web-Based Configurator:** Allows customization of key sensitivity and rapid trigger settings, with future updates planned to enable key mapping and expanded functionality. (see [screenshot](assets/web-configurator-screenshot.png))
 
+## Todos
+
+This is still a work in progress, the firt revision is working flawlessly but it is not that configurable yet. Here is some of the things I'm working on right now
+
+- [x] PCB Rev 2.0
+- [ ] Explore other MCUs
+  - [ ] esp32-s3 (in progress)
+  - [ ] nRF52840
+  - [ ] RP2354 ?
+- [ ] Add Bluetooth
+- [ ] Configure layout and key mapping from the web interface
+- [ ] Improve performances
+
 ## Links
 
 - [keyboard layout](http://www.keyboard-layout-editor.com/#/gists/9dc992fd631d9f29cc5bdf738b10b4e4)
