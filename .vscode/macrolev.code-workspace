@@ -33,7 +33,18 @@
       "gpio.h": "c",
       "drv2605l.h": "c",
       "main.h": "c",
-      "adc_oneshot.h": "c"
+      "adc_oneshot.h": "c",
+      "__bit_reference": "c",
+      "__node_handle": "c",
+      "bitset": "c",
+      "deque": "c",
+      "limits": "c",
+      "optional": "c",
+      "ratio": "c",
+      "regex": "c",
+      "scoped_allocator": "c",
+      "tuple": "c",
+      "vector": "c"
     }
   }
 }

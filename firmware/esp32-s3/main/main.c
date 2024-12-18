@@ -130,14 +130,58 @@ void gpio_init() {
 }
 
 void app_main(void) {
+  gpio_init();
   adc_init();
   keyboard_init_keys();
+  hid_init();
+  // vTaskDelay(pdMS_TO_TICKS(1000));
+  // gpio_reset_pin(GPIO_SELECT_0);
+  // gpio_set_direction(GPIO_SELECT_0, GPIO_MODE_OUTPUT);
+  // while (1) {
+  //   gpio_set_level(GPIO_SELECT_0, 1);
+  //   vTaskDelay(pdMS_TO_TICKS(100));
+  // }
 
   while (1) {
     keyboard_task();
-    // hid_task();
+    hid_task();
+
+    // for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
+    //   for (uint8_t i = 0; i < AMUX_SELECT_PINS_COUNT; i++) {
+    //     gpio_set_level(amux_select_pins[i], (amux_channel >> i) & 1);
+    //   }
+
+    //   for (uint8_t adc_channel = 0; adc_channel < ADC_CHANNEL_COUNT; adc_channel++) {
+    //     int raw_value = 0;
+    //     adc_oneshot_read(adc_handle, adc_channels[adc_channel], &raw_value);
+    //   }
+    // }
+
     vTaskDelay(pdMS_TO_TICKS(10));
   }
+}
+
+void keyboard_select_adc(uint8_t _adc_channel) {
+  adc_channel = _adc_channel;
+}
+
+void keyboard_select_amux(uint8_t amux_channel) {
+  for (uint8_t i = 0; i < AMUX_SELECT_PINS_COUNT; i++) {
+    gpio_set_level(amux_select_pins[i], (amux_channel >> i) & 1);
+  }
+}
+
+uint16_t keyboard_read_adc() {
+  int raw_value = 0;
+  adc_oneshot_read(adc_handle, adc_channels[adc_channel], &raw_value);
+  return raw_value;
+}
+
+void keyboard_close_adc() {
+}
+
+uint32_t keyboard_get_time() {
+  return esp_timer_get_time();
 }
 
 void keyboard_read_config() {
@@ -146,28 +190,4 @@ void keyboard_read_config() {
 
 uint8_t keyboard_write_config(uint8_t *buffer, uint16_t offset, uint16_t size) {
   return 1;
-}
-
-void keyboard_select_amux(uint8_t amux_channel) {
-  // TODO: set GPIOs at the same time using bitmap on register
-  for (uint8_t i = 0; i < AMUX_SELECT_PINS_COUNT; i++) {
-    gpio_set_level(amux_select_pins[i], (amux_channel >> i) & 1);
-  }
-}
-
-void keyboard_select_adc(uint8_t _adc_channel) {
-  adc_channel = _adc_channel;
-}
-
-uint16_t keyboard_read_adc() {
-  static int out_raw;
-  ESP_ERROR_CHECK(adc_oneshot_read(adc_handle, adc_channel, &out_raw));
-  return out_raw;
-}
-
-void keyboard_close_adc() {
-}
-
-uint32_t keyboard_get_time() {
-  return esp_timer_get_time();
 }

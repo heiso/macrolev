@@ -1,8 +1,13 @@
-#include "tusb.h"
+#include "class/hid/hid_device.h"
+#include "esp_log.h"
+#include "tinyusb.h"
 #include "usb_descriptors.h"
 #include <hid.h>
 #include <keyboard.h>
 #include <stdlib.h>
+
+
+// const static char *TAG = "MACROLEV";
 
 extern uint8_t const desc_ms_os_20[];
 extern struct key keyboard_keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT];
@@ -74,6 +79,8 @@ void hid_press_key(struct key *key, uint8_t layer) {
   default:
     break;
   }
+
+  // ESP_LOGI(TAG, "status: %x - Pressed", key->actuation.status);
 }
 
 void hid_release_key(struct key *key, uint8_t layer) {
@@ -105,6 +112,8 @@ void hid_release_key(struct key *key, uint8_t layer) {
   default:
     break;
   }
+
+  // ESP_LOGI(TAG, "status: %x - Released", key->actuation.status);
 }
 
 // Invoked when received SET_PROTOCOL request

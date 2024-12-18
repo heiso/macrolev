@@ -5,13 +5,11 @@
 #include <class/hid/hid.h>
 #include <stdlib.h>
 
-const static char *TAG = "MACROLEV";
+// const static char *TAG = "MACROLEV";
 
 struct key keyboard_keys[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT] = {0};
 
 struct user_config keyboard_user_config = {0};
-
-uint32_t keyboard_last_cycle_duration = 0;
 
 static uint8_t key_triggered = 0;
 
@@ -89,9 +87,6 @@ uint8_t update_key_state(struct key *key) {
 
   // Get a reading
   state.value = keyboard_read_adc();
-  if (key->row == 0 && key->column == 0) {
-    ESP_LOGI(TAG, "Row: %d, Col: %d, Value: %x", key->row, key->column, state.value);
-  }
 
   if (key->calibration.cycles_count < CALIBRATION_CYCLES) {
     // Calibrate idle value
@@ -264,7 +259,7 @@ void update_key(struct key *key) {
 }
 
 void keyboard_init_keys() {
-  // keyboard_read_config();
+  keyboard_read_config();
 
   for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
     for (uint8_t col = 0; col < MATRIX_COLS; col++) {
@@ -276,7 +271,6 @@ void keyboard_init_keys() {
 }
 
 void keyboard_task() {
-  uint32_t started_at = keyboard_get_time();
   key_triggered = 0;
 
   for (uint8_t amux_channel = 0; amux_channel < AMUX_CHANNEL_COUNT; amux_channel++) {
@@ -315,6 +309,4 @@ void keyboard_task() {
       }
     }
   }
-
-  keyboard_last_cycle_duration = keyboard_get_time() - started_at;
 }
