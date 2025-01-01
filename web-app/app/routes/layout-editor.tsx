@@ -11,8 +11,8 @@ import KLElayout from '../layout.json'
 
 type Key = {
   id: number
-  amux?: number
-  amuxSelect?: number
+  adcChannel?: number
+  amuxChannel?: number
   width: number
   height: number
   x: number
@@ -263,7 +263,9 @@ function selectRangeOfKeys(state: State, clickedKey: Key): State {
 function addToKeySelection(state: State, clickedKey: Key): State {
   return addToHistory({
     ...state,
-    selectedKeys: new Set<Key['id']>([...state.selectedKeys, clickedKey.id]),
+    selectedKeys: state.selectedKeys.has(clickedKey.id)
+      ? new Set<Key['id']>([...state.selectedKeys].filter((id) => clickedKey.id !== id))
+      : new Set<Key['id']>([...state.selectedKeys, clickedKey.id]),
   })
 }
 
@@ -465,145 +467,177 @@ export default function Index() {
   return (
     <div className="p-4 sm:p-8 flex flex-col items-center gap-8">
       <div className="flex w-full justify-center" ref={containerRef}>
-        <div className="bg-slate-700 rounded-lg p-4">
-          <div
-            className="relative transition-all duration-150"
-            style={{ height: height * scaleFactor, width: width * scaleFactor }}
-            ref={keyboardRef}
-          >
-            {state.layout.length === 0 && (
-              <div className="w-full h-full" style={{ padding: (1 * scaleFactor) / 17 }}>
-                <AddKey
-                  style={{ borderRadius: scaleFactor * 0.15 }}
-                  onClick={() => setState((state) => addFirstKey(state))}
-                />
+        <div className="flex flex-col w-fit gap-4">
+          <div className="bg-slate-700 rounded-lg p-4">
+            <div
+              className="relative transition-all duration-150"
+              style={{ height: height * scaleFactor, width: width * scaleFactor }}
+              ref={keyboardRef}
+            >
+              {state.layout.length === 0 && (
+                <div className="w-full h-full" style={{ padding: (1 * scaleFactor) / 17 }}>
+                  <AddKey
+                    style={{ borderRadius: scaleFactor * 0.15 }}
+                    onClick={() => setState((state) => addFirstKey(state))}
+                  />
+                </div>
+              )}
+              {state.layout.map((key) => (
+                <div
+                  key={key.id}
+                  className={`group absolute transition-all duration-150 hover:z-40 ${state.selectedKeys.has(key.id) ? 'z-40' : ''}`}
+                  style={{
+                    width: key.width * scaleFactor,
+                    height: key.height * scaleFactor,
+                    top: key.y * scaleFactor,
+                    left: key.x * scaleFactor,
+                    padding: (1 * scaleFactor) / 17,
+                  }}
+                >
+                  {canAdd(state, key, 'top') && (
+                    <div
+                      className="hidden z-20 group-hover:flex absolute w-full h-full -top-full left-0 justify-center items-end"
+                      style={{ padding: (1 * scaleFactor) / 17 }}
+                    >
+                      <AddKey
+                        onClick={() => setState((state) => addKey(state, key, 'top'))}
+                        style={{ borderRadius: scaleFactor * 0.15 }}
+                      />
+                    </div>
+                  )}
+
+                  {canAdd(state, key, 'right') && (
+                    <div
+                      className="hidden z-20 group-hover:flex absolute w-full h-full -right-full top-0 justify-start items-center"
+                      style={{ padding: (1 * scaleFactor) / 17 }}
+                    >
+                      <AddKey
+                        onClick={() => setState((state) => addKey(state, key, 'right'))}
+                        style={{ borderRadius: scaleFactor * 0.15 }}
+                      />
+                    </div>
+                  )}
+
+                  {canAdd(state, key, 'bottom') && (
+                    <div
+                      className="hidden z-20 group-hover:flex absolute w-full h-full -bottom-full left-0 justify-center items-start"
+                      style={{ padding: (1 * scaleFactor) / 17 }}
+                    >
+                      <AddKey
+                        onClick={() => setState((state) => addKey(state, key, 'bottom'))}
+                        style={{ borderRadius: scaleFactor * 0.15 }}
+                      />
+                    </div>
+                  )}
+
+                  {canAdd(state, key, 'left') && (
+                    <div
+                      className="hidden z-20 group-hover:flex absolute w-full h-full -left-full top-0 justify-end items-center"
+                      style={{ padding: (1 * scaleFactor) / 17 }}
+                    >
+                      <AddKey
+                        onClick={() => setState((state) => addKey(state, key, 'left'))}
+                        style={{ borderRadius: scaleFactor * 0.15 }}
+                      />
+                    </div>
+                  )}
+
+                  <div
+                    className={`flex w-full h-full rounded-sm sm:rounded-md group-hover:border-pink-500 group-hover:border-2 overflow-hidden items-center justify-center cursor-pointer select-none transition-all active:scale-110 ${state.selectedKeys.has(key.id) ? 'bg-pink-500' : 'bg-slate-500'}`}
+                    style={{ borderRadius: scaleFactor * 0.15 }}
+                    onClick={() =>
+                      setState((state) => {
+                        if (isCmdPressed) {
+                          return addToKeySelection(state, key)
+                        }
+                        if (isShiftPressed) {
+                          return selectRangeOfKeys(state, key)
+                        }
+                        return selectKey(state, key)
+                      })
+                    }
+                  >
+                    {key.width > 1 && (
+                      <div
+                        className={`${state.selectedKeys.has(key.id) ? 'text-pink-100' : 'text-slate-300'}`}
+                      >
+                        {key.width}u
+                      </div>
+                    )}
+                  </div>
+
+                  <div
+                    className="hidden group-hover:flex absolute z-40 hover:bg-pink-400 w-6 h-4 bg-pink-500 cursor-pointer -top-3 text-xs left-1/2 -ml-3 rounded-t-lg select-none justify-center items-center active:scale-110"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      setState((state) => resizeKey(state, key, 'y', true))
+                    }}
+                  >
+                    <div className="leading-none font-semibold">-</div>
+                  </div>
+
+                  <div
+                    className="hidden group-hover:flex absolute z-40 hover:bg-pink-400 w-4 h-6 bg-pink-500 cursor-pointer -right-3 text-xs top-1/2 -mt-3 rounded-r-lg select-none justify-center items-center active:scale-110"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      setState((state) => resizeKey(state, key, 'x'))
+                    }}
+                  >
+                    <div className="leading-none font-semibold">+</div>
+                  </div>
+
+                  <div
+                    className="hidden group-hover:flex absolute z-40 hover:bg-pink-400 w-6 h-4 bg-pink-500 cursor-pointer -bottom-3 text-xs left-1/2 -ml-3 rounded-b-lg select-none justify-center items-center active:scale-110"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      setState((state) => resizeKey(state, key, 'y'))
+                    }}
+                  >
+                    <div className="leading-none font-semibold">+</div>
+                  </div>
+
+                  <div
+                    className="hidden group-hover:flex absolute z-40 hover:bg-pink-400 w-4 h-6 bg-pink-500 cursor-pointer -left-3 text-xs top-1/2 -mt-3 rounded-l-lg select-none justify-center items-center activer"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      setState((state) => resizeKey(state, key, 'x', true))
+                    }}
+                  >
+                    <div className="leading-none font-semibold">-</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex text-slate-400 text-xs uppercase gap-4 w-full">
+            <div>
+              {state.layout.length} key{state.layout.length > 1 ? 's' : ''}
+            </div>
+
+            {state.selectedKeys.size > 0 && (
+              <div>
+                {state.selectedKeys.size} key{state.selectedKeys.size > 1 ? 's' : ''} selected
               </div>
             )}
-            {state.layout.map((key) => (
-              <div
-                key={key.id}
-                className={`group absolute transition-all duration-150 hover:z-40 ${state.selectedKeys.has(key.id) ? 'z-40' : ''}`}
-                style={{
-                  width: key.width * scaleFactor,
-                  height: key.height * scaleFactor,
-                  top: key.y * scaleFactor,
-                  left: key.x * scaleFactor,
-                  padding: (1 * scaleFactor) / 17,
-                }}
-              >
-                {canAdd(state, key, 'top') && (
-                  <div
-                    className="hidden z-20 group-hover:flex absolute w-full h-full -top-full left-0 justify-center items-end"
-                    style={{ padding: (1 * scaleFactor) / 17 }}
-                  >
-                    <AddKey
-                      onClick={() => setState((state) => addKey(state, key, 'top'))}
-                      style={{ borderRadius: scaleFactor * 0.15 }}
-                    />
-                  </div>
-                )}
 
-                {canAdd(state, key, 'right') && (
-                  <div
-                    className="hidden z-20 group-hover:flex absolute w-full h-full -right-full top-0 justify-start items-center"
-                    style={{ padding: (1 * scaleFactor) / 17 }}
-                  >
-                    <AddKey
-                      onClick={() => setState((state) => addKey(state, key, 'right'))}
-                      style={{ borderRadius: scaleFactor * 0.15 }}
-                    />
-                  </div>
-                )}
+            <div>
+              {Math.ceil(state.layout.length / 16)} analog demutiplexer
+              {Math.ceil(state.layout.length / 16) > 1 ? 's' : ''}
+            </div>
 
-                {canAdd(state, key, 'bottom') && (
-                  <div
-                    className="hidden z-20 group-hover:flex absolute w-full h-full -bottom-full left-0 justify-center items-start"
-                    style={{ padding: (1 * scaleFactor) / 17 }}
-                  >
-                    <AddKey
-                      onClick={() => setState((state) => addKey(state, key, 'bottom'))}
-                      style={{ borderRadius: scaleFactor * 0.15 }}
-                    />
-                  </div>
-                )}
-
-                {canAdd(state, key, 'left') && (
-                  <div
-                    className="hidden z-20 group-hover:flex absolute w-full h-full -left-full top-0 justify-end items-center"
-                    style={{ padding: (1 * scaleFactor) / 17 }}
-                  >
-                    <AddKey
-                      onClick={() => setState((state) => addKey(state, key, 'left'))}
-                      style={{ borderRadius: scaleFactor * 0.15 }}
-                    />
-                  </div>
-                )}
-
-                <div
-                  className={`flex w-full h-full rounded-sm sm:rounded-md group-hover:border-2 group-hover:border-pink-500 overflow-hidden items-center justify-center cursor-pointer select-none transition-all active:scale-110 ${state.selectedKeys.has(key.id) ? 'bg-pink-500' : 'bg-slate-500'}`}
-                  style={{ borderRadius: scaleFactor * 0.15 }}
-                  onClick={() =>
-                    setState((state) => {
-                      if (isCmdPressed) {
-                        return addToKeySelection(state, key)
-                      }
-                      if (isShiftPressed) {
-                        return selectRangeOfKeys(state, key)
-                      }
-                      return selectKey(state, key)
-                    })
-                  }
+            {state.layout.length > 0 && (
+              <div>
+                <span
+                  className="cursor-pointer hover:text-pink-400 active:text-pink-500"
+                  onClick={() => navigator.clipboard.writeText(JSON.stringify(state.layout))}
                 >
-                  {key.width > 1 && <div className="text-slate-300">{key.width}u</div>}
-                </div>
-
-                <div
-                  className="hidden group-hover:flex absolute z-40 hover:bg-pink-400 w-6 h-4 bg-pink-500 cursor-pointer -top-3 text-xs left-1/2 -ml-3 rounded-t-lg select-none justify-center items-center active:scale-110"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    setState((state) => resizeKey(state, key, 'y', true))
-                  }}
-                >
-                  <div className="leading-none font-semibold">-</div>
-                </div>
-
-                <div
-                  className="hidden group-hover:flex absolute z-40 hover:bg-pink-400 w-4 h-6 bg-pink-500 cursor-pointer -right-3 text-xs top-1/2 -mt-3 rounded-r-lg select-none justify-center items-center active:scale-110"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    setState((state) => resizeKey(state, key, 'x'))
-                  }}
-                >
-                  <div className="leading-none font-semibold">+</div>
-                </div>
-
-                <div
-                  className="hidden group-hover:flex absolute z-40 hover:bg-pink-400 w-6 h-4 bg-pink-500 cursor-pointer -bottom-3 text-xs left-1/2 -ml-3 rounded-b-lg select-none justify-center items-center active:scale-110"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    setState((state) => resizeKey(state, key, 'y'))
-                  }}
-                >
-                  <div className="leading-none font-semibold">+</div>
-                </div>
-
-                <div
-                  className="hidden group-hover:flex absolute z-40 hover:bg-pink-400 w-4 h-6 bg-pink-500 cursor-pointer -left-3 text-xs top-1/2 -mt-3 rounded-l-lg select-none justify-center items-center activer"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    setState((state) => resizeKey(state, key, 'x', true))
-                  }}
-                >
-                  <div className="leading-none font-semibold">-</div>
-                </div>
+                  Copy json to clipboard
+                </span>
               </div>
-            ))}
+            )}
           </div>
         </div>
-      </div>
-
-      <div className="flex text-slate-400">
-        {state.selectedKeys.size > 0 && <div>{state.selectedKeys.size} keys selected</div>}
       </div>
     </div>
   )
