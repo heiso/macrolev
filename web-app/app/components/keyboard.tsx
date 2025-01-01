@@ -1,156 +1,129 @@
-import { useEffect, useMemo, useState } from 'react'
-import layout from '../parsed-layout.json'
-import { type Key } from '../useDevice'
+import { useEffect, useRef, useState } from 'react'
+import { generatePath, Link } from 'react-router'
+import layout from '../layout.json'
+import { paths } from '../routes'
+import { Status } from '../useDevice'
 
-export const visualizationModes = ['NORMAL', 'DISTANCE_HEATMAP', 'IDLE_HEATMAP'] as const
-export type VisualizationMode = (typeof visualizationModes)[number]
-
-type CalibrationRange = {
-  idleValue: {
-    min: number
-    max: number
-  }
-  maxDistance: {
-    min: number
-    max: number
-  }
+type KLEKeyConfig = {
+  w: number
+  h: number
 }
 
-const heatmapColorsStyles = [
-  'bg-slate-300',
-  'bg-slate-400',
-  'bg-slate-500',
-  'bg-slate-600',
-  'bg-slate-700',
-]
-function getColor(min: number, max: number, value?: number) {
-  if (!value) return 'bg-slate-500'
+const defaultKLEKeyConfig: KLEKeyConfig = { w: 1, h: 1 }
 
-  const index = Math.floor(((value - min) * (heatmapColorsStyles.length - 1)) / (max - min))
-  return heatmapColorsStyles[index] || 'bg-slate-500'
-}
+const width = layout
+  .filter((item) => Array.isArray(item))
+  .reduce((acc, row) => {
+    let lastW = defaultKLEKeyConfig.w
+
+    return Math.max(
+      acc,
+      row.reduce((width, key) => {
+        if (typeof key === 'string') {
+          width = width + lastW
+          lastW = defaultKLEKeyConfig.w
+        } else {
+          if (key.x) {
+            width = width + key.x
+          }
+          if (key.w) {
+            lastW = key.w
+          }
+        }
+        return width
+      }, 0),
+    )
+  }, 0)
 
 type KeyboardProps = {
-  keys: Key[]
+  keyMatrix?: ({
+    distance: number
+    status: Status
+  } | null)[][]
+  selectedKey?: {
+    row: number
+    column: number
+  }
 }
-export function Keyboard({ keys }: KeyboardProps) {
-  const width = useMemo(() => layout.reduce((acc, key) => Math.max(acc, key.x + key.w), 0), [])
-  const height = useMemo(() => layout.reduce((acc, key) => Math.max(acc, key.y + key.h), 0), [])
-  const [calibrationRange, setCalibrationRange] = useState<CalibrationRange>({
-    idleValue: { min: Infinity, max: 0 },
-    maxDistance: { min: Infinity, max: 0 },
-  })
+export function Keyboard({ keyMatrix, selectedKey }: KeyboardProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [multiplier, setMultiplier] = useState(0)
 
   useEffect(() => {
-    const calibrations = keys.map((key) => key.calibration)
-    if (calibrations.length) {
-      setCalibrationRange({
-        idleValue: {
-          min: calibrations.reduce(
-            (acc, calibration) =>
-              calibration.idleValue !== 0 ? Math.min(acc, calibration.idleValue) : acc,
-            Infinity,
-          ),
-          max: calibrations.reduce((acc, calibration) => Math.max(acc, calibration.idleValue), 0),
-        },
-        maxDistance: {
-          min: calibrations.reduce(
-            (acc, calibration) =>
-              calibration.maxDistance !== 0 ? Math.min(acc, calibration.maxDistance) : acc,
-            Infinity,
-          ),
-          max: calibrations.reduce((acc, calibration) => Math.max(acc, calibration.maxDistance), 0),
-        },
-      })
+    function updateMultiplier() {
+      if (containerRef.current) {
+        setMultiplier(containerRef.current.getBoundingClientRect().width / width)
+      }
     }
-  }, [keys])
+    window.addEventListener('resize', updateMultiplier)
+    updateMultiplier()
+    return () => window.removeEventListener('resize', updateMultiplier)
+  }, [])
+
+  let rowIndex = 0
 
   return (
-    <div className={`relative w-full text-sm`} style={{ aspectRatio: `${width}/${height}` }}>
-      {layout.map((keyCoord) => {
-        const index = `${keyCoord.row}-${keyCoord.col}`
-        const key = keys.find(({ row, column }) => keyCoord.row === row && keyCoord.col === column)
-        return (
-          <div
-            key={index}
-            className={`absolute p-0.5`}
-            style={{
-              top: `${keyCoord.y * (100 / height)}%`,
-              left: `${keyCoord.x * (100 / width)}%`,
-              width: `${keyCoord.w * (100 / width)}%`,
-              height: `${keyCoord.h * (100 / height)}%`,
-            }}
-          >
-            <Key
-              keyItem={key}
-              legends={keyCoord.ref.split(' ')}
-              mode="IDLE_HEATMAP"
-              calibrationRange={calibrationRange}
-            />
-          </div>
-        )
-      })}
-    </div>
-  )
-}
+    <div className="p-2 bg-slate-700 rounded-lg w-full h-full max-w-screen-lg">
+      <div className="flex flex-col w-full h-full" ref={containerRef}>
+        {layout.map((row) => {
+          if (!Array.isArray(row)) {
+            return null
+          }
 
-type KeyProps = {
-  keyItem?: Key
-  mode: VisualizationMode
-  calibrationRange: CalibrationRange
-  legends: string[]
-}
-function Key({ mode, calibrationRange, legends, keyItem: key }: KeyProps) {
-  const color = useMemo(() => {
-    switch (mode) {
-      case 'NORMAL':
-        return 'bg-slate-500'
+          let keyConfig = defaultKLEKeyConfig
+          let colIndex = 0
 
-      case 'IDLE_HEATMAP':
-        return getColor(
-          calibrationRange.idleValue.min,
-          calibrationRange.idleValue.max,
-          key?.calibration.idleValue,
-        )
+          const element = (
+            <div key={rowIndex} className="flex w-fit">
+              {row.map((key) => {
+                if (typeof key !== 'string') {
+                  keyConfig = { ...defaultKLEKeyConfig, ...key }
+                  if (key.x) {
+                    return <div style={{ width: key.x * multiplier }}></div>
+                  }
+                } else {
+                  const element = (
+                    <div
+                      key={colIndex}
+                      className="p-0.5"
+                      style={{
+                        width: keyConfig.w * multiplier,
+                        height: keyConfig.h * multiplier,
+                        marginBottom: keyConfig.h > 1 ? -(keyConfig.h / 2) * multiplier : 0,
+                      }}
+                    >
+                      <Link
+                        to={generatePath(paths.configurator, {
+                          column: String(colIndex),
+                          row: String(rowIndex),
+                        })}
+                        className={`group flex relative bg-slate-500 w-full h-full rounded-sm sm:rounded-md hover:bg-slate-400 overflow-hidden items-center justify-center ${selectedKey?.row === rowIndex && selectedKey?.column === colIndex} ? 'border border-slate-300' : ''`}
+                      >
+                        <div className="z-10 text-xs">{key}</div>
+                        {keyMatrix?.[rowIndex]?.[colIndex] && (
+                          <div
+                            className={`w-full absolute top-0 ${keyMatrix[rowIndex][colIndex]?.status === Status.TRIGGERED ? 'bg-pink-600 group-hover:bg-pink-500' : 'bg-pink-500 group-hover:bg-pink-400'}`}
+                            style={{ height: `${keyMatrix[rowIndex][colIndex]?.distance}%` }}
+                          />
+                        )}
+                      </Link>
+                    </div>
+                  )
 
-      case 'DISTANCE_HEATMAP':
-        return getColor(
-          calibrationRange.maxDistance.min,
-          calibrationRange.maxDistance.max,
-          key?.calibration.maxDistance,
-        )
-    }
-  }, [key, calibrationRange, mode])
+                  keyConfig = defaultKLEKeyConfig
+                  colIndex = colIndex + 1
 
-  return (
-    <div
-      className={`relative w-full h-full rounded-md ${color} flex flex-col justify-center overflow-hidden items-center [text-shadow:0_0_3px_rgba(0,0,0,0.9)] transition-transform cursor-pointer`}
-    >
-      {key && (
-        <div
-          className={`absolute bottom-0 left-0 right-0 ${
-            key.actuation.status !== 'STATUS_RESET' &&
-            key.actuation.status !== 'STATUS_RAPID_TRIGGER_RESET'
-              ? 'bg-pink-700'
-              : 'bg-pink-300'
-          }`}
-          style={{ height: `${(key.state.distance8bits * 100) / 255}%` }}
-        ></div>
-      )}
-      {legends.map((legend, index) => (
-        <span className="z-10" key={index}>
-          {legend}
-        </span>
-      ))}
-      {key && (
-        <span className="z-10">
-          {mode === 'IDLE_HEATMAP'
-            ? key.calibration.idleValue.toString()
-            : mode === 'DISTANCE_HEATMAP'
-              ? key.calibration.maxDistance.toString()
-              : key.state.distance8bits.toString()}
-        </span>
-      )}
+                  return element
+                }
+              })}
+            </div>
+          )
+
+          rowIndex = rowIndex + 1
+
+          return element
+        })}
+      </div>
     </div>
   )
 }

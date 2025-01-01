@@ -7,7 +7,7 @@ import {
   type InputHTMLAttributes,
   type ReactNode,
 } from 'react'
-import { Icon } from './icon.tsx'
+import { Icon } from './icon'
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   hasError?: boolean

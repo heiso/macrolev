@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type SelectHTMLAttributes } from 'react'
-import { Icon } from './icon.tsx'
-import { Checkbox } from './input.tsx'
-import { Label } from './label.tsx'
-import { type Option } from './select.tsx'
+import { Icon } from './icon'
+import { Checkbox } from './input'
+import { Label } from './label'
+import { type Option } from './select'
 
 export type SelectMultipleProps = Pick<
   SelectHTMLAttributes<HTMLSelectElement>,

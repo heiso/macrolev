@@ -39,8 +39,8 @@ export default function Index() {
   }, [isConnected])
 
   return (
-    <div className="space-y-8">
-      <div className="relative space-y-2">
+    <div className="space-y-8 p-8">
+      <div className="relative">
         {!isConnected && !isLoading && (
           <div className="absolute z-10 top-0 bottom-0 left-0 right-0 flex justify-center items-center">
             <Button primary onClick={connect}>

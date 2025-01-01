@@ -31,8 +31,8 @@ const config = {
     {
       ...common,
       name: 'app',
-      watch: ['.env'],
-      script: 'remix vite:dev',
+      watch: ['vite.config.ts'],
+      script: 'npx react-router dev',
     },
   ],
 }
