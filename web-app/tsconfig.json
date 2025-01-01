@@ -1,27 +1,25 @@
 {
-  "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["build"],
+  "include": ["**/*", "**/.server/**/*", "**/.client/**/*", ".react-router/types/**/*"],
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2019"],
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "types": ["node", "vite/client"],
     "target": "ES2022",
-    "strict": true,
-    "noImplicitAny": true,
-    "allowJs": true,
-    "strictNullChecks": true,
-    "skipLibCheck": true,
-    "allowImportingTsExtensions": true,
-    "forceConsistentCasingInFileNames": true,
-    "verbatimModuleSyntax": true,
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "rootDirs": [".", "./.react-router/types"],
     "baseUrl": ".",
-    "sourceMap": true,
-
-    // Remix takes care of building everything in `remix build`.
+    "paths": {
+      "~/*": ["./app/*"]
+    },
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
     "noEmit": true,
-  },
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "resolvePackageJsonImports": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true
+  }
 }

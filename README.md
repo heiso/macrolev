@@ -74,7 +74,11 @@ This is still a work in progress, the firt revision is working flawlessly but it
 - [Wooting 60HE pcb](https://github.com/heiso/macrolev/tree/main/ref/Wooting-60HE)
 - [Connecting to uncommon HID devices](https://developer.chrome.com/articles/hid)
 - [HID Descriptor parser](https://eleccelerator.com/usbdescreqparser/)
-- [peppapighs HE keyboard](https://github.com/peppapighs/HE8)
+- [peppapighs HE8 keyboard](https://github.com/peppapighs/HE8)
+- [peppapighs libhmk library](https://github.com/peppapighs/libhmk)
+- [nuphy configurator demo](https://drive.nuphy.io/?isDemoMode=true)
+- [geonworks configurator demo](https://venom.how/)
+- [wooting configurator demo](https://wootility.io/)
 
 ### Tooling
 

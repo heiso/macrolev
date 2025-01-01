@@ -1,5 +1,5 @@
-import { Link, type LinkProps } from '@remix-run/react'
 import { type ButtonHTMLAttributes } from 'react'
+import { Link, type LinkProps } from 'react-router'
 
 const defaultClass =
   'inline-block rounded-md text-center disabled:pointer-events-none px-9 py-4 font-bold text-large disabled:opacity-50 select-none transition hover:scale-105 active:opacity-80'

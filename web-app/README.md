@@ -1,69 +1,100 @@
-# UwU Stack &middot; ![logo](./public/favicon-32x32.png)
+# Welcome to React Router!
 
-## Install and first run
+A modern, production-ready template for building full-stack React applications using React Router.
 
-```bash
-npm i
-cp .env.tpl .env
-npm run up
-npm run reset-database
-npm run log
-```
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
 
-Then go to http://localhost:3000
+## Features
 
-## DevEnv actions
+- 🚀 Server-side rendering
+- ⚡️ Hot Module Replacement (HMR)
+- 📦 Asset bundling and optimization
+- 🔄 Data loading and mutations
+- 🔒 TypeScript by default
+- 🎉 TailwindCSS for styling
+- 📖 [React Router docs](https://reactrouter.com/)
 
-Start
+## Getting Started
 
-```bash
-npm run up
-```
+### Installation
 
-Show logs
+Install the dependencies:
 
 ```bash
-npm run log
+npm install
 ```
 
-Stop
+### Development
+
+Start the development server with HMR:
 
 ```bash
-npm run down
+npm run dev
 ```
 
-Restart
+Your application will be available at `http://localhost:5173`.
+
+## Building for Production
+
+Create a production build:
 
 ```bash
-npm run restart
+npm run build
 ```
 
-Truncate Database, Migrate and apply seeds
+## Deployment
+
+### Docker Deployment
+
+This template includes three Dockerfiles optimized for different package managers:
+
+- `Dockerfile` - for npm
+- `Dockerfile.pnpm` - for pnpm
+- `Dockerfile.bun` - for bun
+
+To build and run using Docker:
 
 ```bash
-npm run reset-database
+# For npm
+docker build -t my-app .
+
+# For pnpm
+docker build -f Dockerfile.pnpm -t my-app .
+
+# For bun
+docker build -f Dockerfile.bun -t my-app .
+
+# Run the container
+docker run -p 3000:3000 my-app
 ```
 
-Run Lint
+The containerized application can be deployed to any platform that supports Docker, including:
 
-```bash
-npm run lint
+- AWS ECS
+- Google Cloud Run
+- Azure Container Apps
+- Digital Ocean App Platform
+- Fly.io
+- Railway
+
+### DIY Deployment
+
+If you're familiar with deploying Node applications, the built-in app server is production-ready.
+
+Make sure to deploy the output of `npm run build`
+
+```
+├── package.json
+├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
+├── build/
+│   ├── client/    # Static assets
+│   └── server/    # Server-side code
 ```
 
-Run tests
+## Styling
 
-```bash
-npm run test
-```
+This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
 
-## TODO
+---
 
-- ✅ ...Done
-- ⌛️ ...In Progress
-- 🚨 ...Bug
-- 🚧 ...Improvment
-
-- full sqlite option
-- redis/postgres option
-- auth flow
-- ui
+Built with ❤️ using React Router.

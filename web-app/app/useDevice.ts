@@ -6,6 +6,14 @@ const VENDOR_ID = 0xcafe
 // const MATRIX_ROWS = 5
 // const MATRIX_COLS = 15
 
+export enum Status {
+  MIGHT_BE_TAP,
+  TAP,
+  TRIGGERED,
+  RESET,
+  RAPID_TRIGGER_RESET,
+}
+
 const vendorRequests = {
   VENDOR_REQUEST_KEYS: 0xfe,
   VENDOR_REQUEST_CONFIG: 0xff,

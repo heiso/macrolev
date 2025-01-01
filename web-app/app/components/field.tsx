@@ -6,13 +6,13 @@ import {
   type SelectHTMLAttributes,
   type TextareaHTMLAttributes,
 } from 'react'
-import { Hint, type HintProps } from '../ui/hint.tsx'
-import { Icon } from '../ui/icon.tsx'
-import { Checkbox, Input } from '../ui/input.tsx'
-import { Label } from '../ui/label.tsx'
-import { SelectMultiple, type SelectMultipleProps } from '../ui/select-multiple.tsx'
-import { Select, type Option } from '../ui/select.tsx'
-import { Textarea } from '../ui/textarea.tsx'
+import { Hint, type HintProps } from '../ui/hint'
+import { Icon } from '../ui/icon'
+import { Checkbox, Input } from '../ui/input'
+import { Label } from '../ui/label'
+import { Select, type Option } from '../ui/select'
+import { SelectMultiple, type SelectMultipleProps } from '../ui/select-multiple'
+import { Textarea } from '../ui/textarea'
 
 export type BaseFieldProps = {
   label?: string

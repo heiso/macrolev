@@ -9,7 +9,7 @@ type LogoProps = HTMLAttributes<HTMLDivElement>
 export function Logo({ className, ...props }: LogoProps) {
   const [rotation, setRotation] = useState({ x: 0, y: 0, dx: 0, dy: 0 })
   const ref = useRef<HTMLDivElement>(null)
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout>(undefined)
   const [bump, setBump] = useState(false)
 
   useEffect(() => {
