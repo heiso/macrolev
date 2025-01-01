@@ -5,6 +5,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "cross-env NODE_ENV=production react-router build",
+    "preview": "react-router preview",
     "dev": "react-router dev",
     "start": "cross-env NODE_ENV=production react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc && && eslint . && prettier --check .",

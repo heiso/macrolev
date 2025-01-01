@@ -25,7 +25,7 @@ export default function Index() {
           as="link"
           to="https://github.com/heiso/macrolev"
           target="_blank"
-          className="inline-flex gap-2 justify-center"
+          className="inline-flex gap-2 justify-center items-center"
         >
           <Icon id="github-logo" className="self-center fill-gray-200" />
           GitHub
