@@ -19,8 +19,6 @@ jobs:
           node-version: 20.x
       - run: npm ci
         working-directory: web-app
-      - run: npx tsx generate-remix-routes.ts
-        working-directory: web-app
       - run: npx tsx generate-svg-icons-sprite.ts
         working-directory: web-app
       - run: npm run build
