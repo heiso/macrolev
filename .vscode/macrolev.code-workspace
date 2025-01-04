@@ -11,40 +11,9 @@
     },
     {
       "path": "../firmware/common"
+    },
+    {
+      "path": "../web-app"
     }
-  ],
-  "settings": {
-    "files.associations": {
-      "hid.h": "c",
-      "keyboard.h": "c",
-      "freertos.h": "c",
-      "task.h": "c",
-      "string.h": "c",
-      "stdio.h": "c",
-      "sdkconfig.h": "c",
-      "semphr.h": "c",
-      "freertosconfig.h": "c",
-      "portable.h": "c",
-      "adc_continuous.h": "c",
-      "stdlib.h": "c",
-      "soc_caps.h": "c",
-      "adc_cali_scheme.h": "c",
-      "adc_cali.h": "c",
-      "gpio.h": "c",
-      "drv2605l.h": "c",
-      "main.h": "c",
-      "adc_oneshot.h": "c",
-      "__bit_reference": "c",
-      "__node_handle": "c",
-      "bitset": "c",
-      "deque": "c",
-      "limits": "c",
-      "optional": "c",
-      "ratio": "c",
-      "regex": "c",
-      "scoped_allocator": "c",
-      "tuple": "c",
-      "vector": "c"
-    }
-  }
+  ]
 }

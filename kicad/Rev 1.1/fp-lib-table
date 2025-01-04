@@ -1,7 +1,0 @@
-(fp_lib_table
-  (version 7)
-  (lib (name "Lekker switch")(type "KiCad")(uri "${KIPRJMOD}/libraries/SW_MX_Lekker")(options "")(descr ""))
-  (lib (name "erichelgeson/Kicad-STM32")(type "KiCad")(uri "/Users/heiso/Projects/erichelgeson/Kicad-STM32/Footprints")(options "")(descr ""))
-  (lib (name "switch")(type "KiCad")(uri "${KIPRJMOD}/libraries/switch")(options "")(descr ""))
-  (lib (name "JLCPCB")(type "KiCad")(uri "${KIPRJMOD}/libraries/JLCPCB")(options "")(descr ""))
-)

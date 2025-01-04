@@ -1,9 +1,8 @@
 import { useEffect } from 'react'
-
-import { Keyboard } from '../components/keyboard.tsx'
-import { Button } from '../ui/button.tsx'
-import { Label } from '../ui/label.tsx'
-import { useDevice } from '../useDevice.ts'
+import { Keyboard } from '../components/old-keyboard'
+import { Button } from '../ui/button'
+import { Label } from '../ui/label'
+import { useDevice } from '../useDevice'
 
 export default function Index() {
   const {

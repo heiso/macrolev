@@ -1,23 +1,4 @@
 {
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "typescript.preferences.importModuleSpecifier": "relative",
-  "typescript.tsdk": "./node_modules/typescript/lib",
-  "editor.quickSuggestions": {
-    "strings": "on"
-  },
-  "tailwindCSS.classAttributes": ["class", "className", ".*Styles", ".*Class"],
-  "files.associations": {
-    "main.h": "c",
-    "stdlib.h": "c",
-    "stm32f4xx_hal_adc.h": "c",
-    "tusb.h": "c",
-    "keyboard.h": "c",
-    "usb_descriptors.h": "c",
-    "drv2605l.h": "c",
-    "_stdlib.h": "c",
-    "hid.h": "c",
-    "config.h": "c",
-    "stdint.h": "c"
-  }
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

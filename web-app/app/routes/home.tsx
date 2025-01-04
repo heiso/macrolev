@@ -31,15 +31,11 @@ export default function Index() {
           GitHub
         </Button>
 
-        <Button as="link" to={paths.layoutEditor}>
-          WIP Build your macrolev
+        <Button as="link" to={paths.config}>
+          [WIP] Configure your macrolev
         </Button>
 
-        <Button as="link" to={paths.configurator}>
-          WIP Configure your macrolev
-        </Button>
-
-        <Button primary as="link" to={paths.config}>
+        <Button primary as="link" to={paths.oldConfigurator}>
           Configure your macrolev
         </Button>
       </div>
