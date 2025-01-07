@@ -29,12 +29,14 @@ const vendorValues = {
 }
 
 // struct user_config {
+//   uint8_t reverse_magnet_pole;
 //   uint8_t trigger_offset;
 //   uint8_t reset_threshold;
 //   uint8_t rapid_trigger_offset;
 //   uint16_t keymaps[LAYERS_COUNT][MATRIX_ROWS][MATRIX_COLS];
 // };
 type UserConfig = {
+  reverseMagnetPole: number
   triggerOffset: number
   resetThreshold: number
   rapidTriggerOffset: number
@@ -60,26 +62,28 @@ function parseKeymaps(config: DataView, byteOffset: number) {
 
 function parseUserConfig(buffer: DataView): UserConfig {
   const config = {
-    triggerOffset: buffer.getUint8(0),
-    resetThreshold: buffer.getUint8(1),
-    rapidTriggerOffset: buffer.getUint8(2),
-    screamingVelocityTrigger: buffer.getUint8(3),
-    tapTimeout: buffer.getUint16(4, true),
-    keymaps: parseKeymaps(buffer, 6),
+    reverseMagnetPole: buffer.getUint8(0),
+    triggerOffset: buffer.getUint8(1),
+    resetThreshold: buffer.getUint8(2),
+    rapidTriggerOffset: buffer.getUint8(3),
+    screamingVelocityTrigger: buffer.getUint8(4),
+    tapTimeout: buffer.getUint16(6, true),
+    keymaps: parseKeymaps(buffer, 8),
   }
 
   return config
 }
 
 function formatUserConfig(config: UserConfig): BufferSource {
-  const buffer = new DataView(new ArrayBuffer(306))
-  buffer.setUint8(0, config.triggerOffset)
-  buffer.setUint8(1, config.resetThreshold)
-  buffer.setUint8(2, config.rapidTriggerOffset)
-  buffer.setUint8(3, config.screamingVelocityTrigger)
-  buffer.setUint16(4, config.tapTimeout, true)
+  const buffer = new DataView(new ArrayBuffer(308))
+  buffer.setUint8(0, config.reverseMagnetPole)
+  buffer.setUint8(1, config.triggerOffset)
+  buffer.setUint8(2, config.resetThreshold)
+  buffer.setUint8(3, config.rapidTriggerOffset)
+  buffer.setUint8(4, config.screamingVelocityTrigger)
+  buffer.setUint16(6, config.tapTimeout, true)
   config.keymaps.forEach((keycode, index) => {
-    buffer.setUint16(6 + index * 2, keycode, true)
+    buffer.setUint16(8 + index * 2, keycode, true)
   })
 
   return buffer

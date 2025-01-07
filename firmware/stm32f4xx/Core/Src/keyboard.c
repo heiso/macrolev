@@ -84,7 +84,7 @@ uint8_t update_key_state(struct key *key) {
   struct state state;
 
   // Get a reading
-  state.value = keyboard_read_adc();
+  state.value = keyboard_user_config.reverse_magnet_pole ? 4500 - keyboard_read_adc() : keyboard_read_adc();
 
   if (key->calibration.cycles_count < CALIBRATION_CYCLES) {
     // Calibrate idle value

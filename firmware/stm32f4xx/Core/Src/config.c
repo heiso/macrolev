@@ -5,6 +5,7 @@
 #include <class/hid/hid.h>
 
 const struct user_config keyboard_default_user_config = {
+    .reverse_magnet_pole = DEFAULT_REVERSE_MAGNET_POLE,
     .trigger_offset = DEFAULT_TRIGGER_OFFSET,
     .reset_threshold = DEFAULT_RESET_THRESHOLD,
     .rapid_trigger_offset = DEFAULT_RAPID_TRIGGER_OFFSET,

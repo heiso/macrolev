@@ -57,6 +57,21 @@ export default function Index() {
         <>
           <div>
             <div className="flex gap-2 items-center">
+              <Label>Reversed magnets</Label>
+              <input
+                className="cursor-pointer"
+                type="checkbox"
+                onChange={(event) => {
+                  setUserConfig({
+                    ...userConfig,
+                    reverseMagnetPole: event.target.checked ? 1 : 0,
+                  })
+                }}
+                checked={Boolean(userConfig.reverseMagnetPole)}
+              />
+            </div>
+
+            <div className="flex gap-2 items-center">
               <Label>Trigger Offset</Label>
               <input
                 className="cursor-pointer"

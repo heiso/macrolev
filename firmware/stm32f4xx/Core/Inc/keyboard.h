@@ -88,6 +88,7 @@ struct __attribute__((__packed__)) key {
 };
 
 struct user_config {
+  uint8_t reverse_magnet_pole;
   uint8_t trigger_offset;
   uint8_t reset_threshold;
   uint8_t rapid_trigger_offset;
