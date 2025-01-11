@@ -19,6 +19,8 @@
   "settings": {
     "files.associations": {
       "hid.h": "c"
-    }
+    },
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "tailwindCSS.classAttributes": ["class", "className", ".*Styles", ".*Class"]
   }
 }

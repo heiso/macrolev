@@ -2,9 +2,7 @@
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "typescript.preferences.importModuleSpecifier": "relative",
-  "typescript.tsdk": "./node_modules/typescript/lib",
   "editor.quickSuggestions": {
     "strings": "on"
-  },
-  "tailwindCSS.classAttributes": ["class", "className", ".*Styles", ".*Class"]
+  }
 }

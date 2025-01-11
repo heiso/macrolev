@@ -6,6 +6,7 @@ import {
   type HTMLAttributes,
   type PropsWithChildren,
 } from 'react'
+import { Link } from 'react-router'
 import { SwitchOffsetsConfiguration } from '../components/switch-offsets-configuration'
 import { getNormalizedKLEKeys } from '../kle-parser'
 import KLElayout from '../layout.json'
@@ -197,6 +198,7 @@ function addKey(
   clickedKey: Key,
   direction: 'top' | 'right' | 'bottom' | 'left',
 ): State {
+  const lastId = state.layout.reduce((acc, key) => Math.max(acc, key.id), state.layout[0]?.id || 0)
   return addToHistory(
     fixCoordinatesToZero(
       unselectAll({
@@ -204,7 +206,7 @@ function addKey(
         layout: [
           ...state.layout,
           {
-            id: state.layout.length,
+            id: lastId + 1,
             height: clickedKey.height,
             width: clickedKey.width,
             x:
@@ -467,6 +469,20 @@ export default function Index() {
 
   return (
     <div className="p-4 sm:p-8 flex flex-col items-center gap-8">
+      <div className="flex gap-4 text-slate-400 text-xs uppercase">
+        <Link to="" className="hover:text-pink-400 active:text-pink-500 text-pink-400">
+          Hardware layout
+        </Link>
+        |
+        <Link to="" className="hover:text-pink-400 active:text-pink-500">
+          Keymap
+        </Link>
+        |
+        <Link to="" className="hover:text-pink-400 active:text-pink-500">
+          Debug
+        </Link>
+      </div>
+
       <div className="flex w-full justify-center" ref={containerRef}>
         <div className="flex flex-col w-fit gap-4">
           <div className="bg-slate-700 rounded-lg p-4">
@@ -625,6 +641,10 @@ export default function Index() {
             <div>
               {Math.ceil(state.layout.length / 16)} analog demutiplexer
               {Math.ceil(state.layout.length / 16) > 1 ? 's' : ''}
+            </div>
+
+            <div>
+              pcb dimensions {(width * 19.05).toFixed(1)} x {(height * 19.05).toFixed(1)} mm
             </div>
 
             {state.layout.length > 0 && (
