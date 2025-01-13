@@ -10,15 +10,65 @@
       "path": "../firmware/stm32f4xx"
     },
     {
-      "path": "../firmware/common"
+      "path": "../web-app"
     },
     {
-      "path": "../web-app"
+      "path": "../firmware/resources/espressif/esp-idf/examples"
+    },
+    {
+      "path": "../firmware/resources/espressif/esp-iot-solution/examples"
     }
   ],
   "settings": {
     "files.associations": {
-      "hid.h": "c"
+      "hid.h": "c",
+      "stdlib.h": "c",
+      "freertos.h": "c",
+      "freertosconfig.h": "c",
+      "task.h": "c",
+      "sdkconfig.h": "c",
+      "cstring": "c",
+      "portable.h": "c",
+      "adc_continuous.h": "c",
+      "gpio.h": "c",
+      "cstdint": "c",
+      "esp_log.h": "c",
+      "stdint.h": "c",
+      "macrolev.h": "c",
+      "__bit_reference": "cpp",
+      "__hash_table": "cpp",
+      "__locale": "cpp",
+      "__split_buffer": "cpp",
+      "array": "cpp",
+      "atomic": "cpp",
+      "bitset": "cpp",
+      "deque": "cpp",
+      "filesystem": "cpp",
+      "fstream": "cpp",
+      "future": "cpp",
+      "ios": "cpp",
+      "istream": "cpp",
+      "iterator": "cpp",
+      "locale": "cpp",
+      "memory": "cpp",
+      "optional": "cpp",
+      "ostream": "cpp",
+      "random": "cpp",
+      "regex": "cpp",
+      "span": "cpp",
+      "string": "cpp",
+      "string_view": "cpp",
+      "tuple": "cpp",
+      "type_traits": "cpp",
+      "unordered_map": "cpp",
+      "variant": "cpp",
+      "vector": "cpp",
+      "*.tcc": "cpp",
+      "chrono": "cpp",
+      "forward_list": "cpp",
+      "list": "cpp",
+      "format": "cpp",
+      "functional": "cpp"
     },
     "typescript.tsdk": "./node_modules/typescript/lib",
     "tailwindCSS.classAttributes": ["class", "className", ".*Styles", ".*Class"]
