@@ -2,16 +2,25 @@
   "configurations": [
     {
       "name": "Firmware",
+      "compilerPath": "${env:IDF_TOOL_PATH}/xtensa-esp-elf/esp-14.2.0_20241119/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc",
+      "compileCommands": "${workspaceFolder}/build/compile_commands.json",
       "includePath": [
-        "${workspaceFolder}/main/**",
-
-        "~/esp/esp-idf/components/**",
-
-        // "${workspaceFolder}/../common/src/**",
-
-        "${workspaceFolder}/../common/tinyusb/src/**"
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/managed_components/**",
+        "${env:IDF_PATH}/components/**"
       ],
+      "browse": {
+        "path": [
+          "${env:IDF_PATH}/components",
+          "${workspaceFolder}"
+        ],
+        "limitSymbolsToIncludedHeaders": true
+      }
     }
   ],
+  "env": {
+    "IDF_PATH": "~/esp/esp-idf",
+    "IDF_TOOL_PATH": "~/.espressif/tools"
+  },
   "version": 4
 }

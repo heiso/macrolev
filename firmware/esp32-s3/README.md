@@ -8,7 +8,7 @@ cd ~/esp
 git clone git@github.com:espressif/esp-idf.git
 cd esp-idf
 git submodule update --init --recursive
-./esp-idf/install.sh
+./install.sh
 ```
 
 Then in your project `. ~/esp/esp-idf/export.sh`
