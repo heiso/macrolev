@@ -1,6 +1,8 @@
+#include "cJSON.h"
 #include "driver/gpio.h"
 #include "esp_adc/adc_continuous.h"
 #include "esp_log.h"
+#include "esp_spiffs.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
@@ -11,52 +13,76 @@
 #include <stdio.h>
 #include <string.h>
 
-const static char *TAG = "MACROLEV";
-
-// {adc_channel, amux_channel}
-// const uint8_t channels_by_row_col[MATRIX_ROWS][MATRIX_COLS][2] = {
-//     {{0, 1}, {0, 0}, {0, 13}, {0, 12}, {1, 0}, {1, 12}, {2, 1}, {2, 0}, {2, 12}, {3, 1}, {3, 0}, {3, 12}, {4, 1}, {4, 0}, {4, 13}},
-//     {{0, 2}, {0, 7}, {0, 10}, {1, 2}, {1, 7}, {1, 10}, {2, 3}, {2, 7}, {2, 10}, {3, 3}, {3, 7}, {3, 11}, {4, 4}, {4, 8}, {4, 12}},
-//     {{0, 3}, {0, 6}, {0, 11}, {1, 3}, {1, 6}, {1, 11}, {2, 4}, {2, 6}, {2, 11}, {3, 4}, {3, 8}, {4, 2}, {4, 5}, {4, 7}, {XXXX, XXXX}},
-//     {{XXXX, XXXX}, {0, 5}, {0, 8}, {1, 1}, {1, 5}, {1, 8}, {2, 2}, {2, 5}, {2, 8}, {3, 2}, {3, 6}, {3, 9}, {4, 3}, {4, 10}, {XXXX, XXXX}},
-//     {{XXXX, XXXX}, {0, 4}, {0, 9}, {1, 4}, {XXXX, XXXX}, {1, 9}, {XXXX, XXXX}, {2, 9}, {XXXX, XXXX}, {3, 5}, {3, 10}, {XXXX, XXXX}, {4, 6}, {4, 9}, {4, 11}},
-// };
-
-#define AMUX_SELECT_PINS_COUNT 4
-#define AMUX_CHANNEL_COUNT 14
-#define ADC_CHANNEL_COUNT 5
-
-#define CONVERSION_FRAME_SIZE (SOC_ADC_DIGI_DATA_BYTES_PER_CONV * ADC_CHANNEL_COUNT)
-#define CONVERSION_POOL_SIZE CONVERSION_FRAME_SIZE * 1
+static const char *TAG = "MACROLEV";
 
 #define BOOT_MODE_PIN GPIO_NUM_0
 #define STORAGE_NAMESPACE "storage"
+#define JSON_FILENAME "config.json"
 
-#define GPIO_SELECT_0 15
-#define GPIO_SELECT_1 16
-#define GPIO_SELECT_2 17
-#define GPIO_SELECT_3 18
+/**
+ * @todo read the config and compute the max amux channel
+ * @todo read the config and compute the max amux channel
+ * @todo read the config and compute the max amux channel
+ * @todo read the config and compute the max amux channel
+ */
+#define AMUX_CHANNEL_COUNT 14
+
+/**
+ * @todo read the config and compute the adc channel list
+ * @todo read the config and compute the adc channel list
+ * @todo read the config and compute the adc channel list
+ * @todo read the config and compute the adc channel list
+ */
+enum adc_channel {
+  MLEV_ADC_CHANNEL_0 = ADC_CHANNEL_2,
+  MLEV_ADC_CHANNEL_1 = ADC_CHANNEL_3,
+  MLEV_ADC_CHANNEL_2 = ADC_CHANNEL_4,
+  MLEV_ADC_CHANNEL_3 = ADC_CHANNEL_5,
+  MLEV_ADC_CHANNEL_4 = ADC_CHANNEL_8,
+  MLEV_ADC_CHANNEL_COUNT,
+};
+const uint32_t adc_channels[MLEV_ADC_CHANNEL_COUNT] = { MLEV_ADC_CHANNEL_0, MLEV_ADC_CHANNEL_1, MLEV_ADC_CHANNEL_2, MLEV_ADC_CHANNEL_3, MLEV_ADC_CHANNEL_4 };
+
+/**
+ * @todo read the config and compute the amux select pin list
+ * @todo read the config and compute the amux select pin list
+ * @todo read the config and compute the amux select pin list
+ * @todo read the config and compute the amux select pin list
+ */
+enum amux_select_pin {
+  AMUX_SELECT_PIN_0 = GPIO_NUM_15,
+  AMUX_SELECT_PIN_1 = GPIO_NUM_16,
+  AMUX_SELECT_PIN_2 = GPIO_NUM_17,
+  AMUX_SELECT_PIN_3 = GPIO_NUM_18,
+  AMUX_SELECT_PIN_COUNT,
+};
+const uint32_t amux_select_pins[AMUX_SELECT_PIN_COUNT] = { AMUX_SELECT_PIN_0, AMUX_SELECT_PIN_1, AMUX_SELECT_PIN_2, AMUX_SELECT_PIN_3 };
+
 /*
- * Let's say, GPIO_SELECT_0=18, GPIO_SELECT_1=19
+ * Let's say, AMUX_SELECT_0=18, AMUX_SELECT_1=19
  * In binary representation,
- * 1ULL<<GPIO_SELECT_0 is equal to 0000000000000000000001000000000000000000 and
- * 1ULL<<GPIO_SELECT_1 is equal to 0000000000000000000010000000000000000000
+ * 1ULL<<AMUX_SELECT_0 is equal to 0000000000000000000001000000000000000000 and
+ * 1ULL<<AMUX_SELECT_1 is equal to 0000000000000000000010000000000000000000
  * GPIO_OUTPUT_PIN_SEL             0000000000000000000011000000000000000000
  * */
-#define GPIO_OUTPUT_PIN_SEL ((1ULL << GPIO_SELECT_0) | (1ULL << GPIO_SELECT_1) | (1ULL << GPIO_SELECT_2) | (1ULL << GPIO_SELECT_3))
+#define GPIO_OUTPUT_PIN_SEL ((1ULL << AMUX_SELECT_PIN_0) | (1ULL << AMUX_SELECT_PIN_1) | (1ULL << AMUX_SELECT_PIN_2) | (1ULL << AMUX_SELECT_PIN_3))
+
+#define CONVERSION_FRAME_SIZE (SOC_ADC_DIGI_DATA_BYTES_PER_CONV * MLEV_ADC_CHANNEL_COUNT)
+#define CONVERSION_POOL_SIZE CONVERSION_FRAME_SIZE * 1
 
 adc_continuous_handle_t adc_handle;
-
-const uint32_t adc_channels[ADC_CHANNEL_COUNT] = { ADC_CHANNEL_2, ADC_CHANNEL_3, ADC_CHANNEL_4, ADC_CHANNEL_5, ADC_CHANNEL_8 };
-const uint32_t amux_select_pins[AMUX_SELECT_PINS_COUNT] = { GPIO_SELECT_0, GPIO_SELECT_1, GPIO_SELECT_2, GPIO_SELECT_3 };
-
-// uint32_t adc_buffer[ADC_CHANNEL_COUNT][AMUX_CHANNEL_COUNT] = {0};
-
 uint8_t current_amux_channel = 0;
-
 static TaskHandle_t adc_task_handle;
 
-static EventGroupHandle_t s_event_group;
+// USB CDC buffers and queue
+static uint8_t rx_buf[CONFIG_TINYUSB_CDC_RX_BUFSIZE + 1];
+static QueueHandle_t usb_queue;
+
+typedef struct {
+  uint8_t buf[CONFIG_TINYUSB_CDC_RX_BUFSIZE + 1];
+  size_t buf_len;
+  uint8_t itf;
+} usb_message_t;
 
 static bool IRAM_ATTR on_conversion_done_cb(adc_continuous_handle_t handle, const adc_continuous_evt_data_t *edata, void *user_data) {
   BaseType_t mustYield = pdFALSE;
@@ -78,14 +104,14 @@ static void adc_init() {
 
   //-------------ADC Config---------------//
   adc_continuous_config_t config = {
-    .pattern_num = ADC_CHANNEL_COUNT,
+    .pattern_num = MLEV_ADC_CHANNEL_COUNT,
     .sample_freq_hz = SOC_ADC_SAMPLE_FREQ_THRES_HIGH,
     .conv_mode = ADC_CONV_SINGLE_UNIT_1,
     .format = ADC_DIGI_OUTPUT_FORMAT_TYPE2,
   };
 
-  adc_digi_pattern_config_t adc_pattern[ADC_CHANNEL_COUNT] = { 0 };
-  for (int i = 0; i < ADC_CHANNEL_COUNT; i++) {
+  adc_digi_pattern_config_t adc_pattern[MLEV_ADC_CHANNEL_COUNT] = { 0 };
+  for (int i = 0; i < MLEV_ADC_CHANNEL_COUNT; i++) {
     adc_pattern[i].atten = ADC_ATTEN_DB_12;
     adc_pattern[i].channel = adc_channels[i];
     adc_pattern[i].unit = ADC_UNIT_1;
@@ -119,7 +145,7 @@ void gpio_init() {
 
   gpio_config(&gpio_conf);
 
-  for (uint8_t i = 0; i < AMUX_SELECT_PINS_COUNT; i++) {
+  for (uint8_t i = 0; i < AMUX_SELECT_PIN_COUNT; i++) {
     gpio_set_level(amux_select_pins[i], 0);
   }
 }
@@ -142,13 +168,13 @@ void adc_task(void *pvParameters) {
     uint8_t amux_channel = current_amux_channel;
 
     current_amux_channel = (amux_channel + 1) % AMUX_CHANNEL_COUNT;
-    for (uint8_t i = 0; i < AMUX_SELECT_PINS_COUNT; i++) {
+    for (uint8_t i = 0; i < AMUX_SELECT_PIN_COUNT; i++) {
       gpio_set_level(amux_select_pins[i], (current_amux_channel >> i) & 1);
     }
 
     for (uint8_t conversion_result_index = 0; conversion_result_index < conversion_frame_real_size; conversion_result_index += SOC_ADC_DIGI_DATA_BYTES_PER_CONV) {
       adc_digi_output_data_t *conversion_frame = (adc_digi_output_data_t *)&conversions[conversion_result_index];
-      for (uint8_t adc_channel = 0; adc_channel < ADC_CHANNEL_COUNT; adc_channel++) {
+      for (uint8_t adc_channel = 0; adc_channel < MLEV_ADC_CHANNEL_COUNT; adc_channel++) {
         if (conversion_frame->type2.channel == adc_channels[adc_channel]) {
           mlev_set_switch_value(adc_channel, amux_channel, conversion_frame->type2.data);
           break;
@@ -172,16 +198,103 @@ void adc_task(void *pvParameters) {
 //   }
 // }
 
-static uint8_t rx_buf[CONFIG_TINYUSB_CDC_RX_BUFSIZE + 1];
-/**
- * @brief Application Queue
- */
-static QueueHandle_t app_queue;
-typedef struct app_message {
-  uint8_t buf[CONFIG_TINYUSB_CDC_RX_BUFSIZE + 1]; // Data buffer
-  size_t buf_len;                                 // Number of bytes received
-  uint8_t itf;                                    // Index of CDC device interface
-};
+// Initialize SPIFFS
+static esp_err_t init_spiffs(void) {
+  ESP_LOGI(TAG, "Initializing SPIFFS");
+
+  esp_vfs_spiffs_conf_t conf = {
+    .base_path = "/spiffs",
+    .partition_label = NULL,
+    .max_files = 5,
+    .format_if_mount_failed = true
+  };
+
+  esp_err_t ret = esp_vfs_spiffs_register(&conf);
+  if (ret != ESP_OK) {
+    ESP_LOGE(TAG, "Failed to initialize SPIFFS (%s)", esp_err_to_name(ret));
+    return ret;
+  }
+
+  size_t total = 0, used = 0;
+  ret = esp_spiffs_info(NULL, &total, &used);
+  if (ret != ESP_OK) {
+    ESP_LOGE(TAG, "Failed to get SPIFFS partition information (%s)", esp_err_to_name(ret));
+    return ret;
+  }
+
+  ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
+  return ESP_OK;
+}
+
+// Save JSON to file
+esp_err_t save_json_to_file(const char *filename, cJSON *json) {
+  char *json_string = cJSON_PrintUnformatted(json);
+  if (json_string == NULL) {
+    ESP_LOGE(TAG, "Failed to print json");
+    return ESP_FAIL;
+  }
+
+  char filepath[64];
+  snprintf(filepath, sizeof(filepath), "/spiffs/%s", filename);
+
+  FILE *f = fopen(filepath, "w");
+  if (f == NULL) {
+    ESP_LOGE(TAG, "Failed to open file for writing");
+    free(json_string);
+    return ESP_FAIL;
+  }
+
+  fprintf(f, "%s", json_string);
+  fclose(f);
+  free(json_string);
+
+  ESP_LOGI(TAG, "JSON saved to file: %s", filepath);
+  return ESP_OK;
+}
+
+// Load JSON from file
+cJSON *load_json_from_file(const char *filename) {
+  char filepath[64];
+  snprintf(filepath, sizeof(filepath), "/spiffs/%s", filename);
+
+  FILE *f = fopen(filepath, "r");
+  if (f == NULL) {
+    ESP_LOGE(TAG, "Failed to open file for reading");
+    return NULL;
+  }
+
+  // Get file size
+  fseek(f, 0, SEEK_END);
+  long fsize = ftell(f);
+  fseek(f, 0, SEEK_SET);
+
+  // Read file content
+  char *content = malloc(fsize + 1);
+  if (content == NULL) {
+    ESP_LOGE(TAG, "Failed to allocate memory");
+    fclose(f);
+    return NULL;
+  }
+
+  size_t read_size = fread(content, 1, fsize, f);
+  content[read_size] = '\0';
+  fclose(f);
+
+  // Parse JSON
+  cJSON *json = cJSON_Parse(content);
+  free(content);
+
+  if (json == NULL) {
+    const char *error_ptr = cJSON_GetErrorPtr();
+    if (error_ptr != NULL) {
+      ESP_LOGE(TAG, "Error parsing JSON before: %s", error_ptr);
+    }
+    return NULL;
+  }
+
+  ESP_LOGI(TAG, "JSON loaded from file: %s", filepath);
+  return json;
+}
 
 /**
  * @brief CDC device RX callback
@@ -192,20 +305,39 @@ typedef struct app_message {
  * @param[in] event CDC event type
  */
 void tinyusb_cdc_rx_callback(int itf, cdcacm_event_t *event) {
-  /* initialization */
   size_t rx_size = 0;
-
-  /* read */
   esp_err_t ret = tinyusb_cdcacm_read(itf, rx_buf, CONFIG_TINYUSB_CDC_RX_BUFSIZE, &rx_size);
   if (ret == ESP_OK) {
+    // Null terminate the received data
+    rx_buf[rx_size] = '\0';
 
-    struct app_message tx_msg = {
-      .buf_len = rx_size,
-      .itf = itf,
-    };
+    // Try to parse as JSON
+    cJSON *json = cJSON_Parse((char *)rx_buf);
+    if (json != NULL) {
+      // Valid JSON received, save it
+      ESP_LOGI(TAG, "Valid JSON received, saving to config.json");
+      esp_err_t save_ret = save_json_to_file(JSON_FILENAME, json);
 
-    memcpy(tx_msg.buf, rx_buf, rx_size);
-    xQueueSend(app_queue, &tx_msg, 0);
+      // Send response
+      const char *response;
+      if (save_ret == ESP_OK) {
+        response = "JSON saved successfully\r\n";
+      } else {
+        response = "Error saving JSON\r\n";
+      }
+      tinyusb_cdcacm_write_queue(itf, (uint8_t *)response, strlen(response));
+      tinyusb_cdcacm_write_flush(itf, 0);
+
+      cJSON_Delete(json);
+    } else {
+      // Not valid JSON, echo back as normal
+      usb_message_t tx_msg = {
+        .buf_len = rx_size,
+        .itf = itf,
+      };
+      memcpy(tx_msg.buf, rx_buf, rx_size);
+      xQueueSend(usb_queue, &tx_msg, 0);
+    }
   } else {
     ESP_LOGE(TAG, "Read Error");
   }
@@ -223,78 +355,80 @@ void tinyusb_cdc_line_state_changed_callback(int itf, cdcacm_event_t *event) {
   int dtr = event->line_state_changed_data.dtr;
   int rts = event->line_state_changed_data.rts;
   ESP_LOGI(TAG, "Line state changed on channel %d: DTR:%d, RTS:%d", itf, dtr, rts);
-}
 
-void tinyusb_init() {
-  const tinyusb_config_t partial_init = {
-    .device_descriptor = NULL,        // Use the default device descriptor specified in Menuconfig
-    .string_descriptor = NULL,        // Use the default string descriptors specified in Menuconfig
-    .configuration_descriptor = NULL, // Use the default configuration descriptor according to settings in Menuconfig
-    .external_phy = false,            // Use internal USB PHY
-  };
+  // When DTR is set, terminal connection is opened
+  if (dtr) {
+    // Send welcome message
+    const char *hello = "Hello! ESP32-S3 CDC device is ready!\r\n";
+    tinyusb_cdcacm_write_queue(itf, (uint8_t *)hello, strlen(hello));
+    tinyusb_cdcacm_write_flush(itf, 0);
 
-  const tinyusb_config_cdcacm_t acm_cfg = {
-    .usb_dev = TINYUSB_USBDEV_0,
-    .cdc_port = TINYUSB_CDC_ACM_0,
-    .rx_unread_buf_sz = 64,
-    .callback_rx = &tinyusb_cdc_rx_callback,
-    .callback_rx_wanted_char = NULL,
-    .callback_line_state_changed = &tinyusb_cdc_line_state_changed_callback,
-    .callback_line_coding_changed = NULL,
-  };
-  tusb_cdc_acm_init(&acm_cfg);
-}
-
-void cdc_task() {
-  app_queue = xQueueCreate(5, sizeof(struct app_message));
-  assert(app_queue);
-  struct app_message msg;
-
-  while (1) {
-    if (xQueueReceive(app_queue, &msg, portMAX_DELAY)) {
-      if (msg.buf_len) {
-
-        /* Print received data*/
-        ESP_LOGI(TAG, "Data from channel %d:", msg.itf);
-        ESP_LOG_BUFFER_HEXDUMP(TAG, msg.buf, msg.buf_len, ESP_LOG_INFO);
-
-        /* write back */
-        tinyusb_cdcacm_write_queue(msg.itf, msg.buf, msg.buf_len);
-        esp_err_t err = tinyusb_cdcacm_write_flush(msg.itf, 0);
-        if (err != ESP_OK) {
-          ESP_LOGE(TAG, "CDC ACM write flush error: %s", esp_err_to_name(err));
-        }
+    // Load and send current JSON content
+    cJSON *json = load_json_from_file(JSON_FILENAME);
+    if (json != NULL) {
+      char *json_str = cJSON_PrintUnformatted(json);
+      if (json_str != NULL) {
+        tinyusb_cdcacm_write_queue(itf, (uint8_t *)json_str, strlen(json_str));
+        tinyusb_cdcacm_write_queue(itf, (uint8_t *)"\r\n", 2);
+        tinyusb_cdcacm_write_flush(itf, 0);
+        free(json_str);
       }
+      cJSON_Delete(json);
+    } else {
+      const char *no_json = "No JSON configuration found\r\n";
+      tinyusb_cdcacm_write_queue(itf, (uint8_t *)no_json, strlen(no_json));
+      tinyusb_cdcacm_write_flush(itf, 0);
     }
   }
 }
 
 void app_main(void) {
-  esp_err_t err;
+  // Initialize SPIFFS
+  ESP_ERROR_CHECK(init_spiffs());
 
-  // gpio_init();
-  // adc_init();
-  // mlev_init();
+  // Create FreeRTOS primitives
+  usb_queue = xQueueCreate(5, sizeof(usb_message_t));
+  assert(usb_queue);
+  usb_message_t msg;
 
-  // gpio_reset_pin(BOOT_MODE_PIN);
-  // gpio_set_direction(BOOT_MODE_PIN, GPIO_MODE_INPUT);
+  // Initialize TinyUSB
+  ESP_LOGI(TAG, "USB initialization");
+  const tinyusb_config_t tusb_cfg = {
+    .device_descriptor = NULL,
+    .string_descriptor = NULL,
+    .external_phy = false,
+    .configuration_descriptor = NULL,
+  };
+  ESP_ERROR_CHECK(tinyusb_driver_install(&tusb_cfg));
 
-  // while (1) {
-  //   if (gpio_get_level(BOOT_MODE_PIN) == 0) {
-  //     vTaskDelay(1000 / portTICK_PERIOD_MS);
-  //     if (gpio_get_level(BOOT_MODE_PIN) == 0) {
-  //       err = save_run_time();
-  //       if (err != ESP_OK)
-  //         printf("Error (%s) saving run time blob to NVS!\n", esp_err_to_name(err));
-  //       printf("Restarting...\n");
-  //       fflush(stdout);
-  //       esp_restart();
-  //     }
-  //   }
-  //   vTaskDelay(200 / portTICK_PERIOD_MS);
-  // }
-  // xTaskCreate(adc_task, "adc_task", 2048, NULL, configMAX_PRIORITIES - 1, NULL);
-  // xTaskCreate(mlev_task, "mlev_task", 2048, NULL, 5, NULL);
-  // xTaskCreate(cdc_task, "cdc_task", 2048, NULL, 4, NULL);
-  // xTaskCreate(debug_task, "debug_task", 2048, NULL, 5, NULL);
+  // Initialize CDC
+  tinyusb_config_cdcacm_t acm_cfg = {
+    .usb_dev = TINYUSB_USBDEV_0,
+    .cdc_port = TINYUSB_CDC_ACM_0,
+    .callback_rx = &tinyusb_cdc_rx_callback,
+    .callback_rx_wanted_char = NULL,
+    .callback_line_state_changed = &tinyusb_cdc_line_state_changed_callback,
+    .callback_line_coding_changed = NULL
+  };
+  ESP_ERROR_CHECK(tusb_cdc_acm_init(&acm_cfg));
+
+  ESP_LOGI(TAG, "USB initialization DONE");
+
+  // Main loop
+  while (1) {
+    if (xQueueReceive(usb_queue, &msg, portMAX_DELAY)) {
+      if (msg.buf_len) {
+        // Print received data
+        ESP_LOGI(TAG, "Data from channel %d:", msg.itf);
+        ESP_LOG_BUFFER_HEXDUMP(TAG, msg.buf, msg.buf_len, ESP_LOG_INFO);
+
+        // Echo back
+        tinyusb_cdcacm_write_queue(msg.itf, msg.buf, msg.buf_len);
+        esp_err_t err = tinyusb_cdcacm_write_flush(msg.itf, 0);
+        if (err != ESP_OK) {
+          ESP_LOGE(TAG, "CDC write error: %s", esp_err_to_name(err));
+        }
+      }
+    }
+  }
 }
