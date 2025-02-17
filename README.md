@@ -17,6 +17,14 @@
 
 I use the two prototypes shown above as my daily drivers for both coding and gaming. They work well, and the current state of the web configurator is sufficient for seamlessly switching between coding and gaming modes. The current layout of my prototypes is Mac ISO azerty (FR).
 
+## Disclaimer
+
+This is still a work in progress. While the prototypes are functional, building one requires a good understanding of electronics and firmware development. If you're interested in creating your own, please be aware that you'll need experience with PCB assembly, microcontroller programming, and debugging embedded systems.
+
+The Rev1 version shown in the images above requires an ST-Link programmer to flash the firmware, making setup more complex. Additionally, the keymap is _hardcoded_ in the firmware, so any changes to the key layout require recompiling and reflashing the firmware.
+
+The second revision features a split PCB design consisting of a main board for the key layout and a separate breakout board. This two-board approach makes it easier to test and evaluate different microcontrollers. However, development is still in progress as the microcontroller board (currently planned to use an ESP32-S3) has not been finalized yet.
+
 ## Features
 
 - **Analog Input:** Each key detects varying levels of pressure thanks to Hall Effect technology, allowing for a more responsive and sensitive typing experience.
