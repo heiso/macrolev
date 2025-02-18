@@ -52,14 +52,97 @@ type UserConfig = {
   keyConfigs: KeyConfig[]
 }
 
-// {adc_channel, amux_channel}
-// const uint8_t channels_by_row_col[MATRIX_ROWS][MATRIX_COLS][2] = {
-//     {{0, 1}, {0, 0}, {0, 13}, {0, 12}, {1, 0}, {1, 12}, {2, 1}, {2, 0}, {2, 12}, {3, 1}, {3, 0}, {3, 12}, {4, 1}, {4, 0}, {4, 13}},
-//     {{0, 2}, {0, 7}, {0, 10}, {1, 2}, {1, 7}, {1, 10}, {2, 3}, {2, 7}, {2, 10}, {3, 3}, {3, 7}, {3, 11}, {4, 4}, {4, 8}, {4, 12}},
-//     {{0, 3}, {0, 6}, {0, 11}, {1, 3}, {1, 6}, {1, 11}, {2, 4}, {2, 6}, {2, 11}, {3, 4}, {3, 8}, {4, 2}, {4, 5}, {4, 7}, {XXXX, XXXX}},
-//     {{XXXX, XXXX}, {0, 5}, {0, 8}, {1, 1}, {1, 5}, {1, 8}, {2, 2}, {2, 5}, {2, 8}, {3, 2}, {3, 6}, {3, 9}, {4, 3}, {4, 10}, {XXXX, XXXX}},
-//     {{XXXX, XXXX}, {0, 4}, {0, 9}, {1, 4}, {XXXX, XXXX}, {1, 9}, {XXXX, XXXX}, {2, 9}, {XXXX, XXXX}, {3, 5}, {3, 10}, {XXXX, XXXX}, {4, 6}, {4, 9}, {4, 11}},
-// };
+// type Key = {
+//   browserCode: string
+//   hidCode: string
+//   legend: string
+// }
+
+export const HID_KEYCODES: Record<string, string> = {
+  AltLeft: '0xe2',
+  AltRight: '0xe6',
+  ArrowDown: '0x51',
+  ArrowLeft: '0x50',
+  ArrowRight: '0x4f',
+  ArrowUp: '0x52',
+  Backquote: '0x35',
+  Backslash: '0x31',
+  Backspace: '0x2a',
+  BracketLeft: '0x2f',
+  BracketRight: '0x30',
+  CapsLock: '0x39',
+  Comma: '0x36',
+  ControlLeft: '0xe0',
+  Delete: '0x4c',
+  Digit0: '0x27',
+  Digit1: '0x1e',
+  Digit2: '0x1f',
+  Digit3: '0x20',
+  Digit4: '0x21',
+  Digit5: '0x22',
+  Digit6: '0x23',
+  Digit7: '0x24',
+  Digit8: '0x25',
+  Digit9: '0x26',
+  End: '0x4d',
+  Enter: '0x28',
+  Equal: '0x2e',
+  Escape: '0x29',
+  F1: '0x3a',
+  F2: '0x3b',
+  F3: '0x3c',
+  F4: '0x3d',
+  F5: '0x3e',
+  F6: '0x3f',
+  F7: '0x40',
+  F8: '0x41',
+  F9: '0x42',
+  F10: '0x43',
+  F11: '0x44',
+  F12: '0x45',
+  Home: '0x4a',
+  IntlBackslash: '0x31',
+  KeyA: '0x04',
+  KeyB: '0x05',
+  KeyC: '0x06',
+  KeyD: '0x07',
+  KeyE: '0x08',
+  KeyF: '0x09',
+  KeyG: '0x0a',
+  KeyH: '0x0b',
+  KeyI: '0x0c',
+  KeyJ: '0x0d',
+  KeyK: '0x0e',
+  KeyL: '0x0f',
+  KeyM: '0x10',
+  KeyN: '0x11',
+  KeyO: '0x12',
+  KeyP: '0x13',
+  KeyQ: '0x14',
+  KeyR: '0x15',
+  KeyS: '0x16',
+  KeyT: '0x17',
+  KeyU: '0x18',
+  KeyV: '0x19',
+  KeyW: '0x1a',
+  KeyX: '0x1b',
+  KeyY: '0x1c',
+  KeyZ: '0x1d',
+  MetaLeft: '0xe3',
+  MetaRight: '0xe7',
+  Minus: '0x2d',
+  NumpadEnter: '0x58',
+  PageDown: '0x4e',
+  PageUp: '0x4b',
+  Period: '0x37',
+  Quote: '0x34',
+  Semicolon: '0x33',
+  ShiftLeft: '0xe1',
+  ShiftRight: '0xe5',
+  Slash: '0x38',
+  Space: '0x2c',
+  Tab: '0x2b',
+}
 
 const STEP = 0.25
 
@@ -94,7 +177,7 @@ export const defaultKeyConfig: KeyConfig = {
       holdTimeBeforeActuation: 0,
       isAutoCapsEnabled: 0,
       autoCapsVelocityTreshold: 0,
-      keycodes: [],
+      keycodes: [{ type: 'NORMAL', value: 0 }],
     },
   ],
 }
@@ -102,6 +185,7 @@ export const defaultKeyConfig: KeyConfig = {
 export type State = {
   keyConfigs: KeyConfig[]
   selectedKeys: Set<KeyConfig['id']>
+  selectedLayer: number
   history: State[]
   currentHistoryIndex: number
   width: number
@@ -508,6 +592,23 @@ export function setMuxChannelForSelectedKeys(state: State, muxChannel: number): 
         .map((key) => ({
           ...key,
           hardware: { ...key.hardware, muxChannel },
+        })),
+    ],
+  })
+}
+
+export function setKeycodeForSelectedKeys(state: State, layer: KeyConfig['layers'][number]): State {
+  return addToHistory({
+    ...state,
+    keyConfigs: [
+      ...state.keyConfigs.filter(({ id }) => !state.selectedKeys.has(id)),
+      ...state.keyConfigs
+        .filter(({ id }) => state.selectedKeys.has(id))
+        .map((key) => ({
+          ...key,
+          layers: key.layers.map((oldLayer, index) =>
+            index === state.selectedLayer ? layer : oldLayer,
+          ),
         })),
     ],
   })
