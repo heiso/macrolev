@@ -239,7 +239,7 @@ export function Keyboard({ state, setState }: KeyboardProps) {
                         {key.hardware.adcChannel}:{key.hardware.muxChannel}
                       </>
                     ) : (
-                      <>nope</>
+                      <>{`0x${key.layers[state.selectedLayer].keycodes[0].value.toString(16).padStart(2, '0')}`}</>
                     )}
                   </div>
                 </div>

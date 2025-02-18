@@ -15,6 +15,7 @@ export default function Index() {
     initHistory({
       keyConfigs: defaultLayout as KeyConfig[],
       selectedKeys: new Set<KeyConfig['id']>(),
+      selectedLayer: 0,
       history: [],
       currentHistoryIndex: 0,
       width: 0,

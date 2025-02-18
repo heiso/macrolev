@@ -1,75 +1,5 @@
 [
   {
-    "id": 1,
-    "layout": {
-      "x": 1.25,
-      "y": 0,
-      "height": 1,
-      "width": 1
-    },
-    "hardware": {
-      "adcChannel": 0,
-      "muxChannel": 0,
-      "magnetDirection": "NORTH_UP",
-      "switchMagneticProfileId": 0
-    },
-    "deadzones": {
-      "startOffset": 0,
-      "endOffset": 0
-    },
-    "actuationDistance": 0,
-    "releaseDistance": 0,
-    "rapidTrigger": {
-      "isEnabled": 0,
-      "isContinuous": 0,
-      "actuationDistanceDelta": 0,
-      "releaseDistanceDelta": 0
-    },
-    "layers": [
-      {
-        "holdTimeBeforeActuation": 0,
-        "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
-      }
-    ]
-  },
-  {
-    "id": 0,
-    "layout": {
-      "x": 0,
-      "y": 0,
-      "height": 1,
-      "width": 1
-    },
-    "hardware": {
-      "adcChannel": 0,
-      "muxChannel": 1,
-      "magnetDirection": "NORTH_UP",
-      "switchMagneticProfileId": 0
-    },
-    "deadzones": {
-      "startOffset": 0,
-      "endOffset": 0
-    },
-    "actuationDistance": 0,
-    "releaseDistance": 0,
-    "rapidTrigger": {
-      "isEnabled": 0,
-      "isContinuous": 0,
-      "actuationDistanceDelta": 0,
-      "releaseDistanceDelta": 0
-    },
-    "layers": [
-      {
-        "holdTimeBeforeActuation": 0,
-        "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
-      }
-    ]
-  },
-  {
     "id": 15,
     "layout": {
       "x": 0,
@@ -100,7 +30,12 @@
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
         "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 0
+          }
+        ]
       }
     ]
   },
@@ -135,21 +70,26 @@
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
         "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 0
+          }
+        ]
       }
     ]
   },
   {
-    "id": 16,
+    "id": 0,
     "layout": {
-      "x": 1.25,
-      "y": 1,
+      "x": 0,
+      "y": 0,
       "height": 1,
-      "width": 1.5
+      "width": 1
     },
     "hardware": {
       "adcChannel": 0,
-      "muxChannel": 7,
+      "muxChannel": 1,
       "magnetDirection": "NORTH_UP",
       "switchMagneticProfileId": 0
     },
@@ -167,24 +107,29 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 41
+          }
+        ]
       }
     ]
   },
   {
-    "id": 31,
+    "id": 1,
     "layout": {
       "x": 1.25,
-      "y": 2,
+      "y": 0,
       "height": 1,
-      "width": 1.75
+      "width": 1
     },
     "hardware": {
       "adcChannel": 0,
-      "muxChannel": 6,
+      "muxChannel": 0,
       "magnetDirection": "NORTH_UP",
       "switchMagneticProfileId": 0
     },
@@ -202,80 +147,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
-      }
-    ]
-  },
-  {
-    "id": 44,
-    "layout": {
-      "x": 1.25,
-      "y": 3,
-      "height": 1,
-      "width": 1.25
-    },
-    "hardware": {
-      "adcChannel": 0,
-      "muxChannel": 5,
-      "magnetDirection": "NORTH_UP",
-      "switchMagneticProfileId": 0
-    },
-    "deadzones": {
-      "startOffset": 0,
-      "endOffset": 0
-    },
-    "actuationDistance": 0,
-    "releaseDistance": 0,
-    "rapidTrigger": {
-      "isEnabled": 0,
-      "isContinuous": 0,
-      "actuationDistanceDelta": 0,
-      "releaseDistanceDelta": 0
-    },
-    "layers": [
-      {
-        "holdTimeBeforeActuation": 0,
-        "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
-      }
-    ]
-  },
-  {
-    "id": 57,
-    "layout": {
-      "x": 1.25,
-      "y": 4,
-      "height": 1,
-      "width": 1.75
-    },
-    "hardware": {
-      "adcChannel": 0,
-      "muxChannel": 4,
-      "magnetDirection": "NORTH_UP",
-      "switchMagneticProfileId": 0
-    },
-    "deadzones": {
-      "startOffset": 0,
-      "endOffset": 0
-    },
-    "actuationDistance": 0,
-    "releaseDistance": 0,
-    "rapidTrigger": {
-      "isEnabled": 0,
-      "isContinuous": 0,
-      "actuationDistanceDelta": 0,
-      "releaseDistanceDelta": 0
-    },
-    "layers": [
-      {
-        "holdTimeBeforeActuation": 0,
-        "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 53
+          }
+        ]
       }
     ]
   },
@@ -307,80 +187,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
-      }
-    ]
-  },
-  {
-    "id": 17,
-    "layout": {
-      "x": 2.75,
-      "y": 1,
-      "height": 1,
-      "width": 1
-    },
-    "hardware": {
-      "adcChannel": 0,
-      "muxChannel": 10,
-      "magnetDirection": "NORTH_UP",
-      "switchMagneticProfileId": 0
-    },
-    "deadzones": {
-      "startOffset": 0,
-      "endOffset": 0
-    },
-    "actuationDistance": 0,
-    "releaseDistance": 0,
-    "rapidTrigger": {
-      "isEnabled": 0,
-      "isContinuous": 0,
-      "actuationDistanceDelta": 0,
-      "releaseDistanceDelta": 0
-    },
-    "layers": [
-      {
-        "holdTimeBeforeActuation": 0,
-        "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
-      }
-    ]
-  },
-  {
-    "id": 32,
-    "layout": {
-      "x": 3,
-      "y": 2,
-      "height": 1,
-      "width": 1
-    },
-    "hardware": {
-      "adcChannel": 0,
-      "muxChannel": 11,
-      "magnetDirection": "NORTH_UP",
-      "switchMagneticProfileId": 0
-    },
-    "deadzones": {
-      "startOffset": 0,
-      "endOffset": 0
-    },
-    "actuationDistance": 0,
-    "releaseDistance": 0,
-    "rapidTrigger": {
-      "isEnabled": 0,
-      "isContinuous": 0,
-      "actuationDistanceDelta": 0,
-      "releaseDistanceDelta": 0
-    },
-    "layers": [
-      {
-        "holdTimeBeforeActuation": 0,
-        "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 30
+          }
+        ]
       }
     ]
   },
@@ -412,10 +227,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 31
+          }
+        ]
       }
     ]
   },
@@ -447,10 +267,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 32
+          }
+        ]
       }
     ]
   },
@@ -482,10 +307,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 33
+          }
+        ]
       }
     ]
   },
@@ -517,10 +347,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 34
+          }
+        ]
       }
     ]
   },
@@ -552,10 +387,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 35
+          }
+        ]
       }
     ]
   },
@@ -587,10 +427,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 36
+          }
+        ]
       }
     ]
   },
@@ -622,10 +467,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 37
+          }
+        ]
       }
     ]
   },
@@ -657,10 +507,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 38
+          }
+        ]
       }
     ]
   },
@@ -692,10 +547,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 39
+          }
+        ]
       }
     ]
   },
@@ -727,10 +587,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 45
+          }
+        ]
       }
     ]
   },
@@ -762,10 +627,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 46
+          }
+        ]
       }
     ]
   },
@@ -797,10 +667,95 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 42
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "layout": {
+      "x": 1.25,
+      "y": 1,
+      "height": 1,
+      "width": 1.5
+    },
+    "hardware": {
+      "adcChannel": 0,
+      "muxChannel": 7,
+      "magnetDirection": "NORTH_UP",
+      "switchMagneticProfileId": 0
+    },
+    "deadzones": {
+      "startOffset": 0,
+      "endOffset": 0
+    },
+    "actuationDistance": 0,
+    "releaseDistance": 0,
+    "rapidTrigger": {
+      "isEnabled": 0,
+      "isContinuous": 0,
+      "actuationDistanceDelta": 0,
+      "releaseDistanceDelta": 0
+    },
+    "layers": [
+      {
         "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "holdTimeBeforeActuation": 0,
+        "isAutoCapsEnabled": 0,
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 43
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "layout": {
+      "x": 2.75,
+      "y": 1,
+      "height": 1,
+      "width": 1
+    },
+    "hardware": {
+      "adcChannel": 0,
+      "muxChannel": 10,
+      "magnetDirection": "NORTH_UP",
+      "switchMagneticProfileId": 0
+    },
+    "deadzones": {
+      "startOffset": 0,
+      "endOffset": 0
+    },
+    "actuationDistance": 0,
+    "releaseDistance": 0,
+    "rapidTrigger": {
+      "isEnabled": 0,
+      "isContinuous": 0,
+      "actuationDistanceDelta": 0,
+      "releaseDistanceDelta": 0
+    },
+    "layers": [
+      {
+        "autoCapsVelocityTreshold": 0,
+        "holdTimeBeforeActuation": 0,
+        "isAutoCapsEnabled": 0,
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 20
+          }
+        ]
       }
     ]
   },
@@ -832,10 +787,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 26
+          }
+        ]
       }
     ]
   },
@@ -867,10 +827,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 8
+          }
+        ]
       }
     ]
   },
@@ -902,10 +867,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 21
+          }
+        ]
       }
     ]
   },
@@ -937,10 +907,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 23
+          }
+        ]
       }
     ]
   },
@@ -972,10 +947,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 28
+          }
+        ]
       }
     ]
   },
@@ -1007,10 +987,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 24
+          }
+        ]
       }
     ]
   },
@@ -1042,10 +1027,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 12
+          }
+        ]
       }
     ]
   },
@@ -1077,10 +1067,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 18
+          }
+        ]
       }
     ]
   },
@@ -1112,10 +1107,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 19
+          }
+        ]
       }
     ]
   },
@@ -1147,10 +1147,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 47
+          }
+        ]
       }
     ]
   },
@@ -1182,10 +1187,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 48
+          }
+        ]
       }
     ]
   },
@@ -1217,10 +1227,95 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 40
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "layout": {
+      "x": 1.25,
+      "y": 2,
+      "height": 1,
+      "width": 1.75
+    },
+    "hardware": {
+      "adcChannel": 0,
+      "muxChannel": 6,
+      "magnetDirection": "NORTH_UP",
+      "switchMagneticProfileId": 0
+    },
+    "deadzones": {
+      "startOffset": 0,
+      "endOffset": 0
+    },
+    "actuationDistance": 0,
+    "releaseDistance": 0,
+    "rapidTrigger": {
+      "isEnabled": 0,
+      "isContinuous": 0,
+      "actuationDistanceDelta": 0,
+      "releaseDistanceDelta": 0
+    },
+    "layers": [
+      {
         "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "holdTimeBeforeActuation": 0,
+        "isAutoCapsEnabled": 0,
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 57
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "layout": {
+      "x": 3,
+      "y": 2,
+      "height": 1,
+      "width": 1
+    },
+    "hardware": {
+      "adcChannel": 0,
+      "muxChannel": 11,
+      "magnetDirection": "NORTH_UP",
+      "switchMagneticProfileId": 0
+    },
+    "deadzones": {
+      "startOffset": 0,
+      "endOffset": 0
+    },
+    "actuationDistance": 0,
+    "releaseDistance": 0,
+    "rapidTrigger": {
+      "isEnabled": 0,
+      "isContinuous": 0,
+      "actuationDistanceDelta": 0,
+      "releaseDistanceDelta": 0
+    },
+    "layers": [
+      {
+        "autoCapsVelocityTreshold": 0,
+        "holdTimeBeforeActuation": 0,
+        "isAutoCapsEnabled": 0,
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 4
+          }
+        ]
       }
     ]
   },
@@ -1252,10 +1347,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 22
+          }
+        ]
       }
     ]
   },
@@ -1287,10 +1387,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 7
+          }
+        ]
       }
     ]
   },
@@ -1322,10 +1427,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 9
+          }
+        ]
       }
     ]
   },
@@ -1357,10 +1467,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 10
+          }
+        ]
       }
     ]
   },
@@ -1392,10 +1507,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 11
+          }
+        ]
       }
     ]
   },
@@ -1427,10 +1547,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 13
+          }
+        ]
       }
     ]
   },
@@ -1462,10 +1587,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 14
+          }
+        ]
       }
     ]
   },
@@ -1497,10 +1627,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 15
+          }
+        ]
       }
     ]
   },
@@ -1532,10 +1667,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 51
+          }
+        ]
       }
     ]
   },
@@ -1567,10 +1707,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 52
+          }
+        ]
       }
     ]
   },
@@ -1602,10 +1747,55 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 50
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "layout": {
+      "x": 1.25,
+      "y": 3,
+      "height": 1,
+      "width": 1.25
+    },
+    "hardware": {
+      "adcChannel": 0,
+      "muxChannel": 5,
+      "magnetDirection": "NORTH_UP",
+      "switchMagneticProfileId": 0
+    },
+    "deadzones": {
+      "startOffset": 0,
+      "endOffset": 0
+    },
+    "actuationDistance": 0,
+    "releaseDistance": 0,
+    "rapidTrigger": {
+      "isEnabled": 0,
+      "isContinuous": 0,
+      "actuationDistanceDelta": 0,
+      "releaseDistanceDelta": 0
+    },
+    "layers": [
+      {
         "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "holdTimeBeforeActuation": 0,
+        "isAutoCapsEnabled": 0,
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 225
+          }
+        ]
       }
     ]
   },
@@ -1637,10 +1827,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 100
+          }
+        ]
       }
     ]
   },
@@ -1672,10 +1867,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 29
+          }
+        ]
       }
     ]
   },
@@ -1707,10 +1907,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 27
+          }
+        ]
       }
     ]
   },
@@ -1742,10 +1947,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 6
+          }
+        ]
       }
     ]
   },
@@ -1777,10 +1987,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 25
+          }
+        ]
       }
     ]
   },
@@ -1812,10 +2027,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 5
+          }
+        ]
       }
     ]
   },
@@ -1847,10 +2067,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 17
+          }
+        ]
       }
     ]
   },
@@ -1882,10 +2107,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 16
+          }
+        ]
       }
     ]
   },
@@ -1917,10 +2147,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 54
+          }
+        ]
       }
     ]
   },
@@ -1952,10 +2187,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 55
+          }
+        ]
       }
     ]
   },
@@ -1987,10 +2227,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 56
+          }
+        ]
       }
     ]
   },
@@ -2022,10 +2267,55 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 229
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "layout": {
+      "x": 1.25,
+      "y": 4,
+      "height": 1,
+      "width": 1.75
+    },
+    "hardware": {
+      "adcChannel": 0,
+      "muxChannel": 4,
+      "magnetDirection": "NORTH_UP",
+      "switchMagneticProfileId": 0
+    },
+    "deadzones": {
+      "startOffset": 0,
+      "endOffset": 0
+    },
+    "actuationDistance": 0,
+    "releaseDistance": 0,
+    "rapidTrigger": {
+      "isEnabled": 0,
+      "isContinuous": 0,
+      "actuationDistanceDelta": 0,
+      "releaseDistanceDelta": 0
+    },
+    "layers": [
+      {
         "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "holdTimeBeforeActuation": 0,
+        "isAutoCapsEnabled": 0,
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 224
+          }
+        ]
       }
     ]
   },
@@ -2057,10 +2347,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 226
+          }
+        ]
       }
     ]
   },
@@ -2092,10 +2387,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 227
+          }
+        ]
       }
     ]
   },
@@ -2127,10 +2427,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 44
+          }
+        ]
       }
     ]
   },
@@ -2162,10 +2467,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 44
+          }
+        ]
       }
     ]
   },
@@ -2197,10 +2507,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 231
+          }
+        ]
       }
     ]
   },
@@ -2232,10 +2547,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 230
+          }
+        ]
       }
     ]
   },
@@ -2267,10 +2587,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 80
+          }
+        ]
       }
     ]
   },
@@ -2302,10 +2627,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 81
+          }
+        ]
       }
     ]
   },
@@ -2337,10 +2667,15 @@
     },
     "layers": [
       {
+        "autoCapsVelocityTreshold": 0,
         "holdTimeBeforeActuation": 0,
         "isAutoCapsEnabled": 0,
-        "autoCapsVelocityTreshold": 0,
-        "keycodes": []
+        "keycodes": [
+          {
+            "type": "NORMAL",
+            "value": 79
+          }
+        ]
       }
     ]
   }
