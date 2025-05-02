@@ -14,5 +14,5 @@ export default defineConfig({
       plugins: [autoprefixer],
     },
   },
-  plugins: [reactRouter(), tsconfigPaths(), tailwindcss()],
+  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
 })
