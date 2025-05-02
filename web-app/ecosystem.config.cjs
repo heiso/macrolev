@@ -23,13 +23,6 @@ const config = {
 
     {
       ...common,
-      name: 'routes',
-      script: 'npx tsx generate-remix-routes.ts',
-      watch: ['generate-remix-routes.ts', 'remix.config.js', './app/routes/**/*.tsx'],
-    },
-
-    {
-      ...common,
       name: 'app',
       watch: ['vite.config.ts'],
       script: 'npx react-router dev',

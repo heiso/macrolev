@@ -1,6 +1,6 @@
 import { reactRouter } from '@react-router/dev/vite'
+import tailwindcss from '@tailwindcss/vite'
 import autoprefixer from 'autoprefixer'
-import tailwindcss from 'tailwindcss'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
@@ -11,8 +11,8 @@ export default defineConfig({
   base: '/macrolev/',
   css: {
     postcss: {
-      plugins: [tailwindcss, autoprefixer],
+      plugins: [autoprefixer],
     },
   },
-  plugins: [reactRouter(), tsconfigPaths()],
+  plugins: [reactRouter(), tsconfigPaths(), tailwindcss()],
 })
