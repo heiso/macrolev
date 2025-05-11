@@ -9,12 +9,10 @@ export default function Index() {
       <header className="w-full px-6 py-4 flex flex-row items-center justify-between">
         <Link
           to={paths.home}
-          className="text-xl font-light text-gray-400 transition hover:text-gray-100 active:opacity-80"
+          className="text-xl font-light text-gray-400 transition hover:text-gray-200 active:opacity-80"
         >
           <span className="font-bold text-gray-200">Macrolev</span>
-          <small className="ml-2 self-end text-sm font-extrabold text-pink-50-200">
-            v{version}
-          </small>
+          <small className="ml-2 self-end text-sm font-extrabold">v{version}</small>
         </Link>
 
         <div className="flex flex-row items-center gap-6">
