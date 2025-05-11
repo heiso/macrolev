@@ -1,12 +1,11 @@
-[submodule "firmware/stm32f4xx/tinyusb"]
-	path = firmware/stm32f4xx/tinyusb
-	url = git@github.com:hathach/tinyusb.git
-[submodule "firmware/esp32s3/esp-idf"]
-	path = firmware/esp32s3/esp-idf
-	url = git@github.com:espressif/esp-idf.git
-[submodule "firmware/resources/espressif/esp-iot-solution"]
-	path = firmware/resources/espressif/esp-iot-solution
-	url = https://github.com/espressif/esp-iot-solution.git
 [submodule "firmware/resources/espressif/esp-idf"]
 	path = firmware/resources/espressif/esp-idf
 	url = git@github.com:espressif/esp-idf.git
+	branch = release/v5.4
+[submodule "firmware/resources/espressif/esp-iot-solution"]
+	path = firmware/resources/espressif/esp-iot-solution
+	url = https://github.com/espressif/esp-iot-solution.git
+	branch = release/v2.0
+[submodule "firmware/stm32f4xx/tinyusb"]
+	path = firmware/stm32f4xx/tinyusb
+	url = git@github.com:hathach/tinyusb.git
