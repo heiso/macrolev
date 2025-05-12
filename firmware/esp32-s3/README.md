@@ -3,11 +3,8 @@
 Install idf.py cmd [https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/index.html]
 
 ```bash
-mkdir ~/esp
-cd ~/esp
-git clone git@github.com:espressif/esp-idf.git
-cd esp-idf
-git submodule update --init --recursive
+git submodule update --recursive
+cd firmware/ressources/espressif/esp-idf
 ./install.sh
 ```
 
@@ -17,7 +14,7 @@ Before project configuration and build, make sure to set the correct chip target
 
 ## Erase the NVRAM
 
-Before flash it to the board, it is recommended to erase NVRAM if user doesn't want to keep the previous examples or other projects stored info 
+Before flash it to the board, it is recommended to erase NVRAM if user doesn't want to keep the previous examples or other projects stored info
 using `idf.py -p PORT erase-flash`
 
 ## Build and Flash
