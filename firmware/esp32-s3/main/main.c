@@ -1,4 +1,5 @@
 #include "cJSON.h"
+#include "class/hid/hid_device.h"
 #include "driver/gpio.h"
 #include "esp_adc/adc_continuous.h"
 #include "esp_log.h"
@@ -205,7 +206,7 @@ static esp_err_t init_spiffs(void) {
   esp_vfs_spiffs_conf_t conf = {
     .base_path = "/spiffs",
     .partition_label = NULL,
-    .max_files = 5,
+    .max_files = 1,
     .format_if_mount_failed = true
   };
 
@@ -249,6 +250,7 @@ esp_err_t save_json_to_file(const char *filename, cJSON *json) {
   free(json_string);
 
   ESP_LOGI(TAG, "JSON saved to file: %s", filepath);
+  ESP_LOGI(TAG, "JSON: %s", cJSON_Print(json));
   return ESP_OK;
 }
 
@@ -296,6 +298,13 @@ cJSON *load_json_from_file(const char *filename) {
   return json;
 }
 
+#define CDC_ACCUM_BUF_SIZE (1024 * 1024) // 1MB buffer for large JSON payloads
+static char cdc_accum_buf[CDC_ACCUM_BUF_SIZE];
+static size_t cdc_accum_len = 0;
+
+#define MARKER "[EOF]"
+#define MARKER_LEN (sizeof(MARKER) - 1)
+
 /**
  * @brief CDC device RX callback
  *
@@ -307,77 +316,48 @@ cJSON *load_json_from_file(const char *filename) {
 void tinyusb_cdc_rx_callback(int itf, cdcacm_event_t *event) {
   size_t rx_size = 0;
   esp_err_t ret = tinyusb_cdcacm_read(itf, rx_buf, CONFIG_TINYUSB_CDC_RX_BUFSIZE, &rx_size);
-  if (ret == ESP_OK) {
-    // Null terminate the received data
-    rx_buf[rx_size] = '\0';
+  ESP_LOGI(TAG, "CDC RX callback: ret=%d, rx_size=%d", ret, rx_size);
+  if (ret == ESP_OK && rx_size > 0) {
+    ESP_LOGI(TAG, "Accumulating %d bytes to buffer (current len: %d)", rx_size, cdc_accum_len);
+    // Check for buffer overflow
+    if (cdc_accum_len + rx_size < CDC_ACCUM_BUF_SIZE) {
+      memcpy(&cdc_accum_buf[cdc_accum_len], rx_buf, rx_size);
+      cdc_accum_len += rx_size;
+      ESP_LOGI(TAG, "Buffer after accumulation: len=%d", cdc_accum_len);
+      ESP_LOG_BUFFER_HEXDUMP(TAG, rx_buf, rx_size, ESP_LOG_INFO);
 
-    // Try to parse as JSON
-    cJSON *json = cJSON_Parse((char *)rx_buf);
-    if (json != NULL) {
-      // Valid JSON received, save it
-      ESP_LOGI(TAG, "Valid JSON received, saving to config.json");
-      esp_err_t save_ret = save_json_to_file(JSON_FILENAME, json);
+      // Robustly search for marker anywhere in the buffer
+      if (cdc_accum_len >= MARKER_LEN) {
+        for (size_t i = 0; i <= cdc_accum_len - MARKER_LEN; ++i) {
+          if (memcmp(&cdc_accum_buf[i], MARKER, MARKER_LEN) == 0) {
+            ESP_LOGI(TAG, "Marker detected ([EOF]) at position %d. Attempting to parse JSON.", (int)i);
+            cdc_accum_buf[i] = '\0'; // Null-terminate before marker
 
-      // Send response
-      const char *response;
-      if (save_ret == ESP_OK) {
-        response = "JSON saved successfully\r\n";
-      } else {
-        response = "Error saving JSON\r\n";
+            // Try to parse as JSON
+            cJSON *json = cJSON_Parse(cdc_accum_buf);
+            if (json != NULL) {
+              ESP_LOGI(TAG, "Valid JSON received, saving to config.json");
+              save_json_to_file(JSON_FILENAME, json);
+              cJSON_Delete(json);
+            } else {
+              ESP_LOGE(TAG, "Invalid JSON received. Parse failed.");
+            }
+            // Move any data after the marker to the start of the buffer (for next message)
+            size_t remaining = cdc_accum_len - (i + MARKER_LEN);
+            if (remaining > 0) {
+              memmove(cdc_accum_buf, &cdc_accum_buf[i + MARKER_LEN], remaining);
+            }
+            cdc_accum_len = remaining;
+            ESP_LOGI(TAG, "Buffer reset for next message. Remaining bytes: %d", (int)cdc_accum_len);
+            ESP_LOGI(TAG, "Last 16 bytes: %.*s", 16, &cdc_accum_buf[cdc_accum_len > 16 ? cdc_accum_len - 16 : 0]);
+            break; // Only handle one message per callback
+          }
+        }
       }
-      tinyusb_cdcacm_write_queue(itf, (uint8_t *)response, strlen(response));
-      tinyusb_cdcacm_write_flush(itf, 0);
-
-      cJSON_Delete(json);
     } else {
-      // Not valid JSON, echo back as normal
-      usb_message_t tx_msg = {
-        .buf_len = rx_size,
-        .itf = itf,
-      };
-      memcpy(tx_msg.buf, rx_buf, rx_size);
-      xQueueSend(usb_queue, &tx_msg, 0);
-    }
-  } else {
-    ESP_LOGE(TAG, "Read Error");
-  }
-}
-
-/**
- * @brief CDC device line change callback
- *
- * CDC device signals, that the DTR, RTS states changed
- *
- * @param[in] itf   CDC device index
- * @param[in] event CDC event type
- */
-void tinyusb_cdc_line_state_changed_callback(int itf, cdcacm_event_t *event) {
-  int dtr = event->line_state_changed_data.dtr;
-  int rts = event->line_state_changed_data.rts;
-  ESP_LOGI(TAG, "Line state changed on channel %d: DTR:%d, RTS:%d", itf, dtr, rts);
-
-  // When DTR is set, terminal connection is opened
-  if (dtr) {
-    // Send welcome message
-    const char *hello = "Hello! ESP32-S3 CDC device is ready!\r\n";
-    tinyusb_cdcacm_write_queue(itf, (uint8_t *)hello, strlen(hello));
-    tinyusb_cdcacm_write_flush(itf, 0);
-
-    // Load and send current JSON content
-    cJSON *json = load_json_from_file(JSON_FILENAME);
-    if (json != NULL) {
-      char *json_str = cJSON_PrintUnformatted(json);
-      if (json_str != NULL) {
-        tinyusb_cdcacm_write_queue(itf, (uint8_t *)json_str, strlen(json_str));
-        tinyusb_cdcacm_write_queue(itf, (uint8_t *)"\r\n", 2);
-        tinyusb_cdcacm_write_flush(itf, 0);
-        free(json_str);
-      }
-      cJSON_Delete(json);
-    } else {
-      const char *no_json = "No JSON configuration found\r\n";
-      tinyusb_cdcacm_write_queue(itf, (uint8_t *)no_json, strlen(no_json));
-      tinyusb_cdcacm_write_flush(itf, 0);
+      // Buffer overflow, reset (no response)
+      ESP_LOGE(TAG, "CDC accumulation buffer overflow. Resetting buffer.");
+      cdc_accum_len = 0;
     }
   }
 }
@@ -393,12 +373,7 @@ void app_main(void) {
 
   // Initialize TinyUSB
   ESP_LOGI(TAG, "USB initialization");
-  const tinyusb_config_t tusb_cfg = {
-    .device_descriptor = NULL,
-    .string_descriptor = NULL,
-    .external_phy = false,
-    .configuration_descriptor = NULL,
-  };
+  extern const tinyusb_config_t tusb_cfg;
   ESP_ERROR_CHECK(tinyusb_driver_install(&tusb_cfg));
 
   // Initialize CDC
@@ -407,28 +382,68 @@ void app_main(void) {
     .cdc_port = TINYUSB_CDC_ACM_0,
     .callback_rx = &tinyusb_cdc_rx_callback,
     .callback_rx_wanted_char = NULL,
-    .callback_line_state_changed = &tinyusb_cdc_line_state_changed_callback,
-    .callback_line_coding_changed = NULL
+    .callback_line_state_changed = NULL,
+    .callback_line_coding_changed = NULL,
+    .rx_unread_buf_sz = CONFIG_TINYUSB_CDC_RX_BUFSIZE
   };
   ESP_ERROR_CHECK(tusb_cdc_acm_init(&acm_cfg));
 
   ESP_LOGI(TAG, "USB initialization DONE");
 
+  // test init json
+  cJSON *json = load_json_from_file(JSON_FILENAME);
+  ESP_LOGI(TAG, "JSON: %s", cJSON_PrintUnformatted(json));
+  // const int size = cJSON_GetArraySize(json);
+  // for (int i = 0; i < size; i++) {
+  //   cJSON *item = cJSON_GetArrayItem(json, i);
+  //   cJSON *id = cJSON_GetObjectItemCaseSensitive(item, "id");
+  //   cJSON *hardware = cJSON_GetObjectItemCaseSensitive(item, "hardware");
+  //   cJSON *adcChannel = cJSON_GetObjectItemCaseSensitive(hardware, "adcChannel");
+  //   cJSON *muxChannel = cJSON_GetObjectItemCaseSensitive(hardware, "muxChannel");
+  //   cJSON *magnetDirection = cJSON_GetObjectItemCaseSensitive(hardware, "magnetDirection");
+  //   ESP_LOGI(TAG, "id: %d", id->valueint);
+  //   ESP_LOGI(TAG, "adcChannel: %d", adcChannel->valueint);
+  //   ESP_LOGI(TAG, "muxChannel: %d", muxChannel->valueint);
+  //   ESP_LOGI(TAG, "magnetDirection: %d", magnetDirection->valueint);
+  // }
+  // cJSON_Delete(json);
+
   // Main loop
   while (1) {
-    if (xQueueReceive(usb_queue, &msg, portMAX_DELAY)) {
-      if (msg.buf_len) {
-        // Print received data
-        ESP_LOGI(TAG, "Data from channel %d:", msg.itf);
-        ESP_LOG_BUFFER_HEXDUMP(TAG, msg.buf, msg.buf_len, ESP_LOG_INFO);
+    vTaskDelay(pdMS_TO_TICKS(10));
+    // if (xQueueReceive(usb_queue, &msg, portMAX_DELAY)) {
+    //   if (msg.buf_len) {
+    //     // Print received data
+    //     ESP_LOGI(TAG, "Data from channel %d with length %d", msg.itf, msg.buf_len);
+    //     ESP_LOG_BUFFER_HEXDUMP(TAG, msg.buf, msg.buf_len, ESP_LOG_INFO);
 
-        // Echo back
-        tinyusb_cdcacm_write_queue(msg.itf, msg.buf, msg.buf_len);
-        esp_err_t err = tinyusb_cdcacm_write_flush(msg.itf, 0);
-        if (err != ESP_OK) {
-          ESP_LOGE(TAG, "CDC write error: %s", esp_err_to_name(err));
-        }
-      }
-    }
+    //     // // Echo back
+    //     // tinyusb_cdcacm_write_queue(msg.itf, msg.buf, msg.buf_len);
+    //     // esp_err_t err = tinyusb_cdcacm_write_flush(msg.itf, 0);
+    //     // if (err != ESP_OK) {
+    //     //   ESP_LOGE(TAG, "CDC write error: %s", esp_err_to_name(err));
+    //     // }
+    //   }
+    // }
   }
+}
+
+/********* TinyUSB HID callbacks ***************/
+
+// Invoked when received GET_REPORT control request
+// Application must fill buffer report's content and return its length.
+// Return zero will cause the stack to STALL request
+uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t *buffer, uint16_t reqlen) {
+  (void)instance;
+  (void)report_id;
+  (void)report_type;
+  (void)buffer;
+  (void)reqlen;
+
+  return 0;
+}
+
+// Invoked when received SET_REPORT control request or
+// received data on OUT endpoint ( Report ID = 0, Type = 0 )
+void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
 }

@@ -68,9 +68,11 @@
       "forward_list": "cpp",
       "list": "cpp",
       "format": "cpp",
-      "functional": "cpp"
+      "functional": "cpp",
+      "queue.h": "c"
     },
     "typescript.tsdk": "./node_modules/typescript/lib",
-    "tailwindCSS.classAttributes": ["class", "className", ".*Styles", ".*Class"]
+    "tailwindCSS.classAttributes": ["class", "className", ".*Styles", ".*Class"],
+    "cSpell.enabled": false
   }
 }
