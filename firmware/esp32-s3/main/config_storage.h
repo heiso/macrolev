@@ -1,0 +1,1 @@
+void config_storage_init(void);

@@ -1,5 +1,7 @@
 #include "tinyusb.h"
 
+static const char *TAG = "MACROLEV";
+
 // Interface definitions
 enum {
   ITF_NUM_HID = 0,
@@ -58,4 +60,29 @@ const tinyusb_config_t tusb_cfg = {
   .string_descriptor = string_descriptor,
   .external_phy = false,
   .configuration_descriptor = configuration_descriptor,
+};
+
+// Invoked when received GET_REPORT control request
+// Application must fill buffer report's content and return its length.
+// Return zero will cause the stack to STALL request
+uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t *buffer, uint16_t reqlen) {
+  (void)instance;
+  (void)report_id;
+  (void)report_type;
+  (void)buffer;
+  (void)reqlen;
+
+  return 0;
+};
+
+// Invoked when received SET_REPORT control request or
+// received data on OUT endpoint ( Report ID = 0, Type = 0 )
+void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
+};
+
+void usb_init(void) {
+  // Initialize TinyUSB
+  ESP_LOGI(TAG, "USB initialization");
+  extern const tinyusb_config_t tusb_cfg;
+  ESP_ERROR_CHECK(tinyusb_driver_install(&tusb_cfg));
 };
