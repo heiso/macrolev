@@ -1,15 +1,6 @@
-#include "cJSON.h"
-#include "class/hid/hid_device.h"
 #include "config_storage.h"
 #include "esp_log.h"
-#include "esp_spiffs.h"
 #include "freertos/FreeRTOS.h"
-#include "freertos/queue.h"
-#include "freertos/task.h"
-#include "macrolev.h"
-#include "sdkconfig.h"
-#include "tinyusb.h"
-#include "tusb_cdc_acm.h"
 #include "usb.h"
 #include <stdio.h>
 #include <string.h>

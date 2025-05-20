@@ -1,5 +1,4 @@
 #include "cJSON.h"
-#include "class/hid/hid_device.h"
 #include "esp_log.h"
 #include "esp_spiffs.h"
 #include "freertos/FreeRTOS.h"
@@ -8,7 +7,7 @@
 #include "macrolev.h"
 #include "sdkconfig.h"
 #include "tinyusb.h"
-#include "tusb_cdc_acm.h"
+#include "usb.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -17,7 +16,7 @@ static const char *TAG = "MACROLEV";
 #define BOOT_MODE_PIN GPIO_NUM_0
 #define STORAGE_NAMESPACE "storage"
 #define JSON_FILENAME "config.json"
-#define CDC_ACCUM_BUF_SIZE (1024 * 1024) // 1MB buffer for large JSON payloads
+#define CDC_ACCUM_BUF_SIZE 1024
 
 #define MARKER "[EOF]"
 #define MARKER_LEN (sizeof(MARKER) - 1)
@@ -25,17 +24,81 @@ static const char *TAG = "MACROLEV";
 static char cdc_accum_buf[CDC_ACCUM_BUF_SIZE];
 static size_t cdc_accum_len = 0;
 
-static uint8_t rx_buffer[CONFIG_TINYUSB_CDC_RX_BUFSIZE + 1];
+esp_err_t save_json_to_file(const char *filename, cJSON *json) {
+  char *json_string = cJSON_PrintUnformatted(json);
+  if (json_string == NULL) {
+    ESP_LOGE(TAG, "Failed to print json");
+    return ESP_FAIL;
+  }
 
-static QueueHandle_t usb_cdc_rx_queue;
+  char filepath[64];
+  // snprintf(filepath, sizeof(filepath), "/%s", filename);
+  snprintf(filepath, sizeof(filepath), filename);
 
-typedef struct usb_message {
-  uint8_t buf[CONFIG_TINYUSB_CDC_RX_BUFSIZE + 1];
-  size_t buf_len;
-} usb_message_t;
+  FILE *f = fopen(filepath, "w");
+  if (f == NULL) {
+    ESP_LOGE(TAG, "Failed to open file for writing");
+    free(json_string);
+    return ESP_FAIL;
+  }
+
+  fprintf(f, "%s", json_string);
+  fclose(f);
+  free(json_string);
+
+  ESP_LOGI(TAG, "JSON saved to file: %s", filepath);
+  ESP_LOGI(TAG, "JSON: %s", cJSON_Print(json));
+  return ESP_OK;
+}
+
+// Load JSON from file
+cJSON *load_json_from_file(const char *filename) {
+  char filepath[64];
+  // snprintf(filepath, sizeof(filepath), "/%s", filename);
+  snprintf(filepath, sizeof(filepath), filename);
+
+  FILE *f = fopen(filepath, "r");
+  if (f == NULL) {
+    ESP_LOGE(TAG, "Failed to open file for reading");
+    return NULL;
+  }
+
+  // Get file size
+  fseek(f, 0, SEEK_END);
+  long fsize = ftell(f);
+  fseek(f, 0, SEEK_SET);
+
+  // Read file content
+  char *content = malloc(fsize + 1);
+  if (content == NULL) {
+    ESP_LOGE(TAG, "Failed to allocate memory");
+    fclose(f);
+    return NULL;
+  }
+
+  size_t read_size = fread(content, 1, fsize, f);
+  content[read_size] = '\0';
+  fclose(f);
+
+  // Parse JSON
+  cJSON *json = cJSON_Parse(content);
+  free(content);
+
+  if (json == NULL) {
+    const char *error_ptr = cJSON_GetErrorPtr();
+    if (error_ptr != NULL) {
+      ESP_LOGE(TAG, "Error parsing JSON before: %s", error_ptr);
+    }
+    return NULL;
+  }
+
+  ESP_LOGI(TAG, "JSON loaded from file: %s", filepath);
+  return json;
+}
 
 static void usb_cdc_rx_queue_handler_task(void *pvParameters) {
   usb_message_t msg;
+  extern QueueHandle_t usb_cdc_rx_queue;
 
   while (1) {
     if (xQueueReceive(usb_cdc_rx_queue, &msg, portMAX_DELAY) == pdTRUE) {
@@ -109,115 +172,10 @@ static esp_err_t init_spiffs(void) {
   return ESP_OK;
 }
 
-// Save JSON to file
-esp_err_t save_json_to_file(const char *filename, cJSON *json) {
-  char *json_string = cJSON_PrintUnformatted(json);
-  if (json_string == NULL) {
-    ESP_LOGE(TAG, "Failed to print json");
-    return ESP_FAIL;
-  }
-
-  char filepath[64];
-  // snprintf(filepath, sizeof(filepath), "/%s", filename);
-  snprintf(filepath, sizeof(filepath), filename);
-
-  FILE *f = fopen(filepath, "w");
-  if (f == NULL) {
-    ESP_LOGE(TAG, "Failed to open file for writing");
-    free(json_string);
-    return ESP_FAIL;
-  }
-
-  fprintf(f, "%s", json_string);
-  fclose(f);
-  free(json_string);
-
-  ESP_LOGI(TAG, "JSON saved to file: %s", filepath);
-  ESP_LOGI(TAG, "JSON: %s", cJSON_Print(json));
-  return ESP_OK;
-}
-
-// Load JSON from file
-cJSON *load_json_from_file(const char *filename) {
-  char filepath[64];
-  // snprintf(filepath, sizeof(filepath), "/%s", filename);
-  snprintf(filepath, sizeof(filepath), filename);
-
-  FILE *f = fopen(filepath, "r");
-  if (f == NULL) {
-    ESP_LOGE(TAG, "Failed to open file for reading");
-    return NULL;
-  }
-
-  // Get file size
-  fseek(f, 0, SEEK_END);
-  long fsize = ftell(f);
-  fseek(f, 0, SEEK_SET);
-
-  // Read file content
-  char *content = malloc(fsize + 1);
-  if (content == NULL) {
-    ESP_LOGE(TAG, "Failed to allocate memory");
-    fclose(f);
-    return NULL;
-  }
-
-  size_t read_size = fread(content, 1, fsize, f);
-  content[read_size] = '\0';
-  fclose(f);
-
-  // Parse JSON
-  cJSON *json = cJSON_Parse(content);
-  free(content);
-
-  if (json == NULL) {
-    const char *error_ptr = cJSON_GetErrorPtr();
-    if (error_ptr != NULL) {
-      ESP_LOGE(TAG, "Error parsing JSON before: %s", error_ptr);
-    }
-    return NULL;
-  }
-
-  ESP_LOGI(TAG, "JSON loaded from file: %s", filepath);
-  return json;
-}
-
-void tinyusb_cdc_rx_callback(int itf, cdcacm_event_t *event) {
-  usb_message_t msg = { 0 };
-  msg.buf_len = 0;
-
-  // Read data from CDC
-  esp_err_t ret = tinyusb_cdcacm_read(itf, msg.buf, CONFIG_TINYUSB_CDC_RX_BUFSIZE, &msg.buf_len);
-  if (ret == ESP_OK && msg.buf_len > 0) {
-    // Send message to queue
-    if (xQueueSend(usb_cdc_rx_queue, &msg, portMAX_DELAY) != pdTRUE) {
-      ESP_LOGE(TAG, "Failed to send message to queue");
-    }
-  }
-}
-
 void config_storage_init(void) {
   // Initialize SPIFFS
   ESP_ERROR_CHECK(init_spiffs());
 
-  // Create the CDC RX queue
-  usb_cdc_rx_queue = xQueueCreate(5, sizeof(usb_message_t));
-  assert(usb_cdc_rx_queue);
-
   // Create the CDC RX queue handler task
   xTaskCreate(usb_cdc_rx_queue_handler_task, "usb_cdc_rx_queue_handler", 4096, NULL, 5, NULL);
-
-  // Initialize CDC
-  tinyusb_config_cdcacm_t acm_cfg = {
-    .usb_dev = TINYUSB_USBDEV_0,
-    .cdc_port = TINYUSB_CDC_ACM_0,
-    .callback_rx = &tinyusb_cdc_rx_callback,
-    .callback_rx_wanted_char = NULL,
-    .callback_line_state_changed = NULL,
-    .callback_line_coding_changed = NULL,
-    .rx_unread_buf_sz = CONFIG_TINYUSB_CDC_RX_BUFSIZE
-  };
-  ESP_ERROR_CHECK(tusb_cdc_acm_init(&acm_cfg));
-
-  ESP_LOGI(TAG, "USB initialization DONE");
 }
