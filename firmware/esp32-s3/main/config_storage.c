@@ -15,8 +15,9 @@ static const char *TAG = "MACROLEV";
 
 #define BOOT_MODE_PIN GPIO_NUM_0
 #define STORAGE_NAMESPACE "storage"
+#define STORAGE_BASE_PATH "/spiffs"
 #define JSON_FILENAME "config.json"
-#define CDC_ACCUM_BUF_SIZE 1024
+#define CDC_ACCUM_BUF_SIZE (250 * 1024) // 250kb max
 
 #define MARKER "[EOF]"
 #define MARKER_LEN (sizeof(MARKER) - 1)
@@ -32,8 +33,7 @@ esp_err_t save_json_to_file(const char *filename, cJSON *json) {
   }
 
   char filepath[64];
-  // snprintf(filepath, sizeof(filepath), "/%s", filename);
-  snprintf(filepath, sizeof(filepath), filename);
+  snprintf(filepath, sizeof(filepath), "%s/%s", STORAGE_BASE_PATH, filename);
 
   FILE *f = fopen(filepath, "w");
   if (f == NULL) {
@@ -105,7 +105,7 @@ static void usb_cdc_rx_queue_handler_task(void *pvParameters) {
       ESP_LOGI(TAG, "Received %d bytes from USB", msg.buf_len);
 
       // Check for buffer overflow
-      if (cdc_accum_len + msg.buf_len < CDC_ACCUM_BUF_SIZE) {
+      if (cdc_accum_len + msg.buf_len <= CDC_ACCUM_BUF_SIZE) {
         memcpy(&cdc_accum_buf[cdc_accum_len], msg.buf, msg.buf_len);
         cdc_accum_len += msg.buf_len;
 
@@ -137,7 +137,7 @@ static void usb_cdc_rx_queue_handler_task(void *pvParameters) {
           }
         }
       } else {
-        ESP_LOGE(TAG, "CDC accumulation buffer overflow. Resetting buffer.");
+        ESP_LOGE(TAG, "CDC accumulation buffer overflow. Resetting buffer. cdc_accum_len: %d, CDC_ACCUM_BUF_SIZE: %d", cdc_accum_len, CDC_ACCUM_BUF_SIZE);
         cdc_accum_len = 0;
       }
     }
@@ -149,7 +149,7 @@ static esp_err_t init_spiffs(void) {
   ESP_LOGI(TAG, "Initializing SPIFFS");
 
   esp_vfs_spiffs_conf_t conf = {
-    .base_path = "/",
+    .base_path = STORAGE_BASE_PATH,
     .partition_label = NULL,
     .max_files = 1,
     .format_if_mount_failed = true

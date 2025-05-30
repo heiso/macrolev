@@ -10,16 +10,13 @@
         "${env:IDF_PATH}/components/**"
       ],
       "browse": {
-        "path": [
-          "${env:IDF_PATH}/components",
-          "${workspaceFolder}"
-        ],
+        "path": ["${env:IDF_PATH}/components", "${workspaceFolder}"],
         "limitSymbolsToIncludedHeaders": true
       }
     }
   ],
   "env": {
-    "IDF_PATH": "~/esp/esp-idf",
+    "IDF_PATH": "${workspaceFolder}/../../ressources/espressif/esp-idf",
     "IDF_TOOL_PATH": "~/.espressif/tools"
   },
   "version": 4

@@ -94,7 +94,6 @@ void tinyusb_cdc_rx_callback(int itf, cdcacm_event_t *event) {
 void usb_init(void) {
   // Initialize TinyUSB
   ESP_LOGI(TAG, "USB initialization");
-  extern const tinyusb_config_t tusb_cfg;
   ESP_ERROR_CHECK(tinyusb_driver_install(&tusb_cfg));
 
   // Create the CDC RX queue

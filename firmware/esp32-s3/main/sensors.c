@@ -9,17 +9,6 @@
 #include <stdio.h>
 #include <string.h>
 
-/**
- * chip dependent
- * - usb
- * - config r/w
- * - how to read adc values
- *
- * lib
- * - config parse
- * - runtime
- */
-
 static const char *TAG = "MACROLEV";
 
 /**

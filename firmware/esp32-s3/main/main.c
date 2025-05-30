@@ -27,7 +27,6 @@ void app_main(void) {
   // Main loop
   while (1) {
     vTaskDelay(pdMS_TO_TICKS(10));
-    // if (xQueueReceive(usb_queue, &msg, portMAX_DELAY)) {
     //   if (msg.buf_len) {
     //     // Print received data
     //     ESP_LOGI(TAG, "Data from channel %d with length %d", msg.itf, msg.buf_len);
