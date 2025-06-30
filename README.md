@@ -58,6 +58,7 @@ This is still a work in progress, the firt revision is working flawlessly but it
 - [Rev 2.0 Schema (daughter board)](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2FRev%25202.0%2Fdaughter_board%2Fdaughter_board.kicad_sch)
 - [Rev 2.0 Pcb (daughter board)](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2Fheiso%2Fmacrolev%2Fblob%2Fmain%2Fkicad%2FRev%25202.0%2Fdaughter_board%2Fdaughter_board.kicad_pcb)
 - [Web Configurator](https://heiso.github.io/macrolev/)
+- [Custom keycap set on Yuzu (azerty fr macos)](https://yuzukeycaps.com/c/2e35b096-fd41-4e16-bdcc-91adfbb08c2b)
 
 ## Misc
 
