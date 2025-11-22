@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "erichelgeson/Kicad-STM32")(type "Legacy")(uri "/Users/heiso/Projects/erichelgeson/Kicad-STM32/Symbols/YAAJ_BlackPill_SWD_Breakout.lib")(options "")(descr ""))
+)
