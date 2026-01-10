@@ -402,21 +402,21 @@ uint8_t keyboard_write_config(uint8_t *buffer, uint16_t offset, uint16_t size) {
 }
 
 void keyboard_select_amux(uint8_t amux_channel) {
-  // TODO: set GPIOs at the same time using bitmap on register
-  for (uint8_t i = 0; i < AMUX_SELECT_PINS_COUNT; i++) {
-    HAL_GPIO_WritePin(GPIOB, amux_select_pins[i], (amux_channel >> i) & 1);
-  }
+  uint16_t gpio_amux = GPIOB->ODR;
+  gpio_amux &= ~(0xF << 12);
+  gpio_amux |= (amux_channel & 0xF) << 12;
+  GPIOB->ODR = gpio_amux;
 }
 
 void keyboard_select_adc(uint8_t adc_channel) {
-  ADC_channel_Config.Channel = adc_channels[adc_channel];
-  HAL_ADC_ConfigChannel(&hadc1, &ADC_channel_Config);
-  HAL_ADC_Start(&hadc1);
-  HAL_ADC_PollForConversion(&hadc1, 1);
+  ADC1->SQR3 = adc_channels[adc_channel];
+  ADC1->CR2 |= ADC_CR2_SWSTART;
+  while (!(ADC1->SR & ADC_SR_EOC))
+    ;
 }
 
 uint16_t keyboard_read_adc() {
-  return HAL_ADC_GetValue(&hadc1);
+  return hadc1.Instance->DR;
 }
 
 void keyboard_close_adc() {
